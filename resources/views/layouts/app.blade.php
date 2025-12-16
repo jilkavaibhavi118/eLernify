@@ -15,7 +15,7 @@
     <meta name="description" content="CoreUI - Open Source Bootstrap Admin Template">
     <meta name="author" content="Łukasz Holeczek">
     <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
-    <title>CoreUI Free Bootstrap Admin Template</title>
+    <title>Admin Panel</title>
 
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="57x57" href="{{ asset('assets/favicon/apple-icon-57x57.png') }}">
@@ -49,18 +49,21 @@
     <script src="{{ asset('js/color-modes.js') }}"></script>
 
     <link href="{{ asset('vendors/@coreui/chartjs/css/coreui-chartjs.css') }}" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    @stack('styles')
 </head>
 
 <body>
     <div class="sidebar sidebar-dark sidebar-fixed border-end" id="sidebar">
         <div class="sidebar-header border-bottom">
             <div class="sidebar-brand">
-                <svg class="sidebar-brand-full" width="88" height="32" alt="CoreUI Logo">
-                    <use xlink:href="{{ asset('assets/brand/coreui.svg') }}#full"></use>
-                </svg>
-                <svg class="sidebar-brand-narrow" width="32" height="32" alt="CoreUI Logo">
-                    <use xlink:href="{{ asset('assets/brand/coreui.svg') }}#signet"></use>
-                </svg>
+                <img class="sidebar-brand-full" src="{{ asset('assets/img/elearning_logo.png') }}"
+                    alt="Learning Platform Logo" height="46">
+                <span class="sidebar-brand-full h5 mb-0 ms-2"
+                    style="color: inherit; text-decoration: none;">eLernify</span>
+                <img class="sidebar-brand-narrow" src="{{ asset('assets/img/elearning_logo.png') }}"
+                    alt="Learning Platform Logo" width="32" height="32">
             </div>
             <button class="btn-close d-lg-none" type="button" data-coreui-theme="dark" aria-label="Close"
                 onclick="coreui.Sidebar.getInstance(document.querySelector(&quot;#sidebar&quot;)).toggle()"></button>
@@ -146,6 +149,49 @@
                     <svg class="nav-icon">
                         <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-chart-pie"></use>
                     </svg> Charts</a></li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('backend.users.index') }}">
+                    <svg class="nav-icon">
+                        <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-user"></use>
+                    </svg>
+                    Users
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('backend.lectures.index') }}">
+                    <svg class="nav-icon">
+                        <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-book"></use>
+                    </svg>
+                    Lectures
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('backend.materials.index') }}">
+                    <svg class="nav-icon">
+                        <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-folder"></use>
+                    </svg>
+                    Materials
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('backend.quizzes.index') }}">
+                    <svg class="nav-icon">
+                        <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-puzzle"></use>
+                    </svg>
+                    Quizzes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('backend.roles.index') }}">
+                    <svg class="nav-icon">
+                        <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-shield-alt"></use>
+                    </svg>
+                    Roles
+                </a>
+            </li>
+
+
             <li class="nav-group"><a class="nav-link nav-group-toggle" href="#">
                     <svg class="nav-icon">
                         <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-notes"></use>
@@ -375,7 +421,8 @@
                     <li class="nav-item dropdown"><a class="nav-link py-0 pe-0" data-coreui-toggle="dropdown"
                             href="#" role="button" aria-haspopup="true" aria-expanded="false">
                             <div class="avatar avatar-md"><img class="avatar-img"
-                                    src="{{ asset('assets/img/avatars/8.jpg') }}" alt="user@email.com"></div>
+                                    src="{{ auth()->user()->profile_photo ? asset('storage/' . auth()->user()->profile_photo) : asset('assets/img/avatars/8.jpg') }}"
+                                    alt="{{ auth()->user()->name }}"></div>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end pt-0">
                             <div
@@ -404,7 +451,8 @@
                                 </svg> Comments<span class="badge badge-sm bg-warning ms-2">42</span></a>
                             <div class="dropdown-header bg-body-tertiary text-body-secondary fw-semibold my-2">
                                 <div class="fw-semibold">Settings</div>
-                            </div><a class="dropdown-item" href="#">
+                            </div>
+                            <a class="dropdown-item" href="{{ route('backend.profile.edit') }}">
                                 <svg class="icon me-2">
                                     <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-user">
                                     </use>
@@ -479,7 +527,14 @@
     <script src="{{ asset('vendors/@coreui/chartjs/js/coreui-chartjs.js') }}"></script>
     <script src="{{ asset('vendors/@coreui/utils/js/index.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
-    <script></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @include('layouts.crud_ajax')
+    @stack('scripts')
 
 </body>
 
