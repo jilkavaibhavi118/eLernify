@@ -50,6 +50,12 @@ class UserController extends Controller implements HasMiddleware
                     $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-pencil"></use></svg>';
                     $btn .= '<span>Edit</span></a>';
 
+                    // Orders Button
+                    $ordersUrl = route('backend.orders.index', ['user_id' => $row->id]);
+                    $btn .= '<a href="' . $ordersUrl . '" class="btn btn-info btn-sm d-flex align-items-center gap-1 text-white" title="Orders">';
+                    $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-cart"></use></svg>';
+                    $btn .= '<span>Orders</span></a>';
+
                     // Delete Button
                     $btn .= '<a href="javascript:void(0)" data-url="'.$deleteUrl.'" class="btn btn-danger btn-sm d-flex align-items-center gap-1 delete-btn" title="Delete">';
                     $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-trash"></use></svg>';

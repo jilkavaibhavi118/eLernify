@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Quiz extends Model
 {
     protected $fillable = [
+        'course_id',
         'title',
         'duration',
         'instructions',
@@ -16,6 +17,11 @@ class Quiz extends Model
     protected $casts = [
         'duration' => 'integer',
     ];
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
 
     public function lecture()
     {

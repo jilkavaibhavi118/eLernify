@@ -22,6 +22,11 @@ class PermissionsTableSeeder extends Seeder
             'role.create',
             'role.edit',
             'role.delete',
+            'users.view',
+            'users.edit',
+            'purchases.view',
+            'purchases.refund',
+            'payments.view',
         ];
 
         // Create permissions

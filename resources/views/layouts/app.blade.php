@@ -58,13 +58,17 @@
     <div class="sidebar sidebar-dark sidebar-fixed border-end" id="sidebar">
         <div class="sidebar-header border-bottom">
             <div class="sidebar-brand">
-                <img class="sidebar-brand-full" src="{{ asset('assets/img/elearning_logo.png') }}"
-                    alt="Learning Platform Logo" height="46">
-                <span class="sidebar-brand-full h5 mb-0 ms-2"
-                    style="color: inherit; text-decoration: none;">eLernify</span>
-                <img class="sidebar-brand-narrow" src="{{ asset('assets/img/elearning_logo.png') }}"
-                    alt="Learning Platform Logo" width="32" height="32">
+                <img class="sidebar-brand-full" src="{{ asset('assets/img/elearnify.png') }}" alt="eLearnify Logo"
+                    height="46">
+
+                <span class="sidebar-brand-full h5 mb-0 ms-2">
+                    eLearnify
+                </span>
+
+                <img class="sidebar-brand-narrow" src="{{ asset('assets/img/elearnify.png') }}" alt="eLearnify Logo"
+                    width="40" height="40">
             </div>
+
             <button class="btn-close d-lg-none" type="button" data-coreui-theme="dark" aria-label="Close"
                 onclick="coreui.Sidebar.getInstance(document.querySelector(&quot;#sidebar&quot;)).toggle()"></button>
         </div>
@@ -159,6 +163,14 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="{{ route('backend.instructors.index') }}">
+                    <svg class="nav-icon">
+                        <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-user"></use>
+                    </svg>
+                    Instructors
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('backend.lectures.index') }}">
                     <svg class="nav-icon">
                         <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-book"></use>
@@ -183,11 +195,35 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="{{ route('backend.categories.index') }}">
+                    <svg class="nav-icon">
+                        <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-list"></use>
+                    </svg>
+                    Categories
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('backend.courses.index') }}">
+                    <svg class="nav-icon">
+                        <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-education"></use>
+                    </svg>
+                    Courses
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('backend.roles.index') }}">
                     <svg class="nav-icon">
                         <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-shield-alt"></use>
                     </svg>
                     Roles
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('backend.orders.index') }}">
+                    <svg class="nav-icon">
+                        <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-money"></use>
+                    </svg>
+                    Orders
                 </a>
             </li>
 

@@ -21,7 +21,7 @@ class RoleController extends Controller implements HasMiddleware
             new Middleware('can:role.edit', only: ['edit', 'update']),
             new Middleware('can:role.delete', only: ['destroy']),
         ];
-    }
+    }   
 
     public function index()
     {
@@ -30,26 +30,22 @@ class RoleController extends Controller implements HasMiddleware
             return DataTables::of($roles)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    $editUrl = route('backend.roles.edit', $row->id);
-                    $deleteUrl = route('backend.roles.destroy', $row->id);
-                    $csrf = csrf_token();
-
-                    $btn = '<div class="d-flex gap-2">';
-                    
-                    // Edit Button
-                    $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm d-flex align-items-center gap-1" title="Edit">';
-                    $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-pencil"></use></svg>';
-                    $btn .= '<span>Edit</span></a>';
-
-                    // Delete Button
-                    $btn .= '<a href="javascript:void(0)" data-url="'.$deleteUrl.'" class="btn btn-danger btn-sm d-flex align-items-center gap-1 delete-btn" title="Delete">';
-                    $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-trash"></use></svg>';
-                    $btn .= '<span>Delete</span></a>';
-                    
-                    $btn .= '</div>';
-
-                    return $btn;
+                        return view('layouts.includes.list-actions', [
+                        'module' => 'role',
+                        'routePrefix' => 'backend.roles',
+                        'data' => $row,
+                        'extra' =>   [
+                            [
+                                'label' => 'Permissions',
+                                'route' => 'backend.roles.permissions',
+                                'permission' => 'role.edit',
+                                'icon' => 'cil-lock-locked',
+                                'class' => 'btn-primary'
+                            ]
+                            ]
+                    ])->render();
                 })
+
                 ->rawColumns(['action'])
                 ->make(true);
         }
@@ -112,4 +108,26 @@ class RoleController extends Controller implements HasMiddleware
             'message' => 'Role deleted successfully'
         ]);
     }
+
+    public function permissions(Role $role)
+    {
+        $permissions = Permission::all();
+        $rolePermissions = $role->permissions->pluck('name')->toArray();
+
+        return view('backend.roles.permissions', compact(
+            'role',
+            'permissions',
+            'rolePermissions'
+        ));
+    }
+
+    public function updatePermissions(Request $request, Role $role)
+    {
+        $role->syncPermissions($request->permissions ?? []);
+
+        return redirect()
+            ->route('backend.roles.index')
+            ->with('success', 'Permissions updated successfully');
+    }
+
 }

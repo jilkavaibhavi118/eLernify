@@ -58,10 +58,25 @@
                 <a href="#about" class="nav-item nav-link">About</a>
                 <a href="#courses" class="nav-item nav-link">Courses</a>
                 <a href="#instructors" class="nav-item nav-link">Instructors</a>
-                <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>
+                @guest
+                    <a href="{{ route('register') }}" class="nav-item nav-link">Register</a>
+                    <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>
+                @else
+                    <a href="{{ route('user.dashboard') }}" class="nav-item nav-link">My Dashboard</a>
+                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="nav-item nav-link btn btn-link"
+                            style="text-decoration: none; border: none; background: none;">Logout</button>
+                    </form>
+                @endguest
             </div>
-            <a href="{{ route('login') }}" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Join Now<i
-                    class="fa fa-arrow-right ms-3"></i></a>
+            @guest
+                <a href="{{ route('register') }}" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Join Now<i
+                        class="fa fa-arrow-right ms-3"></i></a>
+            @else
+                <a href="{{ route('user.dashboard') }}" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">My
+                    Dashboard<i class="fa fa-arrow-right ms-3"></i></a>
+            @endguest
         </div>
     </nav>
     <!-- Navbar End -->
@@ -102,12 +117,14 @@
                             <div class="col-sm-10 col-lg-8">
                                 <h5 class="text-primary text-uppercase mb-3 animated slideInDown">Best Online Courses
                                 </h5>
-                                <h1 class="display-3 text-white animated slideInDown">Get Educated Online From Your Home
+                                <h1 class="display-3 text-white animated slideInDown">Get Educated Online From Your
+                                    Home
                                 </h1>
                                 <p class="fs-5 text-white mb-4 pb-2">Vero elitr justo clita lorem. Ipsum dolor at sed
                                     stet sit diam no. Kasd rebum ipsum et diam justo clita et kasd rebum sea sanctus
                                     eirmod elitr.</p>
-                                <a href="" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Read
+                                <a href=""
+                                    class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Read
                                     More</a>
                                 <a href="" class="btn btn-light py-md-3 px-md-5 animated slideInRight">Join
                                     Now</a>
@@ -224,56 +241,85 @@
                 <h6 class="section-title bg-white text-center text-primary px-3">Categories</h6>
                 <h1 class="mb-5">Courses Categories</h1>
             </div>
-            <div class="row g-3">
-                <div class="col-lg-7 col-md-6">
-                    <div class="row g-3">
-                        <div class="col-lg-12 col-md-12 wow zoomIn" data-wow-delay="0.1s">
-                            <a class="position-relative d-block overflow-hidden" href="">
-                                <img class="img-fluid" src="{{ asset('frontend/img/cat-1.jpg') }}" alt="">
-                                <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3"
-                                    style="margin: 1px;">
-                                    <h5 class="m-0">Web Design</h5>
-                                    <small class="text-primary">49 Courses</small>
+            @if ($categoryCourses->count() > 0)
+                <div class="row g-3">
+                    <div class="col-lg-7 col-md-6">
+                        <div class="row g-3">
+                            @if (isset($categoryCourses[0]))
+                                <div class="col-lg-12 col-md-12 wow zoomIn" data-wow-delay="0.1s">
+                                    <a class="position-relative d-block overflow-hidden"
+                                        href="{{ route('courses') }}">
+                                        <img class="img-fluid"
+                                            src="{{ $categoryCourses[0]->image ? asset('storage/' . $categoryCourses[0]->image) : asset('frontend/img/cat-1.jpg') }}"
+                                            alt="{{ $categoryCourses[0]->title }}"
+                                            style="width: 100%; height: 200px; object-fit: cover;">
+                                        <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3"
+                                            style="margin: 1px;">
+                                            <h5 class="m-0">{{ $categoryCourses[0]->title }}</h5>
+                                            <small class="text-primary">{{ $totalCourses }} Courses</small>
+                                        </div>
+                                    </a>
                                 </div>
-                            </a>
-                        </div>
-                        <div class="col-lg-6 col-md-12 wow zoomIn" data-wow-delay="0.3s">
-                            <a class="position-relative d-block overflow-hidden" href="">
-                                <img class="img-fluid" src="{{ asset('frontend/img/cat-2.jpg') }}" alt="">
-                                <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3"
-                                    style="margin: 1px;">
-                                    <h5 class="m-0">Graphic Design</h5>
-                                    <small class="text-primary">49 Courses</small>
+                            @endif
+                            @if (isset($categoryCourses[1]))
+                                <div class="col-lg-6 col-md-12 wow zoomIn" data-wow-delay="0.3s">
+                                    <a class="position-relative d-block overflow-hidden"
+                                        href="{{ route('courses') }}">
+                                        <img class="img-fluid"
+                                            src="{{ $categoryCourses[1]->image ? asset('storage/' . $categoryCourses[1]->image) : asset('frontend/img/cat-2.jpg') }}"
+                                            alt="{{ $categoryCourses[1]->title }}"
+                                            style="width: 100%; height: 200px; object-fit: cover;">
+                                        <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3"
+                                            style="margin: 1px;">
+                                            <h5 class="m-0">{{ $categoryCourses[1]->title }}</h5>
+                                            <small class="text-primary">{{ $totalCourses }} Courses</small>
+                                        </div>
+                                    </a>
                                 </div>
-                            </a>
-                        </div>
-                        <div class="col-lg-6 col-md-12 wow zoomIn" data-wow-delay="0.5s">
-                            <a class="position-relative d-block overflow-hidden" href="">
-                                <img class="img-fluid" src="{{ asset('frontend/img/cat-3.jpg') }}" alt="">
-                                <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3"
-                                    style="margin: 1px;">
-                                    <h5 class="m-0">Video Editing</h5>
-                                    <small class="text-primary">49 Courses</small>
+                            @endif
+                            @if (isset($categoryCourses[2]))
+                                <div class="col-lg-6 col-md-12 wow zoomIn" data-wow-delay="0.5s">
+                                    <a class="position-relative d-block overflow-hidden"
+                                        href="{{ route('courses') }}">
+                                        <img class="img-fluid"
+                                            src="{{ $categoryCourses[2]->image ? asset('storage/' . $categoryCourses[2]->image) : asset('frontend/img/cat-3.jpg') }}"
+                                            alt="{{ $categoryCourses[2]->title }}"
+                                            style="width: 100%; height: 200px; object-fit: cover;">
+                                        <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3"
+                                            style="margin: 1px;">
+                                            <h5 class="m-0">{{ $categoryCourses[2]->title }}</h5>
+                                            <small class="text-primary">{{ $totalCourses }} Courses</small>
+                                        </div>
+                                    </a>
                                 </div>
-                            </a>
+                            @endif
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-5 col-md-6 wow zoomIn" data-wow-delay="0.7s" style="min-height: 350px;">
-                    <a class="position-relative d-block h-100 overflow-hidden" href="">
-                        <img class="img-fluid position-absolute w-100 h-100"
-                            src="{{ asset('frontend/img/cat-4.jpg') }}" alt="" style="object-fit: cover;">
-                        <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3"
-                            style="margin:  1px;">
-                            <h5 class="m-0">Online Marketing</h5>
-                            <small class="text-primary">49 Courses</small>
+                    @if (isset($categoryCourses[3]))
+                        <div class="col-lg-5 col-md-6 wow zoomIn" data-wow-delay="0.7s" style="min-height: 350px;">
+                            <a class="position-relative d-block h-100 overflow-hidden" href="{{ route('courses') }}">
+                                <img class="img-fluid position-absolute w-100 h-100"
+                                    src="{{ $categoryCourses[3]->image ? asset('storage/' . $categoryCourses[3]->image) : asset('frontend/img/cat-4.jpg') }}"
+                                    alt="{{ $categoryCourses[3]->title }}" style="object-fit: cover;">
+                                <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3"
+                                    style="margin:  1px;">
+                                    <h5 class="m-0">{{ $categoryCourses[3]->title }}</h5>
+                                    <small class="text-primary">{{ $totalCourses }} Courses</small>
+                                </div>
+                            </a>
                         </div>
-                    </a>
+                    @endif
                 </div>
-            </div>
+            @else
+                <div class="row g-3">
+                    <div class="col-12 text-center">
+                        <p class="text-muted">No courses available at the moment.</p>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
-    <!-- Categories Start -->
+    <!-- Categories End -->
 
 
     <!-- Courses Start -->
@@ -284,105 +330,52 @@
                 <h1 class="mb-5">Popular Courses</h1>
             </div>
             <div class="row g-4 justify-content-center">
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="course-item bg-light">
-                        <div class="position-relative overflow-hidden">
-                            <img class="img-fluid" src="{{ asset('frontend/img/course-1.jpg') }}" alt="">
-                            <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
-                                <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
-                                    style="border-radius: 30px 0 0 30px;">Read More</a>
-                                <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3"
-                                    style="border-radius: 0 30px 30px 0;">Join Now</a>
+                @forelse($popularCourses as $index => $course)
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="{{ ($index + 1) * 0.1 }}s">
+                        <div class="course-item bg-light">
+                            <div class="position-relative overflow-hidden">
+                                <img class="img-fluid"
+                                    src="{{ $course->image ? asset('storage/' . $course->image) : asset('frontend/img/course-' . ($index + 1) . '.jpg') }}"
+                                    alt="{{ $course->title }}"
+                                    style="width: 100%; height: 250px; object-fit: cover;">
+                                <div
+                                    class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                                    <a href="{{ route('course.detail', $course->id) }}"
+                                        class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
+                                        style="border-radius: 30px 0 0 30px;">Read More</a>
+                                    <a href="{{ route('course.detail', $course->id) }}"
+                                        class="flex-shrink-0 btn btn-sm btn-primary px-3"
+                                        style="border-radius: 0 30px 30px 0;">Join Now</a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="text-center p-4 pb-0">
-                            <h3 class="mb-0">$149.00</h3>
-                            <div class="mb-3">
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small>(123)</small>
+                            <div class="text-center p-4 pb-0">
+                                <h3 class="mb-0">₹{{ number_format($course->price, 2) }}</h3>
+                                <div class="mb-3">
+                                    <small class="fa fa-star text-primary"></small>
+                                    <small class="fa fa-star text-primary"></small>
+                                    <small class="fa fa-star text-primary"></small>
+                                    <small class="fa fa-star text-primary"></small>
+                                    <small class="fa fa-star text-primary"></small>
+                                    <small>({{ rand(10, 200) }})</small>
+                                </div>
+                                <h5 class="mb-4">{{ $course->title }}</h5>
                             </div>
-                            <h5 class="mb-4">Web Design & Development Course for Beginners</h5>
-                        </div>
-                        <div class="d-flex border-top">
-                            <small class="flex-fill text-center border-end py-2"><i
-                                    class="fa fa-user-tie text-primary me-2"></i>John Doe</small>
-                            <small class="flex-fill text-center border-end py-2"><i
-                                    class="fa fa-clock text-primary me-2"></i>1.49 Hrs</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>30
-                                Students</small>
+                            <div class="d-flex border-top">
+                                <small class="flex-fill text-center border-end py-2"><i
+                                        class="fa fa-tag text-primary me-2"></i>{{ $course->category->name ?? 'Uncategorized' }}</small>
+                                <small class="flex-fill text-center border-end py-2"><i
+                                        class="fa fa-clock text-primary me-2"></i>{{ rand(1, 5) }}.00 Hrs</small>
+                                <small class="flex-fill text-center py-2"><i
+                                        class="fa fa-user text-primary me-2"></i>{{ rand(20, 100) }}
+                                    Students</small>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="course-item bg-light">
-                        <div class="position-relative overflow-hidden">
-                            <img class="img-fluid" src="{{ asset('frontend/img/course-2.jpg') }}" alt="">
-                            <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
-                                <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
-                                    style="border-radius: 30px 0 0 30px;">Read More</a>
-                                <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3"
-                                    style="border-radius: 0 30px 30px 0;">Join Now</a>
-                            </div>
-                        </div>
-                        <div class="text-center p-4 pb-0">
-                            <h3 class="mb-0">$149.00</h3>
-                            <div class="mb-3">
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small>(123)</small>
-                            </div>
-                            <h5 class="mb-4">Web Design & Development Course for Beginners</h5>
-                        </div>
-                        <div class="d-flex border-top">
-                            <small class="flex-fill text-center border-end py-2"><i
-                                    class="fa fa-user-tie text-primary me-2"></i>John Doe</small>
-                            <small class="flex-fill text-center border-end py-2"><i
-                                    class="fa fa-clock text-primary me-2"></i>1.49 Hrs</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>30
-                                Students</small>
-                        </div>
+                @empty
+                    <div class="col-12 text-center">
+                        <p class="text-muted">No courses available at the moment.</p>
                     </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="course-item bg-light">
-                        <div class="position-relative overflow-hidden">
-                            <img class="img-fluid" src="{{ asset('frontend/img/course-3.jpg') }}" alt="">
-                            <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
-                                <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
-                                    style="border-radius: 30px 0 0 30px;">Read More</a>
-                                <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3"
-                                    style="border-radius: 0 30px 30px 0;">Join Now</a>
-                            </div>
-                        </div>
-                        <div class="text-center p-4 pb-0">
-                            <h3 class="mb-0">$149.00</h3>
-                            <div class="mb-3">
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small>(123)</small>
-                            </div>
-                            <h5 class="mb-4">Web Design & Development Course for Beginners</h5>
-                        </div>
-                        <div class="d-flex border-top">
-                            <small class="flex-fill text-center border-end py-2"><i
-                                    class="fa fa-user-tie text-primary me-2"></i>John Doe</small>
-                            <small class="flex-fill text-center border-end py-2"><i
-                                    class="fa fa-clock text-primary me-2"></i>1.49 Hrs</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>30
-                                Students</small>
-                        </div>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </div>

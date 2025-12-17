@@ -10,7 +10,9 @@ class Material extends Model
         'title',
         'description',
         'file_path',
+        'video_path',
         'lecture_id',
+        'content_url'
     ];
 
     public function lecture()

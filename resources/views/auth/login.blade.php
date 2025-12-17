@@ -253,7 +253,7 @@
                     </div>
 
                     <div class="register-link">
-                        Don't have account? <a href="#">Register Now</a>
+                        Don't have account? <a href="{{ route('register') }}">Register Now</a>
                     </div>
                 </form>
             </div>

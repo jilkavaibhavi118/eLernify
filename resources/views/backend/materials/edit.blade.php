@@ -39,12 +39,50 @@
                             </div>
                             <div class="col-md-12 mt-3">
                                 <div class="form-group">
-                                    <label for="file">File (leave blank to keep current file)</label>
+                                    <label for="file">Document File (leave blank to keep current)</label>
                                     <input type="file" name="file"
                                         class="form-control @error('file') is-invalid @enderror">
-                                    <small class="text-muted">Current file: {{ basename($material->file_path) }} | Max size:
-                                        10MB</small>
+                                    @if ($material->file_path)
+                                        <small class="text-muted d-block mt-1">
+                                            Current: <a href="{{ asset('storage/' . $material->file_path) }}"
+                                                target="_blank"><i class="fa fa-file-pdf"></i>
+                                                {{ basename($material->file_path) }}</a>
+                                        </small>
+                                    @endif
+                                    <small class="text-muted">PDF, Doc, Docx | Max: 10MB</small>
                                     @error('file')
+                                        <div class="text-danger mt-1" style="font-size: 0.875rem;">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mt-3">
+                                <div class="form-group">
+                                    <label for="video">Video File (leave blank to keep current)</label>
+                                    <input type="file" name="video"
+                                        class="form-control @error('video') is-invalid @enderror">
+                                    @if ($material->video_path)
+                                        <small class="text-muted d-block mt-1">
+                                            Current: <a href="{{ asset('storage/' . $material->video_path) }}"
+                                                target="_blank"><i class="fa fa-video"></i>
+                                                {{ basename($material->video_path) }}</a>
+                                        </small>
+                                    @endif
+                                    <small class="text-muted">MP4, WebM | Max: 100MB</small>
+                                    @error('video')
+                                        <div class="text-danger mt-1" style="font-size: 0.875rem;">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mt-3">
+                                <div class="form-group">
+                                    <label for="content_url">External URL</label>
+                                    <input type="url" name="content_url"
+                                        class="form-control @error('content_url') is-invalid @enderror"
+                                        placeholder="https://example.com/video"
+                                        value="{{ old('content_url', $material->content_url) }}">
+                                    @error('content_url')
                                         <div class="text-danger mt-1" style="font-size: 0.875rem;">{{ $message }}</div>
                                     @enderror
                                 </div>

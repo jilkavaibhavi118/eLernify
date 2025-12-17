@@ -8,7 +8,15 @@
 ])
 
 <div class="form-group">
-    <label for="{{ $name }}">Lecture @if ($required)
+    <label for="{{ $name }}">
+        @if(str_contains($name, 'category'))
+            Category
+        @elseif(str_contains($name, 'lecture'))
+            Lecture
+        @else
+            {{ ucfirst(str_replace('_', ' ', $name)) }}
+        @endif
+        @if ($required)
             <span class="text-danger">*</span>
         @endif
     </label>

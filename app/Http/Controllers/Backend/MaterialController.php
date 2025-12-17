@@ -21,10 +21,29 @@ class MaterialController extends Controller
                     return $row->lecture ? $row->lecture->title : 'N/A';
                 })
                 ->addColumn('file', function($row){
-                    $fileName = basename($row->file_path);
-                    return '<a href="'.asset('storage/'.$row->file_path).'" target="_blank" class="btn btn-sm btn-info">
-                            <i class="fa fa-download"></i> '.$fileName.'
-                        </a>';
+                    $html = '';
+                    
+                    if (!empty($row->file_path)) {
+                        $fileName = basename($row->file_path);
+                        $html .= '<a href="'.asset('storage/'.$row->file_path).'" target="_blank" class="btn btn-sm btn-info me-1" title="'.$fileName.'">
+                                <i class="fa fa-file-pdf"></i> Doc
+                            </a>';
+                    }
+
+                    if (!empty($row->video_path)) {
+                        $videoName = basename($row->video_path);
+                        $html .= '<a href="'.asset('storage/'.$row->video_path).'" target="_blank" class="btn btn-sm btn-success me-1" title="'.$videoName.'">
+                                <i class="fa fa-video"></i> Video
+                            </a>';
+                    }
+
+                    if (!empty($row->content_url)) {
+                        $html .= '<a href="'.$row->content_url.'" target="_blank" class="btn btn-sm btn-primary me-1">
+                                <i class="fa fa-link"></i> Link
+                            </a>';
+                    }
+
+                    return $html ?: 'N/A';
                 })
                 ->addColumn('action', function($row){
                     $editUrl = route('backend.materials.edit', $row->id);
@@ -52,17 +71,29 @@ class MaterialController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'file' => 'required|file|max:10240', // 10MB max
             'lecture_id' => 'required|exists:lectures,id',
+            'file' => 'nullable|file|max:10240', // 10MB Doc
+            'video' => 'nullable|file|max:102400', // 100MB Video
+            'content_url' => 'nullable|url',
         ]);
 
-        $filePath = $request->file('file')->store('materials', 'public');
+        $filePath = null;
+        if ($request->hasFile('file')) {
+            $filePath = $request->file('file')->store('materials', 'public');
+        }
+
+        $videoPath = null;
+        if ($request->hasFile('video')) {
+            $videoPath = $request->file('video')->store('videos', 'public');
+        }
 
         Material::create([
             'title' => $request->title,
             'description' => $request->description,
             'file_path' => $filePath,
+            'video_path' => $videoPath,
             'lecture_id' => $request->lecture_id,
+            'content_url' => $request->content_url,
         ]);
 
         return response()->json([
@@ -84,22 +115,33 @@ class MaterialController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'file' => 'nullable|file|max:10240',
             'lecture_id' => 'required|exists:lectures,id',
+            'file' => 'nullable|file|max:10240',
+            'video' => 'nullable|file|max:102400',
+            'content_url' => 'nullable|url',
         ]);
 
         $data = [
             'title' => $request->title,
             'description' => $request->description,
             'lecture_id' => $request->lecture_id,
+            'content_url' => $request->content_url,
         ];
 
         if ($request->hasFile('file')) {
             // Delete old file
-            if (Storage::exists('public/' . $material->file_path)) {
+            if ($material->file_path && Storage::exists('public/' . $material->file_path)) {
                 Storage::delete('public/' . $material->file_path);
             }
             $data['file_path'] = $request->file('file')->store('materials', 'public');
+        }
+
+        if ($request->hasFile('video')) {
+            // Delete old video
+            if ($material->video_path && Storage::exists('public/' . $material->video_path)) {
+                Storage::delete('public/' . $material->video_path);
+            }
+            $data['video_path'] = $request->file('video')->store('videos', 'public');
         }
 
         $material->update($data);
