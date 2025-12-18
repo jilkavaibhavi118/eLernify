@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLectureRequest;
 use App\Models\Lecture;
+use App\Models\Course;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -13,7 +14,7 @@ class LectureController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Lecture::latest()->get();
+            $data = Lecture::with('course')->latest()->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('status', function($row){
@@ -21,8 +22,8 @@ class LectureController extends Controller
                     return '<span class="badge '.$badgeClass.'">'.ucfirst($row->status).'</span>';
                 })
                 ->addColumn('live_class', function($row){
-                    return $row->live_class_available ? 
-                        '<span class="badge bg-info">Yes</span>' : 
+                    return $row->live_class_available ?
+                        '<span class="badge bg-info">Yes</span>' :
                         '<span class="badge bg-warning">No</span>';
                 })
                 ->addColumn('price', function($row){
@@ -31,9 +32,9 @@ class LectureController extends Controller
                 ->addColumn('action', function($row){
                     $editUrl = route('backend.lectures.edit', $row->id);
                     $deleteUrl = route('backend.lectures.destroy', $row->id);
-                    
+
                     $btn = '<div class="d-flex gap-2">';
-                    
+
                     // Edit Button
                     $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm d-flex align-items-center gap-1" title="Edit">';
                     $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-pencil"></use></svg>';
@@ -43,7 +44,7 @@ class LectureController extends Controller
                     $btn .= '<a href="javascript:void(0)" data-url="'.$deleteUrl.'" class="btn btn-danger btn-sm d-flex align-items-center gap-1 delete-btn" title="Delete">';
                     $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-trash"></use></svg>';
                     $btn .= '<span>Delete</span></a>';
-                    
+
                     $btn .= '</div>';
                     return $btn;
                 })
@@ -55,13 +56,17 @@ class LectureController extends Controller
 
     public function create()
     {
-        return view('backend.lectures.create');
+        $courses = Course::where('status', 'active')
+            ->orderBy('title')
+            ->get(['id', 'title']);
+
+        return view('backend.lectures.create', compact('courses'));
     }
 
     public function store(StoreLectureRequest $request)
     {
         Lecture::create($request->validated());
-    
+
         return response()->json([
             'success' => 'Lecture created successfully',
             'url' => route('backend.lectures.index')
@@ -71,14 +76,18 @@ class LectureController extends Controller
     public function edit($id)
     {
         $lecture = Lecture::findOrFail($id);
-        return view('backend.lectures.edit', compact('lecture'));
+        $courses = Course::where('status', 'active')
+            ->orderBy('title')
+            ->get(['id', 'title']);
+
+        return view('backend.lectures.edit', compact('lecture', 'courses'));
     }
 
     public function update(StoreLectureRequest $request, $id)
     {
         $lecture = Lecture::findOrFail($id);
         $lecture->update($request->validated());
-    
+
         return response()->json([
             'success' => 'Lecture updated successfully',
             'url' => route('backend.lectures.index')
@@ -92,7 +101,7 @@ class LectureController extends Controller
         $perPage = 10;
 
         $query = Lecture::query();
-        
+
         if ($term) {
             $query->where('title', 'LIKE', "%{$term}%")
                   ->orWhere('description', 'LIKE', "%{$term}%");

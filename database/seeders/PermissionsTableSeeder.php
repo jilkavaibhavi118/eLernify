@@ -18,24 +18,37 @@ class PermissionsTableSeeder extends Seeder
     {
         // Define permissions
         $permissions = [
-            'role.view',
-            'role.create',
-            'role.edit',
-            'role.delete',
-            'users.view',
-            'users.edit',
-            'purchases.view',
-            'purchases.refund',
-            'payments.view',
+            'role.view', 'role.create', 'role.edit', 'role.delete',
+            'users.view', 'users.edit', 'users.delete',
+            'purchases.view', 'purchases.refund', 'purchases.delete',
+            'payments.view', 'payments.edit', 'payments.delete',
+            'lectures.view', 'lectures.create', 'lectures.edit', 'lectures.delete',
+            'materials.view', 'materials.create', 'materials.edit', 'materials.delete',
+            'quizzes.view', 'quizzes.create', 'quizzes.edit', 'quizzes.delete',
+            'categories.view', 'categories.create', 'categories.edit', 'categories.delete',
+            'courses.view', 'courses.create', 'courses.edit', 'courses.delete',
+            'instructors.view', 'instructors.create', 'instructors.edit', 'instructors.delete',
+            'orders.view', 'orders.create', 'orders.edit', 'orders.delete',
+            'payments.view', 'payments.create', 'payments.edit', 'payments.delete',
+            'reports.view', 'reports.create', 'reports.edit', 'reports.delete',
+            'settings.view', 'settings.create', 'settings.edit', 'settings.delete',
+            'permissions.view', 'permissions.create', 'permissions.edit', 'permissions.delete',
+            'notifications.view', 'notifications.create', 'notifications.edit', 'notifications.delete',
         ];
 
         // Create permissions
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => 'web'
+            ]);
         }
 
         // Create Admin Role
-        $role = Role::firstOrCreate(['name' => 'Admin']);
+        $role = Role::firstOrCreate([
+            'name' => 'Admin',
+            'guard_name' => 'web'
+        ]);
 
         // Sync all permissions to Admin role
         $role->syncPermissions($permissions);

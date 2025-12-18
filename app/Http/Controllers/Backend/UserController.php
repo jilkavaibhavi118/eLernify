@@ -39,32 +39,44 @@ class UserController extends Controller implements HasMiddleware
                     }
                     return $badges;
                 })
+                ->addColumn('status', function ($user) {
+                    return $user->status == 'active'
+                        ? '<span class="badge bg-success">Active</span>'
+                        : '<span class="badge bg-danger">Inactive</span>';
+                })
                 ->addColumn('action', function($row){
-                    $editUrl = route('backend.users.edit', $row->id);
+                    $editUrl   = route('backend.users.edit', $row->id);
                     $deleteUrl = route('backend.users.destroy', $row->id);
-                    
-                    $btn = '<div class="d-flex gap-2">';
-                    
+                    $ordersUrl = route('backend.orders.index', ['user_id' => $row->id]);
+
+                    $btn  = '<div class="d-flex gap-2">';
+
                     // Edit Button
                     $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm d-flex align-items-center gap-1" title="Edit">';
                     $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-pencil"></use></svg>';
                     $btn .= '<span>Edit</span></a>';
 
                     // Orders Button
-                    $ordersUrl = route('backend.orders.index', ['user_id' => $row->id]);
                     $btn .= '<a href="' . $ordersUrl . '" class="btn btn-info btn-sm d-flex align-items-center gap-1 text-white" title="Orders">';
                     $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-cart"></use></svg>';
                     $btn .= '<span>Orders</span></a>';
+
+                    // Enable / Disable Status Button
+                    $btn .= '<button type="button" '
+                        .'class="btn btn-sm '.($row->status == 'active' ? 'btn-danger' : 'btn-success').' toggle-status" '
+                        .'data-id="'.$row->id.'">'
+                        .($row->status == 'active' ? 'Disable' : 'Enable')
+                        .'</button>';
 
                     // Delete Button
                     $btn .= '<a href="javascript:void(0)" data-url="'.$deleteUrl.'" class="btn btn-danger btn-sm d-flex align-items-center gap-1 delete-btn" title="Delete">';
                     $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-trash"></use></svg>';
                     $btn .= '<span>Delete</span></a>';
-                    
+
                     $btn .= '</div>';
                     return $btn;
                 })
-                ->rawColumns(['roles', 'action'])
+                ->rawColumns(['roles', 'action', 'status'])
                 ->make(true);
         }
         return view('backend.users.index');
@@ -78,19 +90,20 @@ class UserController extends Controller implements HasMiddleware
 
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|same:confirm-password',
-            'roles' => 'required'
+            'roles' => 'required',
+            'status' => 'required|in:active,inactive',
         ]);
-    
+
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
-    
+
         $user = User::create($input);
         $user->assignRole($request->input('roles'));
-    
+
         return response()->json([
             'success' => 'User created successfully',
             'url' => route('backend.users.index')
@@ -102,32 +115,33 @@ class UserController extends Controller implements HasMiddleware
         $user = User::find($id);
         $roles = Role::pluck('name','name')->all();
         $userRole = $user->roles->pluck('name','name')->all();
-    
+
         return view('backend.users.edit',compact('user','roles','userRole'));
     }
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
+        $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$id,
             'password' => 'same:confirm-password',
-            'roles' => 'required'
+            'roles' => 'required',
+            'status' => 'required|in:active,inactive',
         ]);
-    
+
         $input = $request->all();
-        if(!empty($input['password'])){ 
+        if(!empty($input['password'])){
             $input['password'] = Hash::make($input['password']);
         }else{
-            $input = Arr::except($input,array('password'));    
+            $input = Arr::except($input,array('password'));
         }
-    
+
         $user = User::find($id);
         $user->update($input);
-        
+
         $user->roles()->detach(); // clear old roles
         $user->assignRole($request->input('roles')); // assign new roles
-    
+
         return response()->json([
             'success' => 'User updated successfully',
             'url' => route('backend.users.index')
@@ -142,4 +156,16 @@ class UserController extends Controller implements HasMiddleware
             'message' => 'User deleted successfully'
         ]);
     }
+
+    public function toggleStatus(User $user)
+    {
+        $user->status = $user->status === 'active' ? 'inactive' : 'active';
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User status updated successfully'
+        ]);
+    }
+
 }

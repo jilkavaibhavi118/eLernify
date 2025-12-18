@@ -22,6 +22,7 @@ class StoreLectureRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'course_id' => 'required|exists:courses,id',
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
@@ -36,6 +37,8 @@ class StoreLectureRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'course_id.required' => 'The course field is required.',
+            'course_id.exists' => 'The selected course is invalid.',
             'title.required' => 'The title field is required.',
             'title.max' => 'The title may not be greater than 255 characters.',
             'description.required' => 'The description field is required.',

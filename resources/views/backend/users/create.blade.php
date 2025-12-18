@@ -46,6 +46,16 @@
                                     </select>
                                 </div>
                             </div>
+
+                            <div class="col-xs-12 col-sm-12 col-md-12 mt-3">
+                                <div class="form-group">
+                                    <label for="status">Status</label>
+                                    <select name="status" id="status" class="form-control">
+                                        <option value="active" selected>Active</option>
+                                        <option value="inactive">Inactive</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 mt-3 text-start">
                                 <button type="submit" class="btn btn-primary" id="crudFormSave">Save</button>
                                 <a href="{{ route('backend.users.index') }}" class="btn btn-secondary">Back</a>

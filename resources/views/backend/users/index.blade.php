@@ -22,6 +22,8 @@
                                     </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Roles
                                     </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status
+                                    </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action
                                     </th>
                                 </tr>
@@ -42,7 +44,8 @@
                     processing: true,
                     serverSide: true,
                     ajax: "{{ route('backend.users.index') }}",
-                    columns: [{
+                    columns: [
+                        {
                             data: 'DT_RowIndex',
                             name: 'DT_RowIndex',
                             orderable: false,
@@ -61,12 +64,38 @@
                             name: 'roles'
                         },
                         {
+                            data: 'status',
+                            name: 'status'
+                        },
+                        {
                             data: 'action',
                             name: 'action',
                             orderable: false,
                             searchable: false
                         },
                     ]
+                });
+            });
+
+            // Enable / Disable (toggle) user status
+            $(document).on('click', '.toggle-status', function() {
+                let userId = $(this).data('id');
+
+                if (!confirm('Are you sure you want to change this user\'s status?')) return;
+
+                $.ajax({
+                    url: "{{ url('admin/users') }}/" + userId + "/toggle-status",
+                    type: 'POST',
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function() {
+                        $('#table').DataTable().ajax.reload(null, false); // reload without resetting page
+                    },
+                    error: function(xhr) {
+                        alert('Something went wrong while updating status.');
+                        console.error(xhr.responseText);
+                    }
                 });
             });
         </script>

@@ -13,6 +13,24 @@
                         <div class="row">
                             <div class="col-xs-12 col-sm-12 col-md-12">
                                 <div class="form-group">
+                                    <label for="course_id">Course <span class="text-danger">*</span></label>
+                                    <select name="course_id" id="course_id"
+                                        class="form-control @error('course_id') is-invalid @enderror">
+                                        <option value="">Select Course</option>
+                                        @foreach ($courses as $course)
+                                            <option value="{{ $course->id }}"
+                                                {{ old('course_id') == $course->id ? 'selected' : '' }}>
+                                                {{ $course->title }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('course_id')
+                                        <div class="text-danger mt-1" style="font-size: 0.875rem;">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 mt-3">
+                                <div class="form-group">
                                     <label for="title">Title <span class="text-danger">*</span></label>
                                     <input type="text" name="title"
                                         class="form-control @error('title') is-invalid @enderror"

@@ -5,7 +5,7 @@
         <div class="col-12">
             <div class="card mb-4">
                 <div class="card-header pb-0 d-flex justify-content-between align-items-center">
-                    <h6>Purchase History / Orders</h6>
+                    <h6>Payment Details</h6>
                     <div>
                         {{-- Placeholder for CSV Export Button --}}
                         <button class="btn btn-sm btn-outline-success"
@@ -29,7 +29,7 @@
                                 <select id="status" class="form-control">
                                     <option value="">All</option>
                                     <option value="completed">Completed</option>
-                                    <option value="refunded">Refunded</option>
+                                    <option value="pending">Pending</option>
                                     <option value="failed">Failed</option>
                                 </select>
                             </div>
@@ -43,7 +43,10 @@
                                 <thead>
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                            Order ID</th>
+                                            Payment ID</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Razorpay Payment ID</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             User</th>
@@ -56,6 +59,9 @@
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Status</th>
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Payment Method</th>
                                         <th
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Date</th>
@@ -72,8 +78,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Refund Modal Confirmation -->
 @endsection
 
 @push('scripts')
@@ -87,10 +91,10 @@
                 processing: true,
                 serverSide: true,
                 order: [
-                    [5, 'desc']
-                ], // Default sort by Date (index 5)
+                    [7, 'desc']
+                ], // Default sort by Date (index 7)
                 ajax: {
-                    url: "{{ route('backend.orders.index') }}",
+                    url: "{{ route('backend.payments.index') }}",
                     type: 'GET',
                     data: function(d) {
                         d.status = $('#status').val();
@@ -105,12 +109,17 @@
                     }
                 },
                 columns: [{
-                        data: 'order_id',
+                        data: 'payment_id',
                         name: 'id'
                     },
                     {
-                        data: 'name',
-                        name: 'name',
+                        data: 'razorpay_payment_id',
+                        name: 'razorpay_payment_id',
+                        orderable: false
+                    },
+                    {
+                        data: 'user_name',
+                        name: 'user_name',
                         orderable: false
                     },
                     {
@@ -121,15 +130,20 @@
                     },
                     {
                         data: 'amount',
-                        name: 'total_amount'
+                        name: 'amount'
                     },
                     {
                         data: 'status',
                         name: 'status'
                     },
                     {
+                        data: 'payment_method',
+                        name: 'payment_method',
+                        orderable: false
+                    },
+                    {
                         data: 'date',
-                        name: 'created_at'
+                        name: 'paid_at'
                     },
                     {
                         data: 'action',
@@ -150,29 +164,7 @@
                 $('#end_date').val('');
                 table.draw();
             });
-
-            // Handle Refund
-            $(document).on('click', '.refund-btn', function() {
-                var id = $(this).data('id');
-                if (confirm(
-                        "Are you sure you want to refund this order? This action connects to manual refund logic currently."
-                    )) {
-                    $.ajax({
-                        url: "/admin/orders/" + id + "/refund",
-                        type: "POST",
-                        data: {
-                            _token: "{{ csrf_token() }}"
-                        },
-                        success: function(response) {
-                            alert(response.success);
-                            table.draw();
-                        },
-                        error: function(xhr) {
-                            alert('Something went wrong');
-                        }
-                    });
-                }
-            });
         });
     </script>
 @endpush
+

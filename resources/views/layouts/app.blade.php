@@ -226,6 +226,14 @@
                     Orders
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('backend.payments.index') }}">
+                    <svg class="nav-icon">
+                        <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-credit-card"></use>
+                    </svg>
+                    Payments
+                </a>
+            </li>
 
 
             <li class="nav-group"><a class="nav-link nav-group-toggle" href="#">
@@ -569,6 +577,7 @@
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     @include('layouts.crud_ajax')
     @stack('scripts')
 

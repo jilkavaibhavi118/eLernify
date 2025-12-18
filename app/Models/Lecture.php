@@ -13,6 +13,7 @@ class Lecture extends Model
         'price',
         'status',
         'live_class_available',
+        'video_url',
     ];
 
     protected $casts = [
@@ -23,5 +24,15 @@ class Lecture extends Model
     public function course()
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function materials()
+    {
+        return $this->hasMany(Material::class);
+    }
+
+    public function quizzes()
+    {
+        return $this->hasMany(Quiz::class);
     }
 }

@@ -7,9 +7,13 @@ use App\Models\Payment;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Spatie\Permission\Models\Permission;
-
+use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller implements HasMiddleware
 {
@@ -21,71 +25,92 @@ class OrderController extends Controller implements HasMiddleware
         ];
     }
 
+
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = \App\Models\Order::with(['user', 'items.course'])->latest();
+            try {
+                $orders = Order::with(['user', 'items.course']);
 
-            // Filter by Status
-            if ($request->filled('status')) {
-                $query->where('status', $request->status);
+                // Apply filters
+                if ($request->filled('status')) {
+                    $orders->where('status', $request->status);
+                }
+
+                if ($request->filled('start_date')) {
+                    $orders->whereDate('created_at', '>=', $request->start_date);
+                }
+
+                if ($request->filled('end_date')) {
+                    $orders->whereDate('created_at', '<=', $request->end_date);
+                }
+
+                if ($request->filled('user_id')) {
+                    $orders->where('user_id', $request->user_id);
+                }
+
+                return DataTables::of($orders)
+                    ->addColumn('order_id', function ($row) {
+                        return $row->id;
+                    })
+                    ->addColumn('name', function ($row) {
+                        return $row->user->name ?? '-';
+                    })
+                    ->addColumn('course_title', function ($row) {
+                        try {
+                            if ($row->items && $row->items->count() > 0) {
+                                $titles = $row->items->map(function($item) {
+                                    return $item->course ? $item->course->title : null;
+                                })->filter()->toArray();
+                                return !empty($titles) ? implode(', ', $titles) : '-';
+                            }
+                            return '-';
+                        } catch (\Exception $e) {
+                            return '-';
+                        }
+                    })
+                    ->addColumn('amount', function ($row) {
+                        return '₹' . number_format($row->total_amount, 2);
+                    })
+                    ->addColumn('status', function ($row) {
+                        $badgeClass = $row->status === 'completed' ? 'success' : ($row->status === 'refunded' ? 'warning' : 'danger');
+                        return '<span class="badge bg-' . $badgeClass . '">' . ucfirst($row->status) . '</span>';
+                    })
+                    ->addColumn('date', function ($row) {
+                        return $row->created_at ? $row->created_at->format('d M Y') : '-';
+                    })
+                    ->addColumn('action', function ($row) {
+                        return '<a href="'.route('backend.orders.show', $row->id).'"
+                                class="btn btn-sm btn-info">View</a>';
+                    })
+                    ->rawColumns(['status', 'action'])
+                    ->make(true);
+            } catch (\Exception $e) {
+                Log::error('OrderController index error: ' . $e->getMessage());
+                return response()->json(['error' => 'Error loading orders: ' . $e->getMessage()], 500);
             }
-
-            // Filter by Date Range
-            if ($request->filled('start_date') && $request->filled('end_date')) {
-                $query->whereBetween('created_at', [$request->start_date . ' 00:00:00', $request->end_date . ' 23:59:59']);
-            }
-
-            // Filter by User ID
-            if ($request->filled('user_id')) {
-                $query->where('user_id', $request->user_id);
-            }
-
-            return DataTables::of($query)
-                ->addIndexColumn()
-                ->addColumn('user_name', function ($row) {
-                    return $row->user ? $row->user->name : 'N/A';
-                })
-                ->addColumn('course_title', function ($row) {
-                    // Assuming single course per order for now, based on current flow
-                    $item = $row->items->first();
-                    return $item && $item->course ? $item->course->title : 'N/A';
-                })
-                ->addColumn('formatted_amount', function ($row) {
-                    return '₹' . number_format($row->total_amount, 2);
-                })
-                ->addColumn('payment_status', function ($row) {
-                    if ($row->status == 'completed') {
-                        return '<span class="badge bg-success">Completed</span>';
-                    } elseif ($row->status == 'refunded') {
-                        return '<span class="badge bg-secondary">Refunded</span>';
-                    } else {
-                        return '<span class="badge bg-danger">Pending</span>';
-                    }
-                })
-                ->addColumn('created_date', function ($row) {
-                    return $row->created_at->format('Y-m-d H:i:s');
-                })
-                ->addColumn('action', function ($row) {
-                     $btn = '';
-                     if ($row->status == 'completed' && auth()->user()->can('purchases.refund')) {
-                         $btn .= '<button type="button" class="btn btn-sm btn-outline-danger refund-btn" data-id="'.$row->id.'">Refund</button>';
-                     }
-                     return $btn ?: 'N/A';
-                })
-                ->rawColumns(['payment_status', 'action'])
-                ->make(true);
         }
 
         return view('backend.orders.index');
     }
 
+
+
     public function refund(Request $request, $id)
     {
-        $order = \App\Models\Order::findOrFail($id);
+        $order = Order::findOrFail($id);
         $order->status = 'refunded';
         $order->save();
 
         return response()->json(['success' => 'Order marked as refunded successfully.']);
     }
+
+    public function show($id)
+{
+    $order = \App\Models\Order::with(['user', 'items.course'])->findOrFail($id);
+
+    return view('backend.orders.show', compact('order'));
+}
+
 }

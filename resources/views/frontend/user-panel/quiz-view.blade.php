@@ -34,13 +34,14 @@
 
     <div class="container-xxl py-5">
         <div class="container">
-            <div class="row justify-content-center">
+            <div class="row g-5">
                 <div class="col-lg-8">
-                    <div class="bg-light rounded p-5">
+                    <div class="bg-light rounded p-5 mb-4">
                         <div class="text-center mb-5">
                             <h3 class="mb-3">{{ $quiz->title }}</h3>
                             <p class="text-muted"><i class="fa fa-clock me-2"></i>Duration: {{ $quiz->duration }} mins
                             </p>
+                            <div id="timer" class="display-6 text-danger fw-bold"></div>
                             @if ($quiz->instructions)
                                 <div class="alert alert-info text-start">
                                     <strong>Instructions:</strong><br>
@@ -49,7 +50,7 @@
                             @endif
                         </div>
 
-                        <form action="{{ route('user.quiz.submit', $quiz->id) }}" method="POST">
+                        <form id="quizForm" action="{{ route('user.quiz.submit', $quiz->id) }}" method="POST">
                             @csrf
 
                             @forelse($quiz->questions as $index => $question)
@@ -84,14 +85,91 @@
                             @endif
                         </form>
                     </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        @if (isset($prev_url) && $prev_url)
+                            <a href="{{ $prev_url }}" class="btn btn-secondary">
+                                <i class="fa fa-arrow-left me-2"></i>Previous
+                            </a>
+                        @else
+                            <a href="{{ route('user.course.view', $enrollment->id) }}"
+                                class="btn btn-outline-secondary">
+                                <i class="fa fa-arrow-left me-2"></i>Back to Course
+                            </a>
+                        @endif
+
+                        @if (isset($next_url) && $next_url)
+                            <a href="{{ $next_url }}" class="btn btn-primary">
+                                Next <i class="fa fa-arrow-right ms-2"></i>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="bg-light rounded p-4 sticky-top" style="top: 100px;">
+                        <h5 class="mb-3">{{ $enrollment->course->title }}</h5>
+                        <div class="progress mb-4" style="height: 10px;">
+                            <div class="progress-bar bg-primary" role="progressbar"
+                                style="width: {{ $enrollment->progress }}%"></div>
+                        </div>
+
+                        <h6 class="mb-3">Course Content</h6>
+                        <div class="list-group course-sidebar">
+                            @foreach ($enrollment->course->lectures as $l)
+                                {{-- Lecture Item --}}
+                                <a href="{{ route('user.lecture.view', $l->id) }}"
+                                    class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <i class="fa fa-play-circle me-2"></i>{{ $l->title }}
+                                    </div>
+                                    <small>{{ $l->duration ?? '10m' }}</small>
+                                </a>
+
+                                {{-- Nested Quizzes --}}
+                                @if ($l->quizzes && $l->quizzes->count() > 0)
+                                    @foreach ($l->quizzes as $q)
+                                        <a href="{{ route('user.quiz.view', $q->id) }}"
+                                            class="list-group-item list-group-item-action ps-5 border-0 {{ $q->id == $quiz->id ? 'bg-primary text-white' : 'bg-white text-secondary' }}">
+                                            <i class="fa fa-question-circle me-2"></i>{{ $q->title }}
+                                        </a>
+                                    @endforeach
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ asset('frontend/js/main.js') }}"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="{{ asset('frontend/js/main.js') }}"></script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var duration = {{ $quiz->duration ?? 10 }} * 60; // Duration in seconds
+                var display = document.querySelector('#timer');
+                var timer = duration,
+                    minutes, seconds;
+
+                var interval = setInterval(function() {
+                    minutes = parseInt(timer / 60, 10);
+                    seconds = parseInt(timer % 60, 10);
+
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                    display.textContent = minutes + ":" + seconds;
+
+                    if (--timer < 0) {
+                        clearInterval(interval);
+                        alert("Time's up! Submitting your quiz.");
+                        document.getElementById('quizForm').submit();
+                    }
+                }, 1000);
+            });
+        </script>
 </body>
 
 </html>

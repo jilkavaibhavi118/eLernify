@@ -12,6 +12,7 @@ use App\Http\Controllers\Backend\CourseController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\InstructorController;
 use App\Http\Controllers\Backend\OrderController;
+use App\Http\Controllers\Backend\PaymentController;
 use App\Http\Controllers\Frontend\CourseController as FrontendCourseController;
 use App\Http\Controllers\Frontend\UserPanelController;
 
@@ -58,19 +59,20 @@ Route::get('/contact', function () {
 Route::get('/course/{id}', [FrontendCourseController::class, 'show'])->name('course.detail');
 
 // ✅ Payment Routes (Auth Required)
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'check.user.status'])->group(function () {
     Route::post('/course/{id}/pay', [FrontendCourseController::class, 'initiatePayment'])->name('course.pay');
     Route::post('/payment/verify', [FrontendCourseController::class, 'verifyPayment'])->name('payment.verify');
 });
 
 // ✅ User Panel Routes (Auth Required)
-Route::middleware(['auth'])->prefix('my')->name('user.')->group(function () {
+Route::middleware(['auth', 'check.user.status'])->prefix('my')->name('user.')->group(function () {
     Route::get('/dashboard', [UserPanelController::class, 'dashboard'])->name('dashboard');
     Route::get('/courses', [UserPanelController::class, 'myCourses'])->name('courses');
     Route::get('/course/{enrollmentId}', [UserPanelController::class, 'courseView'])->name('course.view');
     Route::get('/lecture/{lectureId}', [UserPanelController::class, 'lectureView'])->name('lecture.view');
     Route::get('/quiz/{quizId}', [UserPanelController::class, 'quizView'])->name('quiz.view');
     Route::post('/quiz/{quizId}/submit', [UserPanelController::class, 'quizSubmit'])->name('quiz.submit');
+    Route::get('/quiz/result/{attemptId}', [UserPanelController::class, 'quizResult'])->name('quiz.result'); // New Route
 });
 
 
@@ -83,12 +85,14 @@ Route::middleware(['auth'])->prefix('admin')->name('backend.')->group(function (
 
     Route::resource('roles', RoleController::class);
     Route::get('roles/{role}/permissions', [RoleController::class, 'permissions'])->name('roles.permissions');
-    Route::post('roles/{role}/permissions', [RoleController::class, 'syncPermissions'])->name('roles.permissions.update');
+    Route::post('roles/{role}/permissions', [RoleController::class, 'updatePermissions'])->name('roles.permissions.update');
 
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
 
     Route::resource('users', UserController::class);
+    Route::post('users/{user}/toggle-status',[UserController::class, 'toggleStatus'])->name('backend.users.toggle-status');
+
 
     Route::get('lectures/search', [LectureController::class, 'search'])->name('lectures.search');
     Route::resource('lectures', LectureController::class);
@@ -104,6 +108,8 @@ Route::middleware(['auth'])->prefix('admin')->name('backend.')->group(function (
     Route::get('instructors/search', [InstructorController::class, 'search'])->name('instructors.search');
     Route::resource('instructors', InstructorController::class);
 
-    Route::resource('orders', OrderController::class)->only(['index']);
+    Route::resource('orders', OrderController::class)->only(['index', 'show']);
     Route::post('orders/{id}/refund', [OrderController::class, 'refund'])->name('orders.refund');
+
+    Route::resource('payments', PaymentController::class)->only(['index', 'show']);
 });
