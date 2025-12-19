@@ -27,6 +27,9 @@ class LectureController extends Controller
                         '<span class="badge bg-warning">No</span>';
                 })
                 ->addColumn('price', function($row){
+                    if ($row->is_free) {
+                        return '<span class="badge bg-success">Free</span>';
+                    }
                     return '₹ ' . number_format($row->price, 2);
                 })
                 ->addColumn('action', function($row){
@@ -48,7 +51,7 @@ class LectureController extends Controller
                     $btn .= '</div>';
                     return $btn;
                 })
-                ->rawColumns(['status', 'live_class', 'action'])
+                ->rawColumns(['status', 'live_class', 'price', 'action'])
                 ->make(true);
         }
         return view('backend.lectures.index');

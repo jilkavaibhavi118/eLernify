@@ -24,8 +24,10 @@ class StoreLectureRequest extends FormRequest
         return [
             'course_id' => 'required|exists:courses,id',
             'title' => 'required|string|max:255',
+            'short_description' => 'nullable|string|max:255',
             'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
+            'is_free' => 'nullable|boolean',
+            'price' => 'required_if:is_free,0|nullable|numeric|min:0',
             'status' => 'required|in:active,inactive',
             'live_class_available' => 'required|boolean',
         ];

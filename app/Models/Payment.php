@@ -9,6 +9,9 @@ class Payment extends Model
     protected $fillable = [
         'user_id',
         'course_id',
+        'material_id',
+        'lecture_id',
+        'quiz_id',
         'razorpay_order_id',
         'razorpay_payment_id',
         'razorpay_signature',
@@ -32,6 +35,21 @@ class Payment extends Model
     public function course()
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function material()
+    {
+        return $this->belongsTo(Material::class);
+    }
+
+    public function lecture()
+    {
+        return $this->belongsTo(Lecture::class);
+    }
+
+    public function quiz()
+    {
+        return $this->belongsTo(Quiz::class);
     }
 
     public function markAsCompleted($paymentId, $signature, $method = null)

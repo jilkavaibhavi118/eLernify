@@ -432,3 +432,79 @@
     padding-right: 0;
     border-right: none;
 }
+/*** Navbar Refinements & Responsiveness ***/
+.no-caret::after {
+    display: none !important;
+}
+
+.user-avatar {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.user-avatar:hover {
+    transform: scale(1.1);
+}
+
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    
+    .navbar-nav .dropdown-menu {
+        position: static !important;
+        float: none;
+        width: auto;
+        margin-top: 0;
+        background-color: transparent !important;
+        border: 0;
+        box-shadow: none;
+    }
+
+    .navbar-nav .dropdown-menu.dropdown-menu-end {
+        right: auto;
+        left: auto;
+    }
+    
+    .navbar-brand h2 {
+        font-size: 1.5rem !important;
+    }
+}
+
+body {
+    overflow-x: hidden;
+}
+
+.container, .container-fluid {
+    overflow-x: hidden;
+}
+
+/* Fixing Dropdown Cutoff */
+.navbar-nav.ms-auto {
+    padding-right: 25px !important;
+}
+
+@media (min-width: 992px) {
+    .navbar .dropdown-menu-end {
+        right: 0;
+        left: auto;
+    }
+}
+
+.dropdown-menu {
+    margin-right: -10px !important; /* Slight nudge for better alignment */
+}
+
+@media (min-width: 992px) {
+    .navbar-nav.ms-auto {
+        padding-right: 40px !important; /* Larger padding on desktop to clear edge */
+    }
+}
+
+@media (max-width: 991.98px) {
+    .navbar-nav.ms-auto {
+        padding-right: 15px !important;
+        padding-left: 15px !important;
+    }
+}

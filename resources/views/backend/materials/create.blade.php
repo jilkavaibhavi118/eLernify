@@ -12,13 +12,43 @@
                         enctype="multipart/form-data">
                         @csrf
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="title">Title <span class="text-danger">*</span></label>
                                     <input type="text" name="title"
                                         class="form-control @error('title') is-invalid @enderror"
                                         placeholder="Enter material title" value="{{ old('title') }}">
                                     @error('title')
+                                        <div class="text-danger mt-1" style="font-size: 0.875rem;">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="short_description">Short Description </label>
+                                    <input type="text" name="short_description"
+                                        class="form-control @error('short_description') is-invalid @enderror"
+                                        placeholder="Enter short description" value="{{ old('short_description') }}">
+                                    @error('short_description')
+                                        <div class="text-danger mt-1" style="font-size: 0.875rem;">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <div class="form-check form-switch pt-4">
+                                    <input class="form-check-input" type="checkbox" name="is_free" id="is_free"
+                                        value="1" {{ old('is_free') ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="is_free">Is Free Material?</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-3" id="price_container"
+                                style="{{ old('is_free') ? 'display:none;' : '' }}">
+                                <div class="form-group">
+                                    <label for="price">Price (₹)</label>
+                                    <input type="number" name="price" step="0.01"
+                                        class="form-control @error('price') is-invalid @enderror" placeholder="Enter price"
+                                        value="{{ old('price') }}">
+                                    @error('price')
                                         <div class="text-danger mt-1" style="font-size: 0.875rem;">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -81,4 +111,17 @@
             </div>
         </div>
     </div>
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                $('#is_free').on('change', function() {
+                    if ($(this).is(':checked')) {
+                        $('#price_container').slideUp();
+                    } else {
+                        $('#price_container').slideDown();
+                    }
+                });
+            });
+        </script>
+    @endpush
 @endsection

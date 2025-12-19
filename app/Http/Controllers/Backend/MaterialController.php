@@ -16,9 +16,14 @@ class MaterialController extends Controller
         if ($request->ajax()) {
             $data = Material::with('lecture')->latest()->get();
             return DataTables::of($data)
-                ->addIndexColumn()
                 ->addColumn('lecture', function($row){
                     return $row->lecture ? $row->lecture->title : 'N/A';
+                })
+                ->addColumn('pricing', function($row){
+                    if ($row->is_free) {
+                        return '<span class="badge bg-success">Free</span>';
+                    }
+                    return '<span class="badge bg-primary">₹'.number_format($row->price, 2).'</span>';
                 })
                 ->addColumn('file', function($row){
                     $html = '';
@@ -55,7 +60,8 @@ class MaterialController extends Controller
                     $btn .= '</div>';
                     return $btn;
                 })
-                ->rawColumns(['file', 'action'])
+                ->rawColumns(['pricing', 'file', 'action'])
+                ->addIndexColumn()
                 ->make(true);
         }
         return view('backend.materials.index');
@@ -70,11 +76,14 @@ class MaterialController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
+            'short_description' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'lecture_id' => 'required|exists:lectures,id',
             'file' => 'nullable|file|max:10240', // 10MB Doc
             'video' => 'nullable|file|max:102400', // 100MB Video
             'content_url' => 'nullable|url',
+            'is_free' => 'nullable|boolean',
+            'price' => 'required_if:is_free,0|nullable|numeric|min:0',
         ]);
 
         $filePath = null;
@@ -89,11 +98,14 @@ class MaterialController extends Controller
 
         Material::create([
             'title' => $request->title,
+            'short_description' => $request->short_description,
             'description' => $request->description,
             'file_path' => $filePath,
             'video_path' => $videoPath,
             'lecture_id' => $request->lecture_id,
             'content_url' => $request->content_url,
+            'is_free' => $request->has('is_free'),
+            'price' => $request->price,
         ]);
 
         return response()->json([
@@ -114,18 +126,24 @@ class MaterialController extends Controller
 
         $request->validate([
             'title' => 'required|string|max:255',
+            'short_description' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'lecture_id' => 'required|exists:lectures,id',
             'file' => 'nullable|file|max:10240',
             'video' => 'nullable|file|max:102400',
             'content_url' => 'nullable|url',
+            'is_free' => 'nullable|boolean',
+            'price' => 'required_if:is_free,0|nullable|numeric|min:0',
         ]);
 
         $data = [
             'title' => $request->title,
+            'short_description' => $request->short_description,
             'description' => $request->description,
             'lecture_id' => $request->lecture_id,
             'content_url' => $request->content_url,
+            'is_free' => $request->has('is_free'),
+            'price' => $request->price,
         ];
 
         if ($request->hasFile('file')) {

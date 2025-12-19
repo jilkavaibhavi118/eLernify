@@ -23,6 +23,11 @@ class User extends Authenticatable
         'email',
         'password',
         'status',
+        'profile_photo',
+        'occupation',
+        'bio',
+        'phone',
+        'address',
     ];
 
     /**
@@ -58,5 +63,25 @@ class User extends Authenticatable
         return $this->belongsToMany(Course::class, 'enrollments')
             ->withPivot('status', 'progress', 'enrolled_at', 'completed_at')
             ->withTimestamps();
+    }
+
+    public function experiences()
+    {
+        return $this->hasMany(UserExperience::class)->orderBy('start_date', 'desc');
+    }
+
+    public function educations()
+    {
+        return $this->hasMany(UserEducation::class)->orderBy('start_date', 'desc');
+    }
+
+    public function hasPurchased($type, $id)
+    {
+        // Simple check for simulation or real orders
+        return \App\Models\OrderItem::whereHas('order', function ($q) {
+            $q->where('user_id', $this->id)->where('status', 'completed');
+        })
+            ->where($type . '_id', $id)
+            ->exists();
     }
 }

@@ -18,6 +18,14 @@ use App\Http\Controllers\Frontend\UserPanelController;
 
 // ✅ Landing Page
 Route::get('/', function () {
+    $categories = \App\Models\Category::where('status', 'active')
+        ->withCount(['courses' => function ($query) {
+            $query->where('status', 'active');
+        }])
+        ->having('courses_count', '>', 0)
+        ->take(4)
+        ->get();
+
     $categoryCourses = \App\Models\Course::where('status', 'active')
         ->latest()
         ->take(4)
@@ -31,7 +39,20 @@ Route::get('/', function () {
         ->take(6)
         ->get();
 
-    return view('landing', compact('categoryCourses', 'totalCourses', 'popularCourses'));
+    // Get Lectures, Materials, Quizzes for landing segments
+    $featuredLectures = \App\Models\Lecture::where('status', 'active')->latest()->take(6)->get();
+    $learningMaterials = \App\Models\Material::latest()->take(6)->get();
+    $practiceQuizzes = \App\Models\Quiz::latest()->take(6)->get();
+
+    return view('landing', compact(
+        'categories',
+        'categoryCourses',
+        'totalCourses',
+        'popularCourses',
+        'featuredLectures',
+        'learningMaterials',
+        'practiceQuizzes'
+    ));
 })->name('landing');
 
 // ✅ Auth Routes
@@ -42,14 +63,25 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.po
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
+// ✅ Purchase Flow
+Route::post('/purchase/initiate', [App\Http\Controllers\Frontend\PurchaseController::class, 'initiate'])->name('purchase.initiate');
+Route::post('/purchase/verify', [App\Http\Controllers\Frontend\PurchaseController::class, 'verify'])->name('purchase.verify');
+
+// ✅ Resource Viewing with Access Check
+Route::get('/lecture/{id}/view', [App\Http\Controllers\Frontend\ResourceController::class, 'viewLecture'])->name('lecture.view')->middleware(['auth', 'access.check:lecture']);
+Route::get('/material/{id}/view', [App\Http\Controllers\Frontend\ResourceController::class, 'viewMaterial'])->name('material.view')->middleware(['auth', 'access.check:material']);
+Route::get('/quiz/{id}/view', [App\Http\Controllers\Frontend\ResourceController::class, 'viewQuiz'])->name('quiz.view')->middleware(['auth', 'access.check:quiz']);
+
+Route::get('/view-lectures', [App\Http\Controllers\Frontend\ResourceController::class, 'indexLectures'])->name('lectures.index');
+Route::get('/view-materials', [App\Http\Controllers\Frontend\ResourceController::class, 'indexMaterials'])->name('materials.index');
+Route::get('/view-quizzes', [App\Http\Controllers\Frontend\ResourceController::class, 'indexQuizzes'])->name('quizzes.index');
+
 // ✅ Frontend Pages
 Route::get('/about', function () {
     return view('about');
 })->name('about');
 
-Route::get('/courses', function () {
-    return view('courses');
-})->name('courses');
+Route::get('/courses', [FrontendCourseController::class, 'index'])->name('courses');
 
 Route::get('/contact', function () {
     return view('contact');
@@ -73,6 +105,14 @@ Route::middleware(['auth', 'check.user.status'])->prefix('my')->name('user.')->g
     Route::get('/quiz/{quizId}', [UserPanelController::class, 'quizView'])->name('quiz.view');
     Route::post('/quiz/{quizId}/submit', [UserPanelController::class, 'quizSubmit'])->name('quiz.submit');
     Route::get('/quiz/result/{attemptId}', [UserPanelController::class, 'quizResult'])->name('quiz.result'); // New Route
+    Route::get('/profile', [UserPanelController::class, 'profile'])->name('profile');
+    Route::post('/profile', [UserPanelController::class, 'profileUpdate'])->name('profile.update');
+    Route::post('/profile/experience', [UserPanelController::class, 'addExperience'])->name('profile.experience.add');
+    Route::delete('/profile/experience/{id}', [UserPanelController::class, 'deleteExperience'])->name('profile.experience.delete');
+    Route::post('/profile/education', [UserPanelController::class, 'addEducation'])->name('profile.education.add');
+    Route::delete('/profile/education/{id}', [UserPanelController::class, 'deleteEducation'])->name('profile.education.delete');
+    Route::post('/profile', [UserPanelController::class, 'profileUpdate'])->name('profile.update');
+    Route::get('/purchases', [UserPanelController::class, 'purchases'])->name('purchases');
 });
 
 

@@ -30,13 +30,25 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12 mt-3">
+                            <div class="col-md-6 mt-3">
                                 <div class="form-group">
                                     <label for="title">Title <span class="text-danger">*</span></label>
                                     <input type="text" name="title"
                                         class="form-control @error('title') is-invalid @enderror"
                                         placeholder="Enter lecture title" value="{{ old('title', $lecture->title) }}">
                                     @error('title')
+                                        <div class="text-danger mt-1" style="font-size: 0.875rem;">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <div class="form-group">
+                                    <label for="short_description">Short Description </label>
+                                    <input type="text" name="short_description"
+                                        class="form-control @error('short_description') is-invalid @enderror"
+                                        placeholder="Brief summary"
+                                        value="{{ old('short_description', $lecture->short_description) }}">
+                                    @error('short_description')
                                         <div class="text-danger mt-1" style="font-size: 0.875rem;">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -51,7 +63,15 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-6 mt-3">
+                            <div class="col-md-6 mt-3">
+                                <div class="form-check form-switch pt-4">
+                                    <input class="form-check-input" type="checkbox" name="is_free" id="is_free"
+                                        value="1" {{ old('is_free', $lecture->is_free) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="is_free">Is Free Lecture?</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-3" id="price_container"
+                                style="{{ old('is_free', $lecture->is_free) ? 'display:none;' : '' }}">
                                 <div class="form-group">
                                     <label for="price">Price (INR) <span class="text-danger">*</span></label>
                                     <input type="number" name="price"
@@ -114,4 +134,17 @@
             </div>
         </div>
     </div>
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                $('#is_free').on('change', function() {
+                    if ($(this).is(':checked')) {
+                        $('#price_container').slideUp();
+                    } else {
+                        $('#price_container').slideDown();
+                    }
+                });
+            });
+        </script>
+    @endpush
 @endsection

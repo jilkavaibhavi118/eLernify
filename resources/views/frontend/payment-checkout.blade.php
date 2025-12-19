@@ -1,75 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.frontend')
 
-<head>
-    <meta charset="utf-8">
-    <title>Payment Checkout | eLEARNIFY</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+@section('title', 'Payment Checkout | eLEARNIFY')
+
+@push('styles')
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link href="{{ asset('frontend/img/favicon.ico') }}" rel="icon">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap"
-        rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="{{ asset('frontend/css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('frontend/css/style.css') }}" rel="stylesheet">
-</head>
+@endpush
 
-<body>
+@section('content')
     <div class="container-xxl py-5">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-6">
-                    <div class="bg-light rounded p-5">
+                    <div class="bg-light rounded p-5 shadow-sm border">
                         <h3 class="text-primary mb-4 text-center">Complete Your Payment</h3>
 
-                        <div class="course-info mb-4">
-                            <h5>{{ $course->title }}</h5>
-                            <p class="text-muted">{{ $course->category->name ?? 'Uncategorized' }}</p>
-                            @if ($course->instructor)
-                                <p class="text-muted"><i class="fa fa-user me-2"></i>{{ $course->instructor->name }}</p>
-                            @endif
+                        <div class="item-info mb-4 border-bottom pb-3">
+                            <h5 class="text-dark">{{ $title ?? $item->title }}</h5>
+                            <p class="text-muted mb-1">{{ ucfirst($type ?? 'Item') }} Purchase</p>
                         </div>
 
-                        <div class="payment-details bg-white p-4 rounded mb-4">
+                        <div class="payment-details bg-white p-4 rounded mb-4 shadow-sm">
                             <div class="d-flex justify-content-between mb-2">
-                                <span>Course Price:</span>
-                                <strong>₹{{ number_format($course->price, 2) }}</strong>
+                                <span class="text-muted">Price:</span>
+                                <strong>₹{{ number_format($price ?? $item->price, 2) }}</strong>
                             </div>
                             <hr>
                             <div class="d-flex justify-content-between">
-                                <h5>Total Amount:</h5>
-                                <h5 class="text-primary">₹{{ number_format($course->price, 2) }}</h5>
+                                <h5 class="mb-0">Total Amount:</h5>
+                                <h5 class="text-primary mb-0">₹{{ number_format($price ?? $item->price, 2) }}</h5>
                             </div>
                         </div>
 
-                        <button id="rzp-button" class="btn btn-primary w-100 py-3">
-                            <i class="fa fa-lock me-2"></i>Pay ₹{{ number_format($course->price, 2) }}
+                        <button id="rzp-button" class="btn btn-primary w-100 py-3 rounded-pill shadow mb-3">
+                            <i class="fa fa-lock me-2"></i>Secure Payment: Pay
+                            ₹{{ number_format($price ?? $item->price, 2) }}
                         </button>
 
                         <div class="mt-3">
-                            <form action="{{ route('payment.verify') }}" method="POST">
+                            <form action="{{ route('purchase.verify') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="simulate" value="1">
-                                <input type="hidden" name="course_id" value="{{ $course->id }}">
                                 <input type="hidden" name="razorpay_order_id" value="{{ $razorpayOrder['id'] }}">
                                 <input type="hidden" name="razorpay_payment_id" value="sim_{{ time() }}">
                                 <input type="hidden" name="razorpay_signature" value="simulated">
-                                <button type="submit" class="btn btn-outline-success w-100 btn-sm">
-                                    <i class="fa fa-bug me-2"></i>Test Mode: Simulate Success (Bypass Payment)
+                                <button type="submit" class="btn btn-outline-success w-100 btn-sm rounded-pill">
+                                    <i class="fa fa-bug me-2"></i>Test Mode: Simulate Success (Bypass Razorpay)
                                 </button>
                             </form>
                         </div>
 
-                        <p class="text-center text-muted mt-3 small">
-                            <i class="fa fa-shield-alt me-1"></i>Secure payment powered by Razorpay
-                        </p>
+                        <div class="text-center mt-4">
+                            <img src="https://razorpay.com/assets/razorpay-glyph.svg" width="20" class="me-2"
+                                alt="Razorpay">
+                            <span class="text-muted small">Secure payment powered by Razorpay</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+@endsection
 
+@push('scripts')
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
         var options = {
@@ -77,14 +69,13 @@
             "amount": "{{ $razorpayOrder['amount'] }}",
             "currency": "INR",
             "name": "eLEARNIFY",
-            "description": "{{ $course->title }}",
+            "description": "{{ $title ?? $item->title }}",
             "image": "{{ asset('frontend/img/favicon.ico') }}",
             "order_id": "{{ $razorpayOrder['id'] }}",
             "handler": function(response) {
-                // Payment successful, verify on backend
                 var form = document.createElement('form');
                 form.method = 'POST';
-                form.action = '{{ route('payment.verify') }}';
+                form.action = '{{ route('purchase.verify') }}';
 
                 var csrfToken = document.createElement('input');
                 csrfToken.type = 'hidden';
@@ -110,26 +101,19 @@
                 signature.value = response.razorpay_signature;
                 form.appendChild(signature);
 
-                var courseId = document.createElement('input');
-                courseId.type = 'hidden';
-                courseId.name = 'course_id';
-                courseId.value = '{{ $course->id }}';
-                form.appendChild(courseId);
-
                 document.body.appendChild(form);
                 form.submit();
             },
             "prefill": {
                 "name": "{{ Auth::user()->name }}",
                 "email": "{{ Auth::user()->email }}",
-                "contact": "9999999999"
             },
             "theme": {
-                "color": "#3b9d91"
+                "color": "#06BBCC"
             },
             "modal": {
                 "ondismiss": function() {
-                    window.location.href = '{{ route('course.detail', $course->id) }}';
+                    window.location.href = '{{ url()->previous() }}';
                 }
             }
         };
@@ -141,6 +125,4 @@
             e.preventDefault();
         }
     </script>
-</body>
-
-</html>
+@endpush

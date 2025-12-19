@@ -24,6 +24,12 @@ class QuizController extends Controller
                 ->addColumn('duration', function($row){
                     return $row->duration . ' mins';
                 })
+                ->addColumn('pricing', function($row){
+                    if ($row->is_free) {
+                        return '<span class="badge bg-success">Free</span>';
+                    }
+                    return '<span class="badge bg-primary">₹'.number_format($row->price, 2).'</span>';
+                })
                 ->addColumn('questions_count', function($row){
                     return $row->questions()->count();
                 })
@@ -37,7 +43,7 @@ class QuizController extends Controller
                     $btn .= '</div>';
                     return $btn;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['pricing', 'action'])
                 ->make(true);
         }
         return view('backend.quizzes.index');
@@ -52,9 +58,12 @@ class QuizController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
+            'short_description' => 'nullable|string|max:255',
             'duration' => 'required|integer|min:1',
             'instructions' => 'nullable|string',
             'lecture_id' => 'required|exists:lectures,id',
+            'is_free' => 'nullable|boolean',
+            'price' => 'required_if:is_free,0|nullable|numeric|min:0',
             'questions' => 'required|array|min:1',
             'questions.*.question_text' => 'required|string',
             'questions.*.explanation' => 'nullable|string',
@@ -67,9 +76,12 @@ class QuizController extends Controller
         try {
             $quiz = Quiz::create([
                 'title' => $request->title,
+                'short_description' => $request->short_description,
                 'duration' => $request->duration,
                 'instructions' => $request->instructions,
                 'lecture_id' => $request->lecture_id,
+                'is_free' => $request->has('is_free'),
+                'price' => $request->price,
             ]);
 
             foreach ($request->questions as $index => $questionData) {
@@ -114,9 +126,12 @@ class QuizController extends Controller
 
         $request->validate([
             'title' => 'required|string|max:255',
+            'short_description' => 'nullable|string|max:255',
             'duration' => 'required|integer|min:1',
             'instructions' => 'nullable|string',
             'lecture_id' => 'required|exists:lectures,id',
+            'is_free' => 'nullable|boolean',
+            'price' => 'required_if:is_free,0|nullable|numeric|min:0',
             'questions' => 'required|array|min:1',
             'questions.*.question_text' => 'required|string',
             'questions.*.explanation' => 'nullable|string',
@@ -129,9 +144,12 @@ class QuizController extends Controller
         try {
             $quiz->update([
                 'title' => $request->title,
+                'short_description' => $request->short_description,
                 'duration' => $request->duration,
                 'instructions' => $request->instructions,
                 'lecture_id' => $request->lecture_id,
+                'is_free' => $request->has('is_free'),
+                'price' => $request->price,
             ]);
 
             // Delete old questions and options

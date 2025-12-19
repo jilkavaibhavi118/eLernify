@@ -9,15 +9,18 @@ class Lecture extends Model
     protected $fillable = [
         'course_id',
         'title',
+        'short_description',
         'description',
         'price',
         'status',
+        'is_free',
         'live_class_available',
         'video_url',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
+        'is_free' => 'boolean',
         'live_class_available' => 'boolean',
     ];
 

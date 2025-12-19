@@ -24,7 +24,10 @@ class UserPanelController extends Controller
             'total' => $enrollments->count(),
             'active' => $enrollments->where('status', 'active')->count(),
             'completed' => $enrollments->where('status', 'completed')->count(),
-            'avg_progress' => $enrollments->avg('progress') ?? 0
+            'avg_progress' => $enrollments->avg('progress') ?? 0,
+            'total_items' => \App\Models\OrderItem::whereHas('order', function($q) {
+                $q->where('user_id', Auth::id())->where('status', 'completed');
+            })->count()
         ];
 
         return view('frontend.user-panel.dashboard', compact('enrollments', 'stats'));
@@ -167,17 +170,25 @@ class UserPanelController extends Controller
     {
         $quiz = Quiz::with(['questions.options', 'lecture'])->findOrFail($quizId);
 
-        // Robust Course ID Check: Use Quiz's course_id, fallback to Lecture's course_id
-        $courseId = $quiz->course_id ?? ($quiz->lecture ? $quiz->lecture->course_id : null);
-
-        if (!$courseId) {
-            abort(404, 'Course not found for this quiz.');
+        // Verify access (either free, enrolled, or purchased)
+        $hasAccess = $quiz->is_free || auth()->user()->hasPurchased('quiz', $quizId);
+        
+        if (!$hasAccess && $courseId) {
+             $hasAccess = Enrollment::where('user_id', Auth::id())
+                ->where('course_id', $courseId)
+                ->exists();
         }
 
-        // Verify enrollment
-        $enrollment = Enrollment::where('user_id', Auth::id())
-            ->where('course_id', $courseId)
-            ->firstOrFail();
+        if (!$hasAccess) {
+            return redirect()->route('landing')->with('error', 'You do not have access to this quiz.');
+        }
+
+        $enrollment = null;
+        if ($courseId) {
+            $enrollment = Enrollment::where('user_id', Auth::id())
+                ->where('course_id', $courseId)
+                ->first();
+        }
 
         $answers = $request->input('answers', []);
         $score = 0;
@@ -230,18 +241,115 @@ class UserPanelController extends Controller
 
         $quiz = $attempt->quiz;
         
-        // Robust Course ID Check
-        $courseId = $quiz->course_id ?? ($quiz->lecture ? $quiz->lecture->course_id : null);
-
-        if (!$courseId) {
-            abort(404, 'Course not found for this quiz.');
+        // Verify access (either free, enrolled, or purchased)
+        $hasAccess = $quiz->is_free || auth()->user()->hasPurchased('quiz', $quiz->id);
+        
+        if (!$hasAccess && $courseId) {
+             $hasAccess = Enrollment::where('user_id', Auth::id())
+                ->where('course_id', $courseId)
+                ->exists();
         }
 
-        // Verify enrollment to ensure they still have access
-        $enrollment = Enrollment::where('user_id', Auth::id())
-            ->where('course_id', $courseId)
-            ->firstOrFail();
+        if (!$hasAccess) {
+             return redirect()->route('landing')->with('error', 'You do not have access to this quiz result.');
+        }
+
+        $enrollment = null;
+        if ($courseId) {
+            $enrollment = Enrollment::where('user_id', Auth::id())
+                ->where('course_id', $courseId)
+                ->first();
+        }
 
         return view('frontend.user-panel.quiz-result', compact('attempt', 'quiz', 'enrollment'));
+    }
+
+    public function profile()
+    {
+        $user = Auth::user()->load(['experiences', 'educations']);
+        return view('frontend.user-panel.profile', compact('user'));
+    }
+
+    public function profileUpdate(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'occupation' => 'nullable|string|max:255',
+            'bio' => 'nullable|string',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $data = $request->only(['name', 'email', 'occupation', 'bio', 'phone', 'address']);
+
+        if ($request->hasFile('profile_photo')) {
+            // Delete old photo if exists
+            if ($user->profile_photo && \Storage::disk('public')->exists($user->profile_photo)) {
+                \Storage::disk('public')->delete($user->profile_photo);
+            }
+            $path = $request->file('profile_photo')->store('profile_photos', 'public');
+            $data['profile_photo'] = $path;
+        }
+
+        $user->update($data);
+
+        return redirect()->back()->with('success', 'Profile updated successfully!');
+    }
+
+    public function addExperience(Request $request)
+    {
+        $request->validate([
+            'company' => 'required|string|max:255',
+            'position' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'description' => 'nullable|string',
+        ]);
+
+        Auth::user()->experiences()->create($request->all());
+
+        return redirect()->back()->with('success', 'Experience added successfully!');
+    }
+
+    public function deleteExperience($id)
+    {
+        Auth::user()->experiences()->findOrFail($id)->delete();
+        return redirect()->back()->with('success', 'Experience deleted successfully!');
+    }
+
+    public function addEducation(Request $request)
+    {
+        $request->validate([
+            'institution' => 'required|string|max:255',
+            'degree' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'description' => 'nullable|string',
+        ]);
+
+        Auth::user()->educations()->create($request->all());
+
+        return redirect()->back()->with('success', 'Education added successfully!');
+    }
+
+    public function deleteEducation($id)
+    {
+        Auth::user()->educations()->findOrFail($id)->delete();
+        return redirect()->back()->with('success', 'Education deleted successfully!');
+    }
+
+    public function purchases()
+    {
+        $orders = \App\Models\Order::where('user_id', Auth::id())
+            ->where('status', 'completed')
+            ->with(['items.course', 'items.material', 'items.lecture', 'items.quiz'])
+            ->latest()
+            ->get();
+
+        return view('frontend.user-panel.purchases', compact('orders'));
     }
 }

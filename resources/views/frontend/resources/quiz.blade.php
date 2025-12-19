@@ -5,7 +5,7 @@
 @section('content')
     <div class="container-xxl py-5">
         <div class="container">
-            <div class="row g-5">
+            <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="bg-light rounded p-5 mb-4 shadow-sm border">
                         <div class="text-center mb-5">
@@ -18,10 +18,10 @@
                                 </div>
                             </div>
 
-                            @if ($quiz->instructions)
+                            @if ($quiz->short_description)
                                 <div class="alert alert-info text-start border-0 shadow-sm">
                                     <h6 class="alert-heading"><i class="fa fa-info-circle me-2"></i>Instructions:</h6>
-                                    <p class="mb-0 small">{{ $quiz->instructions }}</p>
+                                    <p class="mb-0 small">{{ $quiz->short_description }}</p>
                                 </div>
                             @endif
                         </div>
@@ -67,48 +67,6 @@
                                 </div>
                             @endif
                         </form>
-                    </div>
-
-                    <div class="d-flex justify-content-between mt-4">
-                        @if (isset($prev_url) && $prev_url)
-                            <a href="{{ $prev_url }}" class="btn btn-outline-secondary px-4 py-2 rounded-pill">
-                                <i class="fa fa-arrow-left me-2"></i>Previous
-                            </a>
-                        @else
-                            <a href="{{ route('user.course.view', $enrollment->id) }}"
-                                class="btn btn-outline-secondary px-4 py-2 rounded-pill">
-                                <i class="fa fa-list me-2"></i>Back to Course
-                            </a>
-                        @endif
-                    </div>
-                </div>
-
-                <div class="col-lg-4">
-                    <div class="bg-light rounded p-4 sticky-top shadow-sm border" style="top: 100px;">
-                        <h5 class="mb-3">{{ $enrollment->course->title }}</h5>
-                        <div class="progress mb-4" style="height: 6px;">
-                            <div class="progress-bar bg-primary" role="progressbar"
-                                style="width:{{ $enrollment->progress }}%"></div>
-                        </div>
-
-                        <h6 class="mb-3 fw-bold text-uppercase small text-muted">Quiz Navigation</h6>
-                        <div class="list-group list-group-flush border rounded overflow-hidden course-sidebar">
-                            @foreach ($enrollment->course->lectures as $l)
-                                <a href="{{ route('user.lecture.view', $l->id) }}"
-                                    class="list-group-item list-group-item-action py-3 border-bottom">
-                                    <i class="fa fa-check-circle me-2 text-muted opacity-50"></i>{{ $l->title }}
-                                </a>
-
-                                @if ($l->quizzes && $l->quizzes->count() > 0)
-                                    @foreach ($l->quizzes as $q)
-                                        <a href="{{ route('user.quiz.view', $q->id) }}"
-                                            class="list-group-item list-group-item-action py-2 ps-5 border-bottom {{ $q->id == $quiz->id ? 'bg-primary text-white active' : 'bg-white text-secondary' }} small">
-                                            <i class="fa fa-question-circle me-2"></i>{{ $q->title }}
-                                        </a>
-                                    @endforeach
-                                @endif
-                            @endforeach
-                        </div>
                     </div>
                 </div>
             </div>

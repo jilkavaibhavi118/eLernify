@@ -12,6 +12,35 @@ use Razorpay\Api\Api;
 
 class CourseController extends Controller
 {
+    public function index(Request $request)
+    {
+        $search = $request->input('search');
+        $categoryId = $request->input('category');
+
+        $categories = \App\Models\Category::where('status', 'active')
+            ->withCount(['courses' => function ($query) {
+                $query->where('status', 'active');
+            }])
+            ->having('courses_count', '>', 0)
+            ->take(4)
+            ->get();
+
+        $courses = Course::with(['instructor', 'category'])
+            ->where('status', 'active')
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('title', 'like', '%' . $search . '%')
+                        ->orWhere('description', 'like', '%' . $search . '%');
+                });
+            })
+            ->when($categoryId, function ($query, $categoryId) {
+                return $query->where('category_id', $categoryId);
+            })
+            ->latest()
+            ->paginate(9);
+
+        return view('courses', compact('courses', 'search', 'categoryId', 'categories'));
+    }
     public function show($id)
     {
         $course = Course::with(['instructor', 'category', 'lectures', 'quizzes'])

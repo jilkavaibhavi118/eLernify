@@ -13,6 +13,29 @@
                 value="{{ old('duration', $quiz->duration ?? '') }}" min="1" required>
         </div>
     </div>
+    <div class="col-md-6 mt-3">
+        <div class="form-group">
+            <label for="short_description">Short Description </label>
+            <input type="text" name="short_description" class="form-control"
+                value="{{ old('short_description', $quiz->short_description ?? '') }}"
+                placeholder="Brief summary of quiz">
+        </div>
+    </div>
+    <div class="col-md-3 mt-3">
+        <div class="form-check form-switch pt-4">
+            <input class="form-check-input" type="checkbox" name="is_free" id="is_free" value="1"
+                {{ old('is_free', $quiz->is_free ?? false) ? 'checked' : '' }}>
+            <label class="form-check-label" for="is_free">Is Free Quiz?</label>
+        </div>
+    </div>
+    <div class="col-md-3 mt-3" id="price_container"
+        style="{{ old('is_free', $quiz->is_free ?? false) ? 'display:none;' : '' }}">
+        <div class="form-group">
+            <label for="price">Price (₹)</label>
+            <input type="number" name="price" step="0.01" class="form-control"
+                value="{{ old('price', $quiz->price ?? '') }}" placeholder="0.00">
+        </div>
+    </div>
     <div class="col-md-12 mt-3">
         <div class="form-group">
             <label for="instructions">Instructions</label>
@@ -144,6 +167,15 @@
         }
 
         $(document).ready(function() {
+            // Toggle Price
+            $('#is_free').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $('#price_container').slideUp();
+                } else {
+                    $('#price_container').slideDown();
+                }
+            });
+
             // Add question
             $('#addQuestion').click(function() {
                 $('#questionsContainer').append(getQuestionTemplate(questionIndex));
