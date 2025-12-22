@@ -7,8 +7,10 @@
                 <div class="card-header pb-0">
                     <div class="d-flex justify-content-between">
                         <h6>Categories Management</h6>
-                        <a href="{{ route('backend.categories.create') }}" class="btn btn-primary btn-sm mb-3">Create New
-                            Category</a>
+                        @hasrole('Admin')
+                            <a href="{{ route('backend.categories.create') }}" class="btn btn-primary btn-sm mb-3">Create New
+                                Category</a>
+                        @endhasrole
                     </div>
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
@@ -83,4 +85,3 @@
         </script>
     @endpush
 @endsection
-

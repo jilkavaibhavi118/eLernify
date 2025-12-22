@@ -14,7 +14,17 @@ class LectureController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Lecture::with('course')->latest()->get();
+            $query = Lecture::with('course')->latest();
+
+            // Filter by instructor if not admin
+            if (!auth()->user()->hasRole('Admin')) {
+                $instructorId = auth()->user()->instructor ? auth()->user()->instructor->id : 0;
+                $query->whereHas('course', function($q) use ($instructorId) {
+                    $q->where('instructor_id', $instructorId);
+                });
+            }
+
+            $data = $query->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('status', function($row){
@@ -59,15 +69,28 @@ class LectureController extends Controller
 
     public function create()
     {
-        $courses = Course::where('status', 'active')
-            ->orderBy('title')
-            ->get(['id', 'title']);
+        $query = Course::where('status', 'active');
+
+        // Filter courses by instructor if not admin
+        if (!auth()->user()->hasRole('Admin')) {
+            $instructorId = auth()->user()->instructor ? auth()->user()->instructor->id : 0;
+            $query->where('instructor_id', $instructorId);
+        }
+
+        $courses = $query->orderBy('title')->get(['id', 'title']);
 
         return view('backend.lectures.create', compact('courses'));
     }
 
     public function store(StoreLectureRequest $request)
     {
+        $course = Course::findOrFail($request->course_id);
+        
+        // Security check for instructors
+        if (auth()->user()->hasRole('Instructores') && $course->instructor_id != auth()->user()->instructor->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         Lecture::create($request->validated());
 
         return response()->json([
@@ -79,9 +102,21 @@ class LectureController extends Controller
     public function edit($id)
     {
         $lecture = Lecture::findOrFail($id);
-        $courses = Course::where('status', 'active')
-            ->orderBy('title')
-            ->get(['id', 'title']);
+
+        // Security check for instructors
+        if (auth()->user()->hasRole('Instructores')) {
+            if ($lecture->course->instructor_id != auth()->user()->instructor->id) {
+                abort(403, 'Unauthorized action.');
+            }
+        }
+
+        $query = Course::where('status', 'active');
+        if (!auth()->user()->hasRole('Admin')) {
+            $instructorId = auth()->user()->instructor ? auth()->user()->instructor->id : 0;
+            $query->where('instructor_id', $instructorId);
+        }
+
+        $courses = $query->orderBy('title')->get(['id', 'title']);
 
         return view('backend.lectures.edit', compact('lecture', 'courses'));
     }
@@ -89,6 +124,14 @@ class LectureController extends Controller
     public function update(StoreLectureRequest $request, $id)
     {
         $lecture = Lecture::findOrFail($id);
+
+        // Security check for instructors
+        if (auth()->user()->hasRole('Instructores')) {
+            if ($lecture->course->instructor_id != auth()->user()->instructor->id) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
+        }
+
         $lecture->update($request->validated());
 
         return response()->json([
@@ -132,7 +175,14 @@ class LectureController extends Controller
 
     public function destroy($id)
     {
-        Lecture::findOrFail($id)->delete();
+        $lecture = Lecture::findOrFail($id);
+
+        // Security check for instructors
+        if (auth()->user()->hasRole('Instructores') && $lecture->course->instructor_id != auth()->user()->instructor->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $lecture->delete();
         return response()->json([
             'success' => true,
             'message' => 'Lecture deleted successfully'

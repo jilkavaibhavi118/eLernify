@@ -14,7 +14,15 @@ class CourseController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Course::with('category')->latest()->get();
+            $query = Course::with('category')->latest();
+
+            // Filter by instructor if not admin
+            if (!auth()->user()->hasRole('Admin')) {
+                $instructorId = auth()->user()->instructor ? auth()->user()->instructor->id : 0;
+                $query->where('instructor_id', $instructorId);
+            }
+
+            $data = $query->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('category', function($row){
@@ -71,6 +79,11 @@ class CourseController extends Controller
             $data['image'] = $request->file('image')->store('courses', 'public');
         }
 
+        // Automatically set instructor_id if the user is an instructor
+        if (auth()->user()->hasRole('Instructores')) {
+            $data['instructor_id'] = auth()->user()->instructor ? auth()->user()->instructor->id : null;
+        }
+
         Course::create($data);
 
         return response()->json([
@@ -82,12 +95,24 @@ class CourseController extends Controller
     public function edit($id)
     {
         $course = Course::with('category')->findOrFail($id);
+
+        // Security check for instructors
+        if (auth()->user()->hasRole('Instructores') && $course->instructor_id != auth()->user()->instructor->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
         return view('backend.courses.edit', compact('course'));
     }
 
     public function update(StoreCourseRequest $request, $id)
     {
         $course = Course::findOrFail($id);
+
+        // Security check for instructors
+        if (auth()->user()->hasRole('Instructores') && $course->instructor_id != auth()->user()->instructor->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         $data = $request->validated();
 
         if ($request->hasFile('image')) {
@@ -112,6 +137,11 @@ class CourseController extends Controller
     public function destroy($id)
     {
         $course = Course::findOrFail($id);
+
+        // Security check for instructors
+        if (auth()->user()->hasRole('Instructores') && $course->instructor_id != auth()->user()->instructor->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
 
         // Delete image
         if ($course->image && Storage::exists('public/' . $course->image)) {

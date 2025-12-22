@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\Instructor;
 use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -13,16 +14,17 @@ class InstructorController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Instructor::latest()->get();
+            $data = Instructor::with('user')->latest()->get();
 
             return DataTables::of($data)
                 ->addIndexColumn()
-
+                ->addColumn('user_email', function ($row) {
+                    return $row->user ? $row->user->email : 'Not Linked';
+                })
                 ->addColumn('status', function ($row) {
                     $badgeClass = $row->status === 'active' ? 'bg-success' : 'bg-secondary';
                     return '<span class="badge '.$badgeClass.'">'.ucfirst($row->status).'</span>';
                 })
-
                 ->addColumn('image', function ($row) {
                     if ($row->image) {
                         return '<img src="'.asset('storage/'.$row->image).'"
@@ -30,7 +32,6 @@ class InstructorController extends Controller
                     }
                     return '<span class="text-muted">No Image</span>';
                 })
-
                 ->addColumn('action', function ($row) {
                     $editUrl   = route('backend.instructors.edit', $row->id);
                     $deleteUrl = route('backend.instructors.destroy', $row->id);
@@ -46,7 +47,6 @@ class InstructorController extends Controller
                     $btn .= '</div>';
                     return $btn;
                 })
-
                 ->rawColumns(['status','image','action'])
                 ->make(true);
         }
@@ -56,17 +56,19 @@ class InstructorController extends Controller
 
     public function create()
     {
-        return view('backend.instructors.create');
+        $users = User::role('Instructores')->get();
+        return view('backend.instructors.create', compact('users'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'   => 'required|string|max:255',
-            'email'  => 'required|email|unique:instructors',
-            'phone'  => 'nullable|string',
-            'status' => 'required|in:active,inactive',
-            'image'  => 'nullable|image|max:2048',
+            'user_id' => 'required|exists:users,id|unique:instructors,user_id',
+            'name'    => 'required|string|max:255',
+            'email'   => 'required|email|unique:instructors',
+            'phone'   => 'nullable|string',
+            'status'  => 'required|in:active,inactive',
+            'image'   => 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
@@ -84,7 +86,8 @@ class InstructorController extends Controller
     public function edit($id)
     {
         $instructor = Instructor::findOrFail($id);
-        return view('backend.instructors.edit', compact('instructor'));
+        $users = User::role('Instructores')->get();
+        return view('backend.instructors.edit', compact('instructor', 'users'));
     }
 
     public function update(Request $request, $id)
@@ -92,11 +95,12 @@ class InstructorController extends Controller
         $instructor = Instructor::findOrFail($id);
 
         $data = $request->validate([
-            'name'   => 'required|string|max:255',
-            'email'  => 'required|email|unique:instructors,email,'.$id,
-            'phone'  => 'nullable|string',
-            'status' => 'required|in:active,inactive',
-            'image'  => 'nullable|image|max:2048',
+            'user_id' => 'required|exists:users,id|unique:instructors,user_id,'.$id,
+            'name'    => 'required|string|max:255',
+            'email'   => 'required|email|unique:instructors,email,'.$id,
+            'phone'   => 'nullable|string',
+            'status'  => 'required|in:active,inactive',
+            'image'   => 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('image')) {

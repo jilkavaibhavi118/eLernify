@@ -14,7 +14,17 @@ class MaterialController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Material::with('lecture')->latest()->get();
+            $query = Material::with('lecture.course')->latest();
+
+            // Filter by instructor if not admin
+            if (!auth()->user()->hasRole('Admin')) {
+                $instructorId = auth()->user()->instructor ? auth()->user()->instructor->id : 0;
+                $query->whereHas('lecture.course', function($q) use ($instructorId) {
+                    $q->where('instructor_id', $instructorId);
+                });
+            }
+
+            $data = $query->get();
             return DataTables::of($data)
                 ->addColumn('lecture', function($row){
                     return $row->lecture ? $row->lecture->title : 'N/A';
@@ -69,7 +79,15 @@ class MaterialController extends Controller
 
     public function create()
     {
-        return view('backend.materials.create');
+        $query = Lecture::query();
+        if (!auth()->user()->hasRole('Admin')) {
+            $instructorId = auth()->user()->instructor ? auth()->user()->instructor->id : 0;
+            $query->whereHas('course', function($q) use ($instructorId) {
+                $q->where('instructor_id', $instructorId);
+            });
+        }
+        $lectures = $query->orderBy('title')->get(['id', 'title']);
+        return view('backend.materials.create', compact('lectures'));
     }
 
     public function store(Request $request)
@@ -85,6 +103,11 @@ class MaterialController extends Controller
             'is_free' => 'nullable|boolean',
             'price' => 'required_if:is_free,0|nullable|numeric|min:0',
         ]);
+
+        $lecture = Lecture::findOrFail($request->lecture_id);
+        if (!auth()->user()->hasRole('Admin') && $lecture->course->instructor_id != auth()->user()->instructor->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
 
         $filePath = null;
         if ($request->hasFile('file')) {
@@ -116,13 +139,31 @@ class MaterialController extends Controller
 
     public function edit($id)
     {
-        $material = Material::with('lecture')->findOrFail($id);
-        return view('backend.materials.edit', compact('material'));
+        $material = Material::with('lecture.course')->findOrFail($id);
+
+        if (!auth()->user()->hasRole('Admin') && $material->lecture->course->instructor_id != auth()->user()->instructor->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $query = Lecture::query();
+        if (!auth()->user()->hasRole('Admin')) {
+            $instructorId = auth()->user()->instructor ? auth()->user()->instructor->id : 0;
+            $query->whereHas('course', function($q) use ($instructorId) {
+                $q->where('instructor_id', $instructorId);
+            });
+        }
+        $lectures = $query->orderBy('title')->get(['id', 'title']);
+
+        return view('backend.materials.edit', compact('material', 'lectures'));
     }
 
     public function update(Request $request, $id)
     {
-        $material = Material::findOrFail($id);
+        $material = Material::with('lecture.course')->findOrFail($id);
+
+        if (!auth()->user()->hasRole('Admin') && $material->lecture->course->instructor_id != auth()->user()->instructor->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -172,8 +213,13 @@ class MaterialController extends Controller
 
     public function destroy($id)
     {
-        $material = Material::findOrFail($id);
+        $material = Material::with('lecture.course')->findOrFail($id);
         
+        // Security check for instructors
+        if (auth()->user()->hasRole('Instructores') && $material->lecture->course->instructor_id != auth()->user()->instructor->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         // Delete file
         if (Storage::exists('public/' . $material->file_path)) {
             Storage::delete('public/' . $material->file_path);

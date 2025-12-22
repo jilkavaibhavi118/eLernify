@@ -66,10 +66,12 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12 mt-3">
-                                <x-select2_ajax name="instructor_id" :selected="old('instructor_id', $course->instructor_id)" :selectedText="$course->instructor->name ?? ''" :required="false"
-                                    placeholder="Select Instructor" :url="route('backend.instructors.search')" />
-                            </div>
+                            @hasrole('Admin')
+                                <div class="col-xs-12 col-sm-12 col-md-12 mt-3">
+                                    <x-select2_ajax name="instructor_id" :selected="old('instructor_id', $course->instructor_id)" :selectedText="$course->instructor->name ?? ''" :required="false"
+                                        placeholder="Select Instructor" :url="route('backend.instructors.search')" />
+                                </div>
+                            @endhasrole
                             <div class="col-xs-12 col-sm-12 col-md-12 mt-3">
                                 <div class="form-group">
                                     <label for="duration">Duration</label>

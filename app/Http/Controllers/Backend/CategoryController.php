@@ -31,20 +31,24 @@ class CategoryController extends Controller
                     return '<span class="badge bg-info">'.$row->courses_count.'</span>';
                 })
                 ->addColumn('action', function($row){
-                    $editUrl = route('backend.categories.edit', $row->id);
-                    $deleteUrl = route('backend.categories.destroy', $row->id);
-
                     $btn = '<div class="d-flex gap-2">';
 
-                    // Edit Button
-                    $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm d-flex align-items-center gap-1" title="Edit">';
-                    $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-pencil"></use></svg>';
-                    $btn .= '<span>Edit</span></a>';
+                    if (auth()->user()->hasRole('Admin')) {
+                        $editUrl = route('backend.categories.edit', $row->id);
+                        $deleteUrl = route('backend.categories.destroy', $row->id);
 
-                    // Delete Button
-                    $btn .= '<a href="javascript:void(0)" data-url="'.$deleteUrl.'" class="btn btn-danger btn-sm d-flex align-items-center gap-1 delete-btn" title="Delete">';
-                    $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-trash"></use></svg>';
-                    $btn .= '<span>Delete</span></a>';
+                        // Edit Button
+                        $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm d-flex align-items-center gap-1" title="Edit">';
+                        $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-pencil"></use></svg>';
+                        $btn .= '<span>Edit</span></a>';
+
+                        // Delete Button
+                        $btn .= '<a href="javascript:void(0)" data-url="'.$deleteUrl.'" class="btn btn-danger btn-sm d-flex align-items-center gap-1 delete-btn" title="Delete">';
+                        $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-trash"></use></svg>';
+                        $btn .= '<span>Delete</span></a>';
+                    } else {
+                        $btn .= '<span class="text-muted">No Actions</span>';
+                    }
 
                     $btn .= '</div>';
                     return $btn;
@@ -62,6 +66,10 @@ class CategoryController extends Controller
 
     public function store(StoreCategoryRequest $request)
     {
+        if (!auth()->user()->hasRole('Admin')) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         $data = $request->validated();
 
         if ($request->hasFile('image')) {
@@ -78,12 +86,20 @@ class CategoryController extends Controller
 
     public function edit($id)
     {
+        if (!auth()->user()->hasRole('Admin')) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $category = Category::findOrFail($id);
         return view('backend.categories.edit', compact('category'));
     }
 
     public function update(StoreCategoryRequest $request, $id)
     {
+        if (!auth()->user()->hasRole('Admin')) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         $category = Category::findOrFail($id);
         $data = $request->validated();
 
@@ -108,6 +124,10 @@ class CategoryController extends Controller
 
     public function destroy($id)
     {
+        if (!auth()->user()->hasRole('Admin')) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         $category = Category::findOrFail($id);
 
         // Delete image

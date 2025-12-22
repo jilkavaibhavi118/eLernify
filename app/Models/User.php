@@ -84,4 +84,9 @@ class User extends Authenticatable
             ->where($type . '_id', $id)
             ->exists();
     }
+
+    public function instructor()
+    {
+        return $this->hasOne(Instructor::class);
+    }
 }

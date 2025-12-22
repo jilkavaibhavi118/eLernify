@@ -15,6 +15,23 @@
 
                         <div class="row">
 
+                            {{-- Linked User --}}
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Link to User (with 'Instructores' role) <span
+                                            class="text-danger">*</span></label>
+                                    <select name="user_id" class="form-control">
+                                        <option value="">Select User</option>
+                                        @foreach ($users as $user)
+                                            <option value="{{ $user->id }}"
+                                                {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                                {{ $user->name }} ({{ $user->email }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
                             {{-- Name --}}
                             <div class="col-md-12">
                                 <div class="form-group">

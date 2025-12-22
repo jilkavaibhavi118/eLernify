@@ -15,7 +15,17 @@ class QuizController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Quiz::with('lecture')->latest()->get();
+            $query = Quiz::with('lecture.course')->latest();
+
+            // Filter by instructor if not admin
+            if (!auth()->user()->hasRole('Admin')) {
+                $instructorId = auth()->user()->instructor ? auth()->user()->instructor->id : 0;
+                $query->whereHas('lecture.course', function($q) use ($instructorId) {
+                    $q->where('instructor_id', $instructorId);
+                });
+            }
+
+            $data = $query->get();
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('lecture', function($row){
@@ -51,7 +61,15 @@ class QuizController extends Controller
 
     public function create()
     {
-        return view('backend.quizzes.create');
+        $query = Lecture::query();
+        if (!auth()->user()->hasRole('Admin')) {
+            $instructorId = auth()->user()->instructor ? auth()->user()->instructor->id : 0;
+            $query->whereHas('course', function($q) use ($instructorId) {
+                $q->where('instructor_id', $instructorId);
+            });
+        }
+        $lectures = $query->orderBy('title')->get(['id', 'title']);
+        return view('backend.quizzes.create', compact('lectures'));
     }
 
     public function store(Request $request)
@@ -71,6 +89,11 @@ class QuizController extends Controller
             'questions.*.options.*.option_text' => 'required|string',
             'questions.*.correct_option' => 'required|integer|min:0|max:3',
         ]);
+
+        $lecture = Lecture::findOrFail($request->lecture_id);
+        if (!auth()->user()->hasRole('Admin') && $lecture->course->instructor_id != auth()->user()->instructor->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
 
         DB::beginTransaction();
         try {
@@ -116,13 +139,31 @@ class QuizController extends Controller
 
     public function edit($id)
     {
-        $quiz = Quiz::with(['lecture', 'questions.options'])->findOrFail($id);
-        return view('backend.quizzes.edit', compact('quiz'));
+        $quiz = Quiz::with(['lecture.course', 'questions.options'])->findOrFail($id);
+
+        if (!auth()->user()->hasRole('Admin') && $quiz->lecture->course->instructor_id != auth()->user()->instructor->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $query = Lecture::query();
+        if (!auth()->user()->hasRole('Admin')) {
+            $instructorId = auth()->user()->instructor ? auth()->user()->instructor->id : 0;
+            $query->whereHas('course', function($q) use ($instructorId) {
+                $q->where('instructor_id', $instructorId);
+            });
+        }
+        $lectures = $query->orderBy('title')->get(['id', 'title']);
+
+        return view('backend.quizzes.edit', compact('quiz', 'lectures'));
     }
 
     public function update(Request $request, $id)
     {
-        $quiz = Quiz::findOrFail($id);
+        $quiz = Quiz::with('lecture.course')->findOrFail($id);
+
+        if (!auth()->user()->hasRole('Admin') && $quiz->lecture->course->instructor_id != auth()->user()->instructor->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -188,7 +229,13 @@ class QuizController extends Controller
 
     public function destroy($id)
     {
-        $quiz = Quiz::findOrFail($id);
+        $quiz = Quiz::with('lecture.course')->findOrFail($id);
+
+        // Security check for instructors
+        if (auth()->user()->hasRole('Instructores') && $quiz->lecture->course->instructor_id != auth()->user()->instructor->id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         $quiz->delete();
         
         return response()->json([

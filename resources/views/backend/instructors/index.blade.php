@@ -17,6 +17,7 @@
                         <th>Image</th>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Linked User</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -47,6 +48,9 @@
                         },
                         {
                             data: 'email'
+                        },
+                        {
+                            data: 'user_email'
                         },
                         {
                             data: 'status'
