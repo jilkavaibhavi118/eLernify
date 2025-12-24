@@ -1,112 +1,150 @@
-@extends('layouts.frontend')
+<!DOCTYPE html>
+<html lang="en">
 
-@section('title', 'eLEARNIFY | Contact Us')
+<head>
+    <title>Contact Us | Elearnify</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ asset('frontend/css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
 
-@section('content')
-    <!-- Header Start -->
-    <div class="container-fluid bg-primary py-5 mb-5 page-header">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-10 text-center">
-                    <h1 class="display-3 text-white animated slideInDown">Contact</h1>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb justify-content-center">
-                            <li class="breadcrumb-item"><a class="text-white" href="{{ url('/') }}">Home</a></li>
-                            <li class="breadcrumb-item text-white active" aria-current="page">Contact</li>
+<body class="bg-light">
+    @include('partials.navbar')
+
+    <!-- PAGE HERO -->
+    <section class="page-hero">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 data-aos="fade-right">Contact Us</h2>
+                    <nav aria-label="breadcrumb" data-aos="fade-right" data-aos-delay="100">
+                        <ol class="breadcrumb-custom">
+                            <li class="breadcrumb-item"><a href="{{ url('/') }}">Elearnify</a></li>
+                            <span class="breadcrumb-separator">></span>
+                            <li class="breadcrumb-item active" aria-current="page"><span>Contact</span></li>
                         </ol>
                     </nav>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Header End -->
+    </section>
 
+    <!-- CONTACT SECTION -->
+    <section class="py-5">
+        <div class="container pb-5">
+            <div class="row g-5">
+                <!-- Contact Form -->
+                <div class="col-lg-7" data-aos="fade-up" data-aos-delay="0">
+                    <div class="bg-white p-4 p-md-5 rounded-3 shadow-sm border h-100">
+                        <h3 class="fw-bold mb-2">Get in Touch</h3>
+                        <p class="text-muted mb-4">Have questions or feedback? We'd love to hear from you.</p>
 
-    <!-- Contact Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Contact Us</h6>
-                <h1 class="mb-5">Contact For Any Query</h1>
-            </div>
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <h5>Get In Touch</h5>
-                    <p class="mb-4">The contact form is currently inactive. Get a functional and working contact form
-                        with Ajax & PHP in a few minutes. Just copy and paste the files, add a little code and you're
-                        done. <a href="https://htmlcodex.com/contact-form">Download Now</a>.</p>
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="d-flex align-items-center justify-content-center flex-shrink-0 bg-primary"
-                            style="width: 50px; height: 50px;">
-                            <i class="fa fa-map-marker-alt text-white"></i>
-                        </div>
-                        <div class="ms-3">
-                            <h5 class="text-primary">Office</h5>
-                            <p class="mb-0">123 Street, New York, USA</p>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="d-flex align-items-center justify-content-center flex-shrink-0 bg-primary"
-                            style="width: 50px; height: 50px;">
-                            <i class="fa fa-phone-alt text-white"></i>
-                        </div>
-                        <div class="ms-3">
-                            <h5 class="text-primary">Mobile</h5>
-                            <p class="mb-0">+012 345 67890</p>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <div class="d-flex align-items-center justify-content-center flex-shrink-0 bg-primary"
-                            style="width: 50px; height: 50px;">
-                            <i class="fa fa-envelope-open text-white"></i>
-                        </div>
-                        <div class="ms-3">
-                            <h5 class="text-primary">Email</h5>
-                            <p class="mb-0">info@example.com</p>
-                        </div>
+                        <form>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="name" class="form-label fw-medium text-dark small">Your Name</label>
+                                    <input type="text" class="form-control bg-light border-0 py-3 px-3"
+                                        id="name" placeholder="John Doe">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label fw-medium text-dark small">Email
+                                        Address</label>
+                                    <input type="email" class="form-control bg-light border-0 py-3 px-3"
+                                        id="email" placeholder="name@example.com">
+                                </div>
+                                <div class="col-12">
+                                    <label for="subject" class="form-label fw-medium text-dark small">Subject</label>
+                                    <input type="text" class="form-control bg-light border-0 py-3 px-3"
+                                        id="subject" placeholder="How can we help?">
+                                </div>
+                                <div class="col-12">
+                                    <label for="message" class="form-label fw-medium text-dark small">Message</label>
+                                    <textarea class="form-control bg-light border-0 py-3 px-3" id="message" rows="5"
+                                        placeholder="Write your message here..."></textarea>
+                                </div>
+                                <div class="col-12 mt-4">
+                                    <button type="submit" class="btn btn-primary px-5 py-3 fw-bold rounded-pill">Send
+                                        Message</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <iframe class="position-relative rounded w-100 h-100"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m2!1s0x4ccc4bf0f123a5a9%3A0xddcfc6c1de189567!2sNew%20York%2C%20USA!5e0!3m2!1sen!2sbd!4v1603794290143!5m2!1sen!2sbd"
-                        frameborder="0" style="min-height: 300px; border:0;" allowfullscreen="" aria-hidden="false"
-                        tabindex="0"></iframe>
-                </div>
-                <div class="col-lg-4 col-md-12 wow fadeInUp" data-wow-delay="0.5s">
-                    <form>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="name" placeholder="Your Name">
-                                    <label for="name">Your Name</label>
+
+                <!-- Contact Info -->
+                <div class="col-lg-5" data-aos="fade-up" data-aos-delay="200">
+                    <div class="h-100 d-flex flex-column gap-4">
+                        <!-- Info Card -->
+                        <div class="bg-white p-4 rounded-3 shadow-sm border">
+                            <h4 class="fw-bold mb-4">Contact Information</h4>
+
+                            <div class="d-flex mb-4">
+                                <div class="flex-shrink-0">
+                                    <span
+                                        class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle"
+                                        style="width: 50px; height: 50px;">
+                                        <i class="fas fa-map-marker-alt fs-5"></i>
+                                    </span>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="fw-bold mb-1">Our Location</h6>
+                                    <p class="text-muted small mb-0">123 Education Street, Tech City<br>Innovation
+                                        District, CA 94043</p>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="email" class="form-control" id="email" placeholder="Your Email">
-                                    <label for="email">Your Email</label>
+
+                            <div class="d-flex mb-4">
+                                <div class="flex-shrink-0">
+                                    <span
+                                        class="d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle"
+                                        style="width: 50px; height: 50px;">
+                                        <i class="fas fa-envelope fs-5"></i>
+                                    </span>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="fw-bold mb-1">Email Address</h6>
+                                    <p class="text-muted small mb-0">hello@elearnify.com<br>support@elearnify.com</p>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="subject" placeholder="Subject">
-                                    <label for="subject">Subject</label>
+
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <span
+                                        class="d-flex align-items-center justify-content-center bg-warning bg-opacity-10 text-warning rounded-circle"
+                                        style="width: 50px; height: 50px;">
+                                        <i class="fas fa-phone-alt fs-5"></i>
+                                    </span>
                                 </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-floating">
-                                    <textarea class="form-control" placeholder="Leave a message here" id="message" style="height: 150px"></textarea>
-                                    <label for="message">Message</label>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="fw-bold mb-1">Phone Number</h6>
+                                    <p class="text-muted small mb-0">+1 (555) 123-4567<br>Mon - Fri, 9am - 6pm EST</p>
                                 </div>
-                            </div>
-                            <div class="col-12">
-                                <button class="btn btn-primary w-100 py-3" type="submit">Send Message</button>
                             </div>
                         </div>
-                    </form>
+
+
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Contact End -->
-@endsection
+    </section>
+
+    @include('partials.footer')
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="{{ asset('frontend/js/main.js') }}"></script>
+    <script src="{{ asset('frontend/js/components.js') }}"></script>
+</body>
+
+</html>

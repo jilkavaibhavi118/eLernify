@@ -46,6 +46,14 @@ class OrderController extends Controller implements HasMiddleware
                     $orders->whereDate('created_at', '<=', $request->end_date);
                 }
 
+                // Filter by instructor if not admin
+                if (!auth()->user()->hasRole('Admin')) {
+                    $instructorId = auth()->user()->instructor ? auth()->user()->instructor->id : 0;
+                    $orders->whereHas('items.course', function($q) use ($instructorId) {
+                        $q->where('instructor_id', $instructorId);
+                    });
+                }
+
                 if ($request->filled('user_id')) {
                     $orders->where('user_id', $request->user_id);
                 }

@@ -1,209 +1,174 @@
 @extends('layouts.frontend')
 
-@section('title', $lecture->title . ' | eLEARNIFY')
+@section('title', $lecture->title . ' | Elearnify')
 
 @push('styles')
-    <style>
-        .course-sidebar .list-group-item {
-            border-left: 3px solid transparent;
-            transition: all 0.3s;
-        }
-
-        .course-sidebar .list-group-item.active {
-            background-color: #f8f9fa;
-            color: var(--primary);
-            border-color: var(--primary);
-            font-weight: 600;
-        }
-
-        .video-container {
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-    </style>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 @endpush
 
 @section('content')
-    <div class="container-xxl py-5">
+    <!-- PAGE HERO -->
+    <section class="page-hero">
         <div class="container">
-            <div class="row g-5">
-                <div class="col-lg-8">
-                    <div class="bg-light rounded p-4 mb-4 shadow-sm border">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h3 class="mb-0">{{ $lecture->title }}</h3>
-                            <span class="badge bg-primary px-3 py-2 rounded-pill">
-                                <i class="fa fa-clock me-2"></i>{{ $lecture->duration ?? '10 mins' }}
-                            </span>
-                        </div>
-
-                        <!-- Video / Media Player -->
-                        <div class="video-container ratio ratio-16x9 mb-4 bg-dark">
-                            @php
-                                $primaryVideo = null;
-                                if ($lecture->materials && $lecture->materials->count()) {
-                                    $primaryVideo = $lecture->materials->firstWhere('video_path', '!=', null);
-                                }
-                            @endphp
-
-                            @if ($primaryVideo)
-                                <video controls class="w-100 h-100" poster="{{ asset('frontend/img/course-1.jpg') }}">
-                                    <source src="{{ asset('storage/' . $primaryVideo->video_path) }}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            @elseif ($lecture->video_url)
-                                <iframe src="{{ $lecture->video_url }}" allowfullscreen></iframe>
-                            @else
-                                <div class="d-flex flex-column align-items-center justify-content-center text-white p-5">
-                                    <i class="fa fa-play-circle fa-4x mb-3 text-primary"></i>
-                                    <h5>No Video Stream Available</h5>
-                                    <p class="mb-0 text-muted">Please check the resources section below for materials.</p>
-                                </div>
-                            @endif
-                        </div>
-
-                        <div class="mt-4 p-3 bg-white rounded border shadow-sm">
-                            <h5 class="border-bottom pb-2 mb-3">About this Lecture</h5>
-                            <p class="text-muted mb-0">
-                                {{ $lecture->description ?? 'No description available for this lecture.' }}</p>
-                        </div>
-
-                        @if ($lecture->materials && $lecture->materials->count())
-                            <div class="mt-4">
-                                <h5 class="mb-3"><i class="fa fa-paperclip me-2 text-primary"></i>Learning Resources</h5>
-                                <div class="row g-3">
-                                    @foreach ($lecture->materials as $material)
-                                        <div class="col-12">
-                                            <div
-                                                class="p-3 bg-white rounded border d-flex justify-content-between align-items-center shadow-sm">
-                                                <div>
-                                                    <h6 class="mb-1">{{ $material->title }}</h6>
-                                                    @if ($material->description)
-                                                        <small
-                                                            class="text-muted d-block">{{ $material->description }}</small>
-                                                    @endif
-                                                </div>
-                                                <div class="d-flex gap-2">
-                                                    @if ($material->file_path)
-                                                        <a href="{{ asset('storage/' . $material->file_path) }}"
-                                                            target="_blank"
-                                                            class="btn btn-sm btn-outline-primary rounded-pill">
-                                                            <i class="fa fa-download me-1"></i>PDF
-                                                        </a>
-                                                    @endif
-                                                    @if ($material->content_url)
-                                                        <a href="{{ $material->content_url }}" target="_blank"
-                                                            class="btn btn-sm btn-outline-secondary rounded-pill">
-                                                            <i class="fa fa-external-link-alt me-1"></i>Link
-                                                        </a>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-
-                    <!-- Navigation -->
-                    <div class="d-flex justify-content-between mt-4">
-                        @if (isset($prev_url) && $prev_url)
-                            <a href="{{ $prev_url }}" class="btn btn-outline-primary px-4 py-2 rounded-pill">
-                                <i class="fa fa-arrow-left me-2"></i>Previous Lecture
-                            </a>
-                        @else
-                            <a href="{{ route('user.course.view', $enrollment->id) }}"
-                                class="btn btn-outline-secondary px-4 py-2 rounded-pill">
-                                <i class="fa fa-list me-2"></i>Course Overview
-                            </a>
-                        @endif
-
-                        @if (isset($next_url) && $next_url)
-                            @php
-                                $isNextQuiz = str_contains($next_url, '/quiz/');
-                            @endphp
-                            <a href="{{ $next_url }}" class="btn btn-primary px-4 py-2 rounded-pill shadow"
-                                {{ $isNextQuiz ? 'data-bs-toggle=modal data-bs-target=#quizStartModal' : '' }}>
-                                Next Section <i class="fa fa-arrow-right ms-2"></i>
-                            </a>
-                        @endif
-                    </div>
-                </div>
-
-                <!-- Sidebar -->
-                <div class="col-lg-4">
-                    <div class="bg-light rounded p-4 sticky-top shadow-sm border" style="top: 100px;">
-                        <h5 class="mb-1 text-truncate">{{ $enrollment->course->title }}</h5>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <small class="text-muted">Current Progress</small>
-                            <small class="text-primary fw-bold">{{ $enrollment->progress }}%</small>
-                        </div>
-                        <div class="progress mb-4" style="height: 6px;">
-                            <div class="progress-bar bg-primary" role="progressbar"
-                                style="width: {{ $enrollment->progress }}%"></div>
-                        </div>
-
-                        <h6 class="mb-3 fw-bold text-uppercase small text-muted">Course Curriculum</h6>
-                        <div class="list-group list-group-flush border rounded overflow-hidden course-sidebar">
-                            @foreach ($enrollment->course->lectures as $l)
-                                <a href="{{ route('user.lecture.view', $l->id) }}"
-                                    class="list-group-item list-group-item-action py-3 {{ $l->id == $lecture->id ? 'active' : '' }} border-bottom">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="text-truncate">
-                                            <i
-                                                class="fa {{ $l->id == $lecture->id ? 'fa-play-circle' : 'fa-check-circle text-muted opacity-50' }} me-2"></i>
-                                            {{ $l->title }}
-                                        </div>
-                                        <small class="ms-2 opacity-75">{{ $l->duration ?? '10m' }}</small>
-                                    </div>
-                                </a>
-
-                                @if ($l->quizzes && $l->quizzes->count() > 0)
-                                    @foreach ($l->quizzes as $q)
-                                        <a href="{{ route('user.quiz.view', $q->id) }}"
-                                            class="list-group-item list-group-item-action py-2 ps-5 border-bottom bg-white text-secondary small">
-                                            <i class="fa fa-question-circle me-2"></i>{{ $q->title }}
-                                        </a>
-                                    @endforeach
-                                @endif
-                            @endforeach
-                        </div>
-
-                        <a href="{{ route('user.course.view', $enrollment->id) }}"
-                            class="btn btn-link w-100 mt-3 text-muted">
-                            <i class="fa fa-times me-2"></i>Exit Player
-                        </a>
-                    </div>
+            <div class="row">
+                <div class="col-12">
+                    <h1 data-aos="fade-right">{{ $lecture->title }}</h1>
+                    <nav aria-label="breadcrumb" data-aos="fade-right" data-aos-delay="100">
+                        <ol class="breadcrumb-custom">
+                            <li class="breadcrumb-item"><a href="{{ url('/') }}">Elearnify</a></li>
+                            <span class="breadcrumb-separator">></span>
+                            <li class="breadcrumb-item"><a href="{{ route('user.courses') }}">My Courses</a></li>
+                            <span class="breadcrumb-separator">></span>
+                            <li class="breadcrumb-item"><a
+                                    href="{{ route('user.course.view', $enrollment->id) }}">{{ $enrollment->course->title }}</a>
+                            </li>
+                            <span class="breadcrumb-separator">></span>
+                            <li class="breadcrumb-item active" aria-current="page"><span>Player</span></li>
+                        </ol>
+                    </nav>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Quiz Start Modal -->
-    <div class="modal fade" id="quizStartModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow border-0">
-                <div class="modal-header border-0 pb-0">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body text-center p-5">
-                    <div class="rounded-circle bg-light d-inline-flex align-items-center justify-content-center mb-4"
-                        style="width: 100px; height: 100px;">
-                        <i class="fa fa-clipboard-check fa-3x text-primary"></i>
+    <div class="container mt-5 px-5">
+        <div class="row g-4">
+            <!-- Main Content Area -->
+            <div class="col-lg-9">
+                <div class="container">
+                    <!-- Video Player -->
+                    <div class="section-card mb-4" style="max-width: 800px; margin-left: auto; margin-right: auto;">
+                        <div class="ratio ratio-16x9">
+                            @if ($lecture->video_url)
+                                <iframe src="{{ $lecture->video_url }}" title="{{ $lecture->title }}"
+                                    allowfullscreen></iframe>
+                            @else
+                                <div class="d-flex align-items-center justify-content-center bg-dark text-white">
+                                    <p>No video available for this lesson</p>
+                                </div>
+                            @endif
+                        </div>
                     </div>
-                    <h4 class="mb-3">Quiz Readiness Check</h4>
-                    <p class="text-muted">The next section is a knowledge check. Are you ready to test what you've learned?
-                    </p>
-                </div>
-                <div class="modal-footer border-0 justify-content-center pb-5">
-                    <button type="button" class="btn btn-light px-4 py-2 rounded-pill me-2"
-                        data-bs-dismiss="modal">Later</button>
-                    @if (isset($next_url))
-                        <a href="{{ $next_url }}" class="btn btn-primary px-5 py-2 rounded-pill shadow">Start Quiz</a>
+
+                    <!-- Lesson Info -->
+                    <div class="section-card mb-4"
+                        style="max-width: 800px; margin-left: auto; margin-right: auto; max-height: 400px; overflow-y: auto;">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap mb-3">
+                            <div class="mb-3 mb-md-0">
+                                <h4 class="fw-bold mb-2">{{ $lecture->title }}</h4>
+                                <p class="text-muted mb-0">
+                                    <i class="bi bi-clock me-2"></i>{{ $lecture->duration ?? 'N/A' }}
+                                </p>
+                            </div>
+                            <!-- Future Feature: Mark as Complete Form -->
+                            <button class="btn btn-success" disabled>
+                                <i class="bi bi-check-circle me-1"></i>Mark as Complete
+                            </button>
+                        </div>
+
+                        <h5 class="fw-bold mb-3">About this lesson</h5>
+                        <div class="text-muted mb-0">
+                            {!! $lecture->description !!}
+                        </div>
+                    </div>
+
+                    <!-- Lesson Navigation -->
+                    <div class="section-card mb-4" style="max-width: 800px; margin-left: auto; margin-right: auto;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                            @if ($prev_url)
+                                <a href="{{ $prev_url }}" class="btn btn-primary">
+                                    <i class="bi bi-chevron-left me-1"></i>Previous Lesson
+                                </a>
+                            @else
+                                <button class="btn btn-outline-primary" disabled>
+                                    <i class="bi bi-chevron-left me-1"></i>Previous Lesson
+                                </button>
+                            @endif
+
+                            <span class="text-muted small">
+                                Lesson
+                                {{ $enrollment->course->lectures->search(function ($l) use ($lecture) {return $l->id == $lecture->id;}) + 1 }}
+                                of {{ $enrollment->course->lectures->count() }}
+                            </span>
+
+                            @if ($next_url)
+                                <a href="{{ $next_url }}" class="btn btn-primary">
+                                    Next Lesson<i class="bi bi-chevron-right ms-1"></i>
+                                </a>
+                            @else
+                                <button class="btn btn-outline-primary" disabled>
+                                    Next Lesson<i class="bi bi-chevron-right ms-1"></i>
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Lesson Resources -->
+                    @if ($lecture->materials && $lecture->materials->count() > 0)
+                        <div class="section-card mb-4" style="max-width: 800px; margin-left: auto; margin-right: auto;">
+                            <h5 class="fw-bold mb-3">Lesson Resources</h5>
+                            <div class="list-group list-group-flush">
+                                @foreach ($lecture->materials as $material)
+                                    <a href="{{ asset('storage/' . $material->file_path) }}" target="_blank"
+                                        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                        <span><i
+                                                class="bi bi-file-earmark-text text-primary me-2"></i>{{ $material->title }}</span>
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
                     @endif
+                </div>
+            </div>
+
+            <!-- Sidebar - Course Lessons -->
+            <div class="col-lg-3">
+                <div class="course-lessons-sidebar sticky-top"
+                    style="top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; background: #ffffff; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                    <!-- Header -->
+                    <h5 class="fw-bold mb-4" style="color: #1f2937;">Course Lessons</h5>
+
+                    <!-- Active Course Section -->
+                    <div class="lesson-section mb-3">
+                        <p class="section-header small fw-semibold mb-2" style="color: #6b7280;">Curriculum</p>
+
+                        @foreach ($enrollment->course->lectures as $index => $l)
+                            <a href="{{ route('user.lecture.view', $l->id) }}"
+                                class="lesson-item {{ $l->id == $lecture->id ? 'active' : '' }} d-flex align-items-center py-2 px-3 mb-1"
+                                style="{{ $l->id == $lecture->id ? 'background: rgba(99, 102, 241, 0.1); border-left: 3px solid #6366f1;' : '' }} border-radius: 6px; text-decoration: none;">
+                                <i class="bi bi-play-fill {{ $l->id == $lecture->id ? 'text-primary' : 'text-muted' }} me-3"
+                                    style="font-size: 1.1rem;"></i>
+                                <span class="lesson-title flex-grow-1"
+                                    style="font-size: 0.9rem; color: {{ $l->id == $lecture->id ? '#1f2937' : '#374151' }};">
+                                    {{ sprintf('%02d', $index + 1) }} - {{ $l->title }}
+                                </span>
+                                <span class="lesson-duration small" style="color: #6b7280;">{{ $l->duration ?? '' }}</span>
+                            </a>
+
+                            @if ($l->quizzes && $l->quizzes->count() > 0)
+                                @foreach ($l->quizzes as $q)
+                                    <a href="{{ route('user.quiz.view', $q->id) }}"
+                                        class="lesson-item d-flex align-items-center py-2 px-3 mb-1 ms-4"
+                                        style="border-radius: 6px; text-decoration: none;">
+                                        <i class="bi bi-question-circle text-muted me-2" style="font-size: 1rem;"></i>
+                                        <span class="lesson-title flex-grow-1" style="font-size: 0.9rem; color: #374151;">
+                                            {{ $q->title }}
+                                        </span>
+                                    </a>
+                                @endforeach
+                            @endif
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+@endpush

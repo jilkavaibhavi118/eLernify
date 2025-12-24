@@ -1,75 +1,68 @@
-<!-- Navbar Start -->
-<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-    <a href="{{ url('/') }}" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-        <img src="{{ asset('assets/img/elearnify (2).png') }}" alt="eLEARNIFY Logo"
-            style="height: 120px; width: auto; object-fit: contain; image-rendering: -webkit-optimize-contrast;">
-    </a>
-    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarCollapse">
-        <div class="navbar-nav mx-auto p-4 p-lg-0">
-            <div class="nav-item m-auto">
-                <form action="{{ route('courses') }}" method="GET" class="d-flex">
-                    <div class="input-group">
-                        <input type="text" name="search" class="form-control" placeholder="Search Courses..."
-                            value="{{ request('search') }}">
-                        <button class="btn btn-primary" type="submit">
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-                </form>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url('/') }}">
+                <img src="{{ asset('frontend/img/logo.png') }}" alt="Elearnify Logo" class="brand-logo">Elearnify
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('courses') }}">Courses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('about') }}">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('instructors') }}">Instructors</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('contact') }}">Contact Us</a>
+                    </li>
+                </ul>
+
+                <div class="action-group">
+                    <button class="search-trigger" data-bs-toggle="modal" data-bs-target="#searchModal">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    @guest
+                        <a href="{{ route('login') }}" class="login-link">Log In</a>
+                        <a href="{{ route('register') }}" class="btn btn-premium">Join Premium</a>
+                    @else
+                        <a href="{{ route('user.dashboard') }}" class="login-link">Dashboard</a>
+                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-premium">Logout</button>
+                        </form>
+                    @endguest
+                </div>
             </div>
         </div>
-        <div class="navbar-nav ms-auto p-4 p-lg-0 align-items-center">
-            <a href="{{ url('/#about') }}" class="nav-item nav-link">About</a>
-            <a href="{{ route('courses') }}" class="nav-item nav-link">Courses</a>
-            <a href="{{ route('lectures.index') }}" class="nav-item nav-link">Lectures</a>
-            <a href="{{ route('materials.index') }}" class="nav-item nav-link">Materials</a>
-            <a href="{{ route('quizzes.index') }}" class="nav-item nav-link">Quizzes</a>
-            <a href="{{ url('/#instructors') }}" class="nav-item nav-link">Instructors</a>
+    </nav>
+</header>
 
-            @guest
-                <a href="{{ route('register') }}" class="nav-item nav-link">Register</a>
-                <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>
-            @else
-                <div class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="fa fa-bell text-secondary" style="font-size: 1.2rem;"></i>
-                    </a>
+<!-- Search Modal -->
+<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="searchModalLabel">Find a Course</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control border-start-0"
+                        placeholder="What do you want to learn today?">
+                    <button class="btn btn-primary" type="button">Search</button>
                 </div>
-
-                <!-- User Dropdown -->
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle no-caret d-flex align-items-center"
-                        data-bs-toggle="dropdown" title="User dropdown menu for {{ Auth::user()->name }}">
-                        @if (Auth::user()->profile_photo)
-                            <img class="rounded-circle user-avatar"
-                                src="{{ asset('storage/' . Auth::user()->profile_photo) }}"
-                                style="width: 35px; height: 35px; object-fit: cover;" alt="">
-                        @else
-                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center user-avatar"
-                                style="width: 35px; height: 35px; font-weight: bold;">
-                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                            </div>
-                        @endif
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-end fade-down m-0 shadow border-0">
-                        <a href="{{ route('user.dashboard') }}"
-                            class="dropdown-item {{ Request::routeIs('user.dashboard') ? 'active' : '' }}">Dashboard</a>
-                        <a href="{{ route('user.profile') }}"
-                            class="dropdown-item {{ Request::routeIs('user.profile') ? 'active' : '' }}">Profile</a>
-                        <a href="{{ route('user.purchases') }}"
-                            class="dropdown-item {{ Request::routeIs('user.purchases') ? 'active' : '' }}">My Purchases</a>
-                        <hr class="dropdown-divider">
-                        <form action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="dropdown-item">Logout</button>
-                        </form>
-                    </div>
-                </div>
-            @endguest
+                <small class="text-muted">Popular: <em>Python, Graphic Design, Marketing</em></small>
+            </div>
         </div>
     </div>
-</nav>
-<!-- Navbar End -->
+</div>

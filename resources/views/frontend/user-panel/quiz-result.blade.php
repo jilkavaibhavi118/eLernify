@@ -1,15 +1,44 @@
 @extends('layouts.frontend')
 
-@section('title', 'Quiz Result: ' . $quiz->title . ' | eLEARNIFY')
+@section('title', 'Quiz Result: ' . $quiz->title . ' | Elearnify')
+
+@push('styles')
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+@endpush
 
 @section('content')
-    <div class="container-xxl py-5">
+    <!-- PAGE HERO -->
+    <section class="page-hero">
         <div class="container">
-            <div class="row g-5">
-                <div class="col-lg-8">
+            <div class="row">
+                <div class="col-12">
+                    <h1 data-aos="fade-right">Quiz Results</h1>
+                    <nav aria-label="breadcrumb" data-aos="fade-right" data-aos-delay="100">
+                        <ol class="breadcrumb-custom">
+                            <li class="breadcrumb-item"><a href="{{ url('/') }}">Elearnify</a></li>
+                            <span class="breadcrumb-separator">></span>
+                            <li class="breadcrumb-item"><a href="{{ route('user.courses') }}">My Courses</a></li>
+                            <span class="breadcrumb-separator">></span>
+                            <li class="breadcrumb-item"><a
+                                    href="{{ route('user.course.view', $enrollment->id ?? 1) }}">{{ $enrollment->course->title ?? 'Course' }}</a>
+                            </li>
+                            <span class="breadcrumb-separator">></span>
+                            <li class="breadcrumb-item active" aria-current="page"><span>{{ $quiz->title }}</span></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container mt-5 px-5">
+        <div class="row g-4">
+            <!-- Main Content Area -->
+            <div class="col-lg-9">
+                <div class="container">
                     <div class="bg-light rounded p-5 mb-4 shadow-sm border">
                         <div class="text-center mb-5">
-                            <h3 class="mb-3">Quiz Result: {{ $quiz->title }}</h3>
+                            <h3 class="mb-3">Result: {{ $quiz->title }}</h3>
                             <div
                                 class="display-3 font-weight-bold text-primary mb-2 shadow-sm d-inline-block px-4 py-2 bg-white rounded-pill border">
                                 {{ $attempt->score }} <span class="text-muted h4">/ {{ $attempt->total_questions }}</span>
@@ -101,69 +130,62 @@
                         </div>
                     </div>
                 </div>
-
-                @if ($enrollment)
-                    <div class="col-lg-4">
-                        <div class="bg-light rounded p-4 sticky-top shadow-sm border" style="top: 100px;">
-                            <h5 class="mb-1">{{ $enrollment->course->title }}</h5>
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <small class="text-muted">Current Progress</small>
-                                <small class="text-primary fw-bold">{{ $enrollment->progress }}%</small>
-                            </div>
-                            <div class="progress mb-4" style="height: 6px;">
-                                <div class="progress-bar bg-primary" role="progressbar"
-                                    style="width: {{ $enrollment->progress }}%"></div>
-                            </div>
-
-                            <h6 class="mb-3 fw-bold text-uppercase small text-muted">Course History</h6>
-                            <div class="list-group list-group-flush border rounded overflow-hidden course-sidebar">
-                                @foreach ($enrollment->course->lectures as $l)
-                                    <a href="{{ route('user.lecture.view', $l->id) }}"
-                                        class="list-group-item list-group-item-action py-3 border-bottom">
-                                        <i class="fa fa-play-circle me-2 text-muted opacity-50"></i>{{ $l->title }}
-                                    </a>
-
-                                    @if ($l->quizzes && $l->quizzes->count() > 0)
-                                        @foreach ($l->quizzes as $q)
-                                            <a href="{{ route('user.quiz.view', $q->id) }}"
-                                                class="list-group-item list-group-item-action py-2 ps-5 border-bottom {{ $q->id == $quiz->id ? 'bg-primary text-white active' : 'bg-white text-secondary' }} small">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <span><i
-                                                            class="fa fa-question-circle me-2"></i>{{ $q->title }}</span>
-                                                    @if ($q->id == $quiz->id)
-                                                        <i class="fa fa-award"></i>
-                                                    @endif
-                                                </div>
-                                            </a>
-                                        @endforeach
-                                    @endif
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                @else
-                    <div class="col-lg-4">
-                        <div class="bg-light rounded p-4 sticky-top shadow-sm border" style="top: 100px;">
-                            <h5 class="mb-4">Quiz Information</h5>
-                            <div class="mb-3">
-                                <small class="text-muted d-block">Items Attempted</small>
-                                <span class="fw-bold">{{ $attempt->total_questions }}</span>
-                            </div>
-                            <div class="mb-3">
-                                <small class="text-muted d-block">Correct Answers</small>
-                                <span class="fw-bold text-success">{{ $attempt->score }}</span>
-                            </div>
-                            <div class="mb-3">
-                                <small class="text-muted d-block">Completion Time</small>
-                                <span class="fw-bold">{{ $attempt->completed_at->format('M d, Y H:i') }}</span>
-                            </div>
-                            <hr>
-                            <p class="small text-muted mb-0">You purchased this quiz individually. Great job on completing
-                                it!</p>
-                        </div>
-                    </div>
-                @endif
             </div>
+
+            <!-- Sidebar - Course Lessons -->
+            @if ($enrollment)
+                <div class="col-lg-3">
+                    <div class="course-lessons-sidebar sticky-top"
+                        style="top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; background: #ffffff; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                        <!-- Header -->
+                        <h5 class="fw-bold mb-4" style="color: #1f2937;">Course Curriculum</h5>
+
+                        <!-- Active Course Section -->
+                        <div class="lesson-section mb-3">
+                            @foreach ($enrollment->course->lectures as $index => $l)
+                                <a href="{{ route('user.lecture.view', $l->id) }}"
+                                    class="lesson-item d-flex align-items-center py-2 px-3 mb-1"
+                                    style="border-radius: 6px; text-decoration: none;">
+                                    <i class="bi bi-play-fill text-muted me-3" style="font-size: 1.1rem;"></i>
+                                    <span class="lesson-title flex-grow-1" style="font-size: 0.9rem; color: #374151;">
+                                        {{ sprintf('%02d', $index + 1) }} - {{ $l->title }}
+                                    </span>
+                                </a>
+
+                                @if ($l->quizzes && $l->quizzes->count() > 0)
+                                    @foreach ($l->quizzes as $q)
+                                        <a href="{{ route('user.quiz.view', $q->id) }}"
+                                            class="lesson-item {{ $q->id == $quiz->id ? 'active' : '' }} d-flex align-items-center py-2 px-3 mb-1 ms-4"
+                                            style="{{ $q->id == $quiz->id ? 'background: rgba(99, 102, 241, 0.1); border-left: 3px solid #6366f1;' : '' }} border-radius: 6px; text-decoration: none;">
+                                            <i class="bi bi-question-circle {{ $q->id == $quiz->id ? 'text-primary' : 'text-muted' }} me-2"
+                                                style="font-size: 1rem;"></i>
+                                            <span class="lesson-title flex-grow-1"
+                                                style="font-size: 0.9rem; color: {{ $q->id == $quiz->id ? '#1f2937' : '#374151' }};">
+                                                {{ $q->title }}
+                                            </span>
+                                        </a>
+                                    @endforeach
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div class="col-lg-3">
+                    <div class="course-lessons-sidebar sticky-top"
+                        style="top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; background: #ffffff; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                        <h5 class="fw-bold mb-4" style="color: #1f2937;">Quiz Info</h5>
+                        <p class="text-muted small">You are viewing a single quiz result.</p>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+@endpush

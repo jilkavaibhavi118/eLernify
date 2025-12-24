@@ -22,7 +22,6 @@ class CourseController extends Controller
                 $query->where('status', 'active');
             }])
             ->having('courses_count', '>', 0)
-            ->take(4)
             ->get();
 
         $courses = Course::with(['instructor', 'category'])
@@ -55,7 +54,23 @@ class CourseController extends Controller
                 ->exists();
         }
 
-        return view('frontend.course-detail', compact('course', 'isEnrolled'));
+        // Fetch related courses
+        $relatedCourses = Course::with(['instructor', 'category'])
+            ->where('category_id', $course->category_id)
+            ->where('id', '!=', $id)
+            ->where('status', 'active')
+            ->take(5)
+            ->get();
+
+        if ($relatedCourses->isEmpty()) {
+            $relatedCourses = Course::with(['instructor', 'category'])
+                ->where('id', '!=', $id)
+                ->where('status', 'active')
+                ->take(5)
+                ->get();
+        }
+
+        return view('course-detail', compact('course', 'isEnrolled', 'relatedCourses'));
     }
 
     public function initiatePayment($id)

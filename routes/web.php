@@ -23,7 +23,7 @@ Route::get('/', function () {
             $query->where('status', 'active');
         }])
         ->having('courses_count', '>', 0)
-        ->take(4)
+        ->take(8)
         ->get();
 
     $categoryCourses = \App\Models\Course::where('status', 'active')
@@ -62,6 +62,10 @@ Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('regi
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+// ✅ Google Auth Routes
+Route::get('auth/google', [App\Http\Controllers\Auth\SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('auth/google/callback', [App\Http\Controllers\Auth\SocialAuthController::class, 'handleGoogleCallback']);
+
 
 // ✅ Purchase Flow
 Route::post('/purchase/initiate', [App\Http\Controllers\Frontend\PurchaseController::class, 'initiate'])->name('purchase.initiate');
@@ -86,6 +90,10 @@ Route::get('/courses', [FrontendCourseController::class, 'index'])->name('course
 Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
+
+Route::get('/instructors', function () {
+    return view('partials.instructors');
+})->name('instructors');
 
 // ✅ Course Detail Page
 Route::get('/course/{id}', [FrontendCourseController::class, 'show'])->name('course.detail');
@@ -119,9 +127,7 @@ Route::middleware(['auth', 'check.user.status'])->prefix('my')->name('user.')->g
 // ✅ Admin Routes
 Route::middleware(['auth'])->prefix('admin')->name('backend.')->group(function () {
 
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [App\Http\Controllers\Backend\DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('roles', RoleController::class);
     Route::get('roles/{role}/permissions', [RoleController::class, 'permissions'])->name('roles.permissions');

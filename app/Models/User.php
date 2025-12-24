@@ -28,6 +28,7 @@ class User extends Authenticatable
         'bio',
         'phone',
         'address',
+        'google_id',
     ];
 
     /**

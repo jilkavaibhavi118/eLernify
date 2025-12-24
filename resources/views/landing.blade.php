@@ -1,643 +1,347 @@
-@extends('layouts.frontend')
+<!DOCTYPE html>
+<html lang="en">
 
-@section('title', 'eLEARNIFY | The Best Online Learning Platform')
+<head>
+    <title>Elearnify - Find The Best Online Courses</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ asset('frontend/css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
 
-@section('content')
-    <!-- Carousel Start -->
-    <div class="container-fluid p-0 mb-5">
-        <div class="owl-carousel header-carousel position-relative">
-            <div class="owl-carousel-item position-relative">
-                <img class="img-fluid" src="{{ asset('frontend/img/carousel-1.jpg') }}" alt="">
-                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
-                    style="background: rgba(24, 29, 56, .7);">
-                    <div class="container">
-                        <div class="row justify-content-start">
-                            <div class="col-sm-10 col-lg-8">
-                                <h5 class="text-primary text-uppercase mb-3 animated slideInDown">Best Online Courses</h5>
-                                <h1 class="display-3 text-white animated slideInDown">The Best Online Learning Platform</h1>
-                                <p class="fs-5 text-white mb-4 pb-2">Learn from industry experts anytime, anywhere with our
-                                    comprehensive online courses.</p>
-                                <a href="#about" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Read
-                                    More</a>
-                                @guest
-                                    <a href="{{ route('login') }}"
-                                        class="btn btn-light py-md-3 px-md-5 animated slideInRight">Join Now</a>
-                                @else
-                                    <a href="{{ route('user.dashboard') }}"
-                                        class="btn btn-light py-md-3 px-md-5 animated slideInRight">Go to Dashboard</a>
-                                @endguest
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="owl-carousel-item position-relative">
-                <img class="img-fluid" src="{{ asset('frontend/img/carousel-2.jpg') }}" alt="">
-                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
-                    style="background: rgba(24, 29, 56, .7);">
-                    <div class="container">
-                        <div class="row justify-content-start">
-                            <div class="col-sm-10 col-lg-8">
-                                <h5 class="text-primary text-uppercase mb-3 animated slideInDown">Best Online Courses</h5>
-                                <h1 class="display-3 text-white animated slideInDown">Get Educated Online From Your Home
-                                </h1>
-                                <p class="fs-5 text-white mb-4 pb-2">Join thousands of students and transform your career
-                                    with eLEARNIFY's expert-led curriculum.</p>
-                                <a href="#about" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Read
-                                    More</a>
-                                @guest
-                                    <a href="{{ route('login') }}"
-                                        class="btn btn-light py-md-3 px-md-5 animated slideInRight">Join Now</a>
-                                @else
-                                    <a href="{{ route('user.dashboard') }}"
-                                        class="btn btn-light py-md-3 px-md-5 animated slideInRight">Go to Dashboard</a>
-                                @endguest
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Carousel End -->
+<body>
+    @include('partials.navbar')
 
-    <!-- Service Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="service-item text-center pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-3x fa-graduation-cap text-primary mb-4"></i>
-                            <h5 class="mb-3">Skilled Instructors</h5>
-                            <p>Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="service-item text-center pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-3x fa-globe text-primary mb-4"></i>
-                            <h5 class="mb-3">Online Classes</h5>
-                            <p>Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="service-item text-center pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-3x fa-home text-primary mb-4"></i>
-                            <h5 class="mb-3">Home Projects</h5>
-                            <p>Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
-                    <div class="service-item text-center pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-3x fa-book-open text-primary mb-4"></i>
-                            <h5 class="mb-3">Book Library</h5>
-                            <p>Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Service End -->
+    <section class="hero-gradient py-5">
+        <div class="container py-lg-5">
+            <div class="row align-items-center gy-5">
 
-    <!-- About Start -->
-    <div class="container-xxl py-5" id="about">
-        <div class="container">
-            <div class="row g-5">
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s" style="min-height: 400px;">
-                    <div class="position-relative h-100">
-                        <img class="img-fluid position-absolute w-100 h-100" src="{{ asset('frontend/img/about.jpg') }}"
-                            alt="" style="object-fit: cover;">
-                    </div>
-                </div>
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <h6 class="section-title bg-white text-start text-primary pe-3">About Us</h6>
-                    <h1 class="mb-4">Welcome to eLEARNIFY</h1>
-                    <p class="mb-4">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et
-                        eos. Clita erat ipsum et lorem et sit.</p>
-                    <p class="mb-4">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et
-                        eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo magna dolore erat amet</p>
-                    <div class="row gy-2 gx-4 mb-4">
-                        <div class="col-sm-6">
-                            <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Skilled Instructors</p>
-                        </div>
-                        <div class="col-sm-6">
-                            <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Online Classes</p>
-                        </div>
-                        <div class="col-sm-6">
-                            <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>International Certificate
-                            </p>
-                        </div>
-                        <div class="col-sm-6">
-                            <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Skilled Instructors</p>
-                        </div>
-                        <div class="col-sm-6">
-                            <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Online Classes</p>
-                        </div>
-                        <div class="col-sm-6">
-                            <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>International Certificate
-                            </p>
-                        </div>
-                    </div>
-                    <a class="btn btn-primary py-3 px-5 mt-2" href="">Read More</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- About End -->
+                <div class="col-lg-6 col-12">
+                    <h1 class="display-4 fw-bold text-dark mb-4 lh-sm">
+                        Find The Best Course <br>
+                        <span class="text-primary" id="typing-text"></span><span class="typing-cursor"></span>
+                    </h1>
 
-    <!-- Category Start -->
-    <div class="container-xxl py-5 category">
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Categories</h6>
-                <h1 class="mb-5">Courses Categories</h1>
-            </div>
-            <div class="row g-3">
-                <div class="col-lg-7 col-md-6">
-                    <div class="row g-3">
-                        @if (isset($categories[0]))
-                            <div class="col-lg-12 col-md-12 wow zoomIn" data-wow-delay="0.1s">
-                                <a class="position-relative d-block overflow-hidden"
-                                    href="{{ route('courses', ['category' => $categories[0]->id]) }}">
-                                    <img class="img-fluid"
-                                        src="{{ $categories[0]->image ? asset('storage/' . $categories[0]->image) : asset('frontend/img/cat-1.jpg') }}"
-                                        alt="">
-                                    <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3"
-                                        style="margin: 1px;">
-                                        <h5 class="m-0">{{ $categories[0]->name }}</h5>
-                                        <small class="text-primary">{{ $categories[0]->courses_count }} Courses</small>
-                                    </div>
-                                </a>
-                            </div>
-                        @endif
-                        @if (isset($categories[1]))
-                            <div class="col-lg-6 col-md-12 wow zoomIn" data-wow-delay="0.3s">
-                                <a class="position-relative d-block overflow-hidden"
-                                    href="{{ route('courses', ['category' => $categories[1]->id]) }}">
-                                    <img class="img-fluid"
-                                        src="{{ $categories[1]->image ? asset('storage/' . $categories[1]->image) : asset('frontend/img/cat-2.jpg') }}"
-                                        alt="">
-                                    <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3"
-                                        style="margin: 1px;">
-                                        <h5 class="m-0">{{ $categories[1]->name }}</h5>
-                                        <small class="text-primary">{{ $categories[1]->courses_count }} Courses</small>
-                                    </div>
-                                </a>
-                            </div>
-                        @endif
-                        @if (isset($categories[2]))
-                            <div class="col-lg-6 col-md-12 wow zoomIn" data-wow-delay="0.5s">
-                                <a class="position-relative d-block overflow-hidden"
-                                    href="{{ route('courses', ['category' => $categories[2]->id]) }}">
-                                    <img class="img-fluid"
-                                        src="{{ $categories[2]->image ? asset('storage/' . $categories[2]->image) : asset('frontend/img/cat-3.jpg') }}"
-                                        alt="">
-                                    <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3"
-                                        style="margin: 1px;">
-                                        <h5 class="m-0">{{ $categories[2]->name }}</h5>
-                                        <small class="text-primary">{{ $categories[2]->courses_count }} Courses</small>
-                                    </div>
-                                </a>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-                @if (isset($categories[3]))
-                    <div class="col-lg-5 col-md-6 wow zoomIn" data-wow-delay="0.7s" style="min-height: 350px;">
-                        <a class="position-relative d-block h-100 overflow-hidden"
-                            href="{{ route('courses', ['category' => $categories[3]->id]) }}">
-                            <img class="img-fluid position-absolute w-100 h-100"
-                                src="{{ $categories[3]->image ? asset('storage/' . $categories[3]->image) : asset('frontend/img/cat-4.jpg') }}"
-                                alt="" style="object-fit: cover;">
-                            <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3"
-                                style="margin: 1px;">
-                                <h5 class="m-0">{{ $categories[3]->name }}</h5>
-                                <small class="text-primary">{{ $categories[3]->courses_count }} Courses</small>
-                            </div>
+                    <p class="lead text-secondary mb-5 pe-lg-5">
+                        Join millions of learners on the world's leading e-learning platform.
+                        Access expert-led courses in AI, development, design, and business strategies.
+                    </p>
+
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="#" class="btn btn-primary-custom btn-lg rounded-pill px-5 fw-semibold shadow-sm">
+                            Get Started
+                        </a>
+                        <a href="{{ route('courses') }}"
+                            class="btn btn-outline-dark btn-lg rounded-pill px-5 fw-semibold">
+                            View Courses
                         </a>
                     </div>
-                @endif
-            </div>
-        </div>
-    </div>
-    <!-- Category End -->
 
-    <!-- Courses Start -->
-    <div class="container-xxl py-5" id="courses">
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Courses</h6>
-                <h1 class="mb-5">Popular Courses</h1>
-            </div>
-            <div class="row g-4 justify-content-center">
-                @foreach ($popularCourses as $course)
-                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="course-item bg-light">
-                            <div class="position-relative overflow-hidden" style="height: 250px;">
-                                <img class="img-fluid w-100 h-100"
-                                    src="{{ $course->image ? asset('storage/' . $course->image) : asset('frontend/img/course-1.jpg') }}"
-                                    alt="{{ $course->title }}" style="object-fit: cover;">
-                                <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
-                                    <a href="{{ route('course.detail', $course->id) }}"
-                                        class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
-                                        style="border-radius: 30px 0 0 30px;">Read More</a>
-                                    <form action="{{ route('purchase.initiate') }}" method="POST" class="d-inline">
-                                        @csrf
-                                        <input type="hidden" name="type" value="course">
-                                        <input type="hidden" name="id" value="{{ $course->id }}">
-                                        <button type="submit" class="flex-shrink-0 btn btn-sm btn-primary px-3"
-                                            style="border-radius: 0 30px 30px 0;">Join Now</button>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="text-center p-4 pb-0">
-                                <h3 class="mb-0">₹{{ number_format($course->price, 2) }}</h3>
-                                <div class="mb-3">
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small>(123)</small>
-                                </div>
-                                <h5 class="mb-4">{{ $course->title }}</h5>
-                            </div>
-                            <div class="d-flex border-top">
-                                <small class="flex-fill text-center border-end py-2"><i
-                                        class="fa fa-user-tie text-primary me-2"></i>{{ $course->instructor->name ?? 'Instructor' }}</small>
-                                <small class="flex-fill text-center border-end py-2"><i
-                                        class="fa fa-clock text-primary me-2"></i>1.49 Hrs</small>
-                                <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>30
-                                    Students</small>
-                            </div>
-                        </div>
+                </div>
+
+                <div class="col-lg-6 col-12 ps-lg-5">
+                    <div class="image-wrapper">
+                        <img src="{{ asset('frontend/img/Software integration-bro.png') }}" class="img-fluid rounded-5"
+                            alt="Student learning online">
                     </div>
-                @endforeach
+                </div>
+
             </div>
         </div>
-    </div>
-    <!-- Courses End -->
+    </section>
 
-    <!-- Featured Lectures Start -->
-    <div class="container-xxl py-5">
+    <section class="stats-section">
         <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Lectures</h6>
-                <h1 class="mb-5">Featured Lectures</h1>
-            </div>
             <div class="row g-4">
-                @foreach ($featuredLectures as $lecture)
-                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="course-item bg-light h-100 d-flex flex-column">
-                            <div class="position-relative overflow-hidden" style="height: 200px;">
-                                <img class="img-fluid w-100 h-100" src="{{ asset('frontend/img/course-1.jpg') }}"
-                                    alt="" style="object-fit: cover;">
-                                <div class="position-absolute top-0 start-0 m-3">
-                                    <span class="badge {{ $lecture->is_free ? 'bg-success' : 'bg-primary' }}">
-                                        {{ $lecture->is_free ? 'FREE' : '₹' . number_format($lecture->price, 2) }}
-                                    </span>
+
+                <div
+                    class="col-lg-3 col-md-6 col-12 d-flex align-items-center justify-content-center border-end-custom">
+                    <div class="icon-box rounded-circle p-3 me-3">
+                        <i class="bi bi-laptop fs-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold mb-0"><span class="counter" data-target="8000">0</span>+</h3>
+                        <p class="mb-0 small opacity-75">Online Courses</p>
+                    </div>
+                </div>
+
+                <div
+                    class="col-lg-3 col-md-6 col-12 d-flex align-items-center justify-content-center border-end-custom">
+                    <div class="icon-box rounded-circle p-3 me-3">
+                        <i class="bi bi-patch-check fs-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold mb-0"><span class="counter" data-target="450">0</span>+</h3>
+                        <p class="mb-0 small opacity-75">Expert Mentors</p>
+                    </div>
+                </div>
+
+                <div
+                    class="col-lg-3 col-md-6 col-12 d-flex align-items-center justify-content-center border-end-custom">
+                    <div class="icon-box rounded-circle p-3 me-3">
+                        <i class="bi bi-file-earmark-text fs-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold mb-0"><span class="counter" data-target="7000">0</span>+</h3>
+                        <p class="mb-0 small opacity-75">Certificates Issued</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-12 d-flex align-items-center justify-content-center">
+                    <div class="icon-box rounded-circle p-3 me-3">
+                        <i class="bi bi-globe fs-4"></i>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold mb-0"><span class="counter" data-target="120">0</span>+</h3>
+                        <p class="mb-0 small opacity-75">Countries</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-white mt-5">
+        <div class="container">
+
+            <div class="row align-items-end mb-5" data-aos="fade-up" data-aos-duration="1000">
+                <div class="col-md-8">
+                    <h6 class="text-primary fw-bold text-uppercase small ls-1 mb-2">
+                        <i class="fas fa-file-alt me-2"></i> Our Course Categories
+                    </h6>
+                    <h2 class="display-6 fw-bold text-dark">
+                        Top Most Unique Category
+                    </h2>
+                </div>
+
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <a href="{{ route('courses') }}" class="btn btn-primary px-4 py-2 rounded-2 fw-medium">
+                        ALL CATEGORY
+                        <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="row g-5">
+                @php
+                    $catIcons = [
+                        'fa-laptop-code',
+                        'fa-bullhorn',
+                        'fa-pen-nib',
+                        'fa-palette',
+                        'fa-atom',
+                        'fa-music',
+                        'fa-chart-line',
+                        'fa-briefcase',
+                    ];
+                @endphp
+
+                @forelse($categories as $index => $category)
+                    <div class="col-lg-3 col-md-6 col-12">
+                        <div class="card h-100 border rounded-3 p-3 shadow-sm hover-effect" data-aos="fade-up"
+                            data-aos-delay="{{ $index * 100 }}" data-aos-duration="1000">
+                            <div class="d-flex align-items-center">
+                                <div
+                                    class="icon-box-blue flex-shrink-0 d-flex align-items-center justify-content-center rounded-3 me-3">
+                                    <i class="fas {{ $catIcons[$index % count($catIcons)] }} fs-4"></i>
                                 </div>
-                            </div>
-                            <div class="text-center p-4 flex-grow-1">
-                                <h5 class="mb-3 text-truncate">{{ $lecture->title }}</h5>
-                                <p class="text-muted small mb-3">
-                                    {{ $lecture->short_description ?? Str::limit($lecture->description, 80) }}</p>
-                                <div class="d-flex justify-content-center">
-                                    @php
-                                        $hasAccess =
-                                            $lecture->is_free ||
-                                            (auth()->check() &&
-                                                (auth()->user()->hasRole('admin') ||
-                                                    auth()->user()->hasPurchased('lecture', $lecture->id) ||
-                                                    auth()->user()->enrolledCourses->contains($lecture->course_id)));
-                                    @endphp
-                                    @if ($hasAccess)
-                                        <a href="{{ route('lecture.view', $lecture->id) }}"
-                                            class="btn btn-sm btn-outline-primary px-4" style="border-radius: 30px;">View
-                                            Lecture</a>
-                                    @else
-                                        @guest
-                                            <a href="{{ route('login') }}" class="btn btn-sm btn-primary px-4"
-                                                style="border-radius: 30px;">Buy Now</a>
-                                        @else
-                                            <form action="{{ route('purchase.initiate') }}" method="POST">
-                                                @csrf
-                                                <input type="hidden" name="type" value="lecture">
-                                                <input type="hidden" name="id" value="{{ $lecture->id }}">
-                                                <button type="submit" class="btn btn-sm btn-primary px-4"
-                                                    style="border-radius: 30px;">Buy Now</button>
-                                            </form>
-                                        @endguest
-                                    @endif
+                                <div>
+                                    <h5 class="fw-bold text-dark mb-1 card-title">{{ $category->name }}</h5>
+                                    <p class="text-muted small mb-0">{{ $category->courses_count }} Courses</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="col-12 text-center text-muted py-5">
+                        <i class="fas fa-folder-open fa-3x mb-3 opacity-50"></i>
+                        <p>No categories available yet.</p>
+                    </div>
+                @endforelse
+
             </div>
         </div>
-    </div>
-    <!-- Featured Lectures End -->
+    </section>
 
-    <!-- Learning Materials Start -->
-    <div class="container-xxl py-5 bg-light">
+    <section class="py-5 bg-light position-relative">
         <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Resources</h6>
-                <h1 class="mb-5">Learning Materials</h1>
+
+            <div class="d-flex justify-content-between align-items-end mb-4" data-aos="fade-down"
+                data-aos-duration="800">
+                <div>
+                    <h6 class="text-primary fw-bold text-uppercase small ls-1 mb-2">
+                        <i class="fas fa-book-reader me-2"></i> Explore
+                    </h6>
+                    <h2 class="display-6 fw-bold text-dark">Popular Courses</h2>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button
+                        class="btn btn-white border rounded-circle shadow-sm p-0 d-flex align-items-center justify-content-center"
+                        id="scrollLeftBtn" style="width: 45px; height: 45px; transition: all 0.3s;">
+                        <i class="fas fa-chevron-left text-primary"></i>
+                    </button>
+                    <button
+                        class="btn btn-primary rounded-circle shadow-sm p-0 d-flex align-items-center justify-content-center"
+                        id="scrollRightBtn" style="width: 45px; height: 45px; transition: all 0.3s;">
+                        <i class="fas fa-chevron-right text-white"></i>
+                    </button>
+                </div>
             </div>
+
+            <div class="course-scroll-container d-flex gap-4 py-2" id="courseContainer">
+
+                @forelse($popularCourses as $index => $course)
+                    <a href="{{ route('course.detail', $course->id) }}"
+                        class="course-card border-0 rounded-3 shadow-sm bg-white flex-shrink-0 text-decoration-none d-block text-reset"
+                        data-aos="fade-up" data-aos-delay="{{ $index * 100 }}" data-aos-duration="1000">
+                        <div class="position-relative">
+                            @if ($course->image)
+                                <img src="{{ asset('storage/' . $course->image) }}"
+                                    class="card-img-top rounded-top-3" alt="{{ $course->title }}">
+                            @else
+                                <img src="https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=600&q=80"
+                                    class="card-img-top rounded-top-3" alt="{{ $course->title }}">
+                            @endif
+                            <span
+                                class="badge bg-primary position-absolute top-0 start-0 m-3">{{ $course->category->name ?? 'General' }}</span>
+                        </div>
+                        <div class="card-body p-3">
+                            <h5 class="fw-bold text-dark mb-3 text-truncate-2">{{ $course->title }}</h5>
+
+                            <div class="d-flex justify-content-between align-items-center text-muted small mb-3">
+                                <span><i class="far fa-clock me-1 text-primary"></i>
+                                    {{ $course->duration ?? 'N/A' }}</span>
+                                <span><i class="fas fa-book-open me-1 text-primary"></i>
+                                    {{ $course->lectures->count() }} Lessons</span>
+                                <span><i class="far fa-calendar-alt me-1 text-primary"></i>
+                                    {{ $course->created_at->format('M d') }}</span>
+                            </div>
+                        </div>
+                    </a>
+                @empty
+                    <div class="text-center text-muted py-5 w-100">
+                        <i class="fas fa-book-open fa-3x mb-3 opacity-50"></i>
+                        <p>No courses available yet.</p>
+                    </div>
+                @endforelse
+
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-white">
+        <div class="container">
+
+            <div class="text-center mb-5">
+                <h6 class="text-primary fw-bold text-uppercase small ls-1 mb-2">
+                    <i class="fas fa-chalkboard-teacher me-2"></i> Meet Our Team
+                </h6>
+                <h2 class="display-6 fw-bold text-dark">Expert Mentors</h2>
+                <p class="text-muted col-md-8 mx-auto">
+                    Learn from the very best. Our mentors are industry leaders with years of real-world experience.
+                </p>
+            </div>
+
             <div class="row g-4">
-                @foreach ($learningMaterials as $material)
-                    @php
-                        $hasAccess =
-                            $material->is_free ||
-                            (auth()->check() &&
-                                (auth()->user()->hasRole('admin') ||
-                                    auth()->user()->hasPurchased('material', $material->id) ||
-                                    ($material->lecture &&
-                                        (auth()->user()->hasPurchased('lecture', $material->lecture_id) ||
-                                            auth()
-                                                ->user()
-                                                ->enrolledCourses->contains($material->lecture->course_id)))));
 
-                        $type = 'Link';
-                        $icon = 'fa-link';
-                        if (!empty($material->video_path)) {
-                            $type = 'Video';
-                            $icon = 'fa-video';
-                        } elseif (!empty($material->file_path)) {
-                            $type = 'PDF / Document';
-                            $icon = 'fa-file-pdf';
-                        }
-                    @endphp
-                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="service-item bg-white text-center h-100 p-4 pt-5 shadow-sm">
-                            <div class="btn-square bg-primary rounded-circle mb-4"
-                                style="width: 64px; height: 64px; margin: 0 auto;">
-                                <i class="fa {{ $icon }} text-white"></i>
-                            </div>
-                            <small class="text-primary fw-bold text-uppercase">{{ $type }}</small>
-                            <h5 class="mb-3 mt-2">{{ $material->title }}</h5>
-                            <p class="text-muted small mb-3">
-                                {{ $material->short_description ?? 'High-quality resource for your learning journey.' }}
-                            </p>
-                            <div class="mb-3">
-                                <span class="fw-bold text-primary">
-                                    {{ $material->is_free ? 'FREE' : '₹' . number_format($material->price, 2) }}
-                                </span>
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                @if ($hasAccess)
-                                    <a href="{{ route('material.view', $material->id) }}"
-                                        class="btn btn-sm btn-outline-primary px-4" style="border-radius: 30px;">Download
-                                        / View</a>
-                                @else
-                                    @guest
-                                        <a href="{{ route('login') }}" class="btn btn-sm btn-primary px-4"
-                                            style="border-radius: 30px;">Buy Now</a>
-                                    @else
-                                        <form action="{{ route('purchase.initiate') }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="type" value="material">
-                                            <input type="hidden" name="id" value="{{ $material->id }}">
-                                            <button type="submit" class="btn btn-sm btn-primary px-4"
-                                                style="border-radius: 30px;">Buy Now</button>
-                                        </form>
-                                    @endguest
-                                @endif
-                            </div>
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div class="mentor-card text-center p-4 border rounded-3 bg-white h-100">
+                        <div class="img-wrapper mb-3 mx-auto position-relative">
+                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80"
+                                class="rounded-circle img-fluid shadow-sm" alt="Mentor 1">
+                            <span class="badge bg-primary position-absolute bottom-0 start-50 translate-middle-x">
+                                CEO & Founder
+                            </span>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-1">James Anderson</h5>
+                        <p class="text-muted small mb-3">Business Strategy Expert</p>
+
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="social-link"><i class="fas fa-globe"></i></a>
                         </div>
                     </div>
-                @endforeach
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div class="mentor-card text-center p-4 border rounded-3 bg-white h-100">
+                        <div class="img-wrapper mb-3 mx-auto position-relative">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80"
+                                class="rounded-circle img-fluid shadow-sm" alt="Mentor 2">
+                            <span class="badge bg-primary position-absolute bottom-0 start-50 translate-middle-x">
+                                Senior Dev
+                            </span>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-1">Sarah Jenkins</h5>
+                        <p class="text-muted small mb-3">Full Stack Developer</p>
+
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                            <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div class="mentor-card text-center p-4 border rounded-3 bg-white h-100">
+                        <div class="img-wrapper mb-3 mx-auto position-relative">
+                            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80"
+                                class="rounded-circle img-fluid shadow-sm" alt="Mentor 3">
+                            <span class="badge bg-primary position-absolute bottom-0 start-50 translate-middle-x">
+                                Marketing Pro
+                            </span>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-1">Michael Chen</h5>
+                        <p class="text-muted small mb-3">Digital Marketing Lead</p>
+
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-12">
+                    <div class="mentor-card text-center p-4 border rounded-3 bg-white h-100">
+                        <div class="img-wrapper mb-3 mx-auto position-relative">
+                            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80"
+                                class="rounded-circle img-fluid shadow-sm" alt="Mentor 4">
+                            <span class="badge bg-primary position-absolute bottom-0 start-50 translate-middle-x">
+                                UI/UX Lead
+                            </span>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-1">Emily Roberts</h5>
+                        <p class="text-muted small mb-3">Product Designer</p>
+
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" class="social-link"><i class="fab fa-dribbble"></i></a>
+                            <a href="#" class="social-link"><i class="fas fa-globe"></i></a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </div>
-    <!-- Learning Materials End -->
+    </section>
 
-    <!-- Practice Quizzes Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Practice</h6>
-                <h1 class="mb-5">Quiz Zone</h1>
-            </div>
-            <div class="row g-4">
-                @foreach ($practiceQuizzes as $quiz)
-                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="course-item bg-light h-100 d-flex flex-column border">
-                            <div class="p-4 text-center flex-grow-1">
-                                <div class="mb-3">
-                                    <i class="fa fa-question-circle fa-3x text-primary"></i>
-                                </div>
-                                <h5 class="mb-2">{{ $quiz->title }}</h5>
-                                <div class="d-flex justify-content-center mb-3">
-                                    <small class="border-end px-2"><i
-                                            class="fa fa-clock text-primary me-2"></i>{{ $quiz->duration }} Mins</small>
-                                    <small class="px-2"><i
-                                            class="fa fa-list text-primary me-2"></i>{{ $quiz->questions_count ?? 0 }}
-                                        Questions</small>
-                                </div>
-                                <p class="text-muted small mb-4">
-                                    {{ $quiz->short_description ?? 'Test your knowledge with this interactive quiz.' }}</p>
-                                <div class="mb-4">
-                                    <h4 class="text-primary">
-                                        {{ $quiz->is_free ? 'FREE' : '₹' . number_format($quiz->price, 2) }}</h4>
-                                </div>
-                            </div>
-                            <div class="p-4 pt-0 border-top bg-white text-center">
-                                @php
-                                    $hasAccess =
-                                        $quiz->is_free ||
-                                        (auth()->check() &&
-                                            (auth()->user()->hasRole('admin') ||
-                                                auth()->user()->hasPurchased('quiz', $quiz->id) ||
-                                                ($quiz->lecture &&
-                                                    (auth()->user()->hasPurchased('lecture', $quiz->lecture_id) ||
-                                                        auth()
-                                                            ->user()
-                                                            ->enrolledCourses->contains($quiz->lecture->course_id)))));
-                                @endphp
-                                @if ($hasAccess)
-                                    <a href="{{ route('quiz.view', $quiz->id) }}" class="btn btn-primary w-100 py-2"
-                                        style="border-radius: 0 0 15px 15px;">Attempt Now</a>
-                                @else
-                                    @guest
-                                        <a href="{{ route('login') }}" class="btn btn-dark w-100 py-2"
-                                            style="border-radius: 0 0 15px 15px;">Buy Now</a>
-                                    @else
-                                        <form action="{{ route('purchase.initiate') }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="type" value="quiz">
-                                            <input type="hidden" name="id" value="{{ $quiz->id }}">
-                                            <button type="submit" class="btn btn-dark w-100 py-2"
-                                                style="border-radius: 0 0 15px 15px;"><i
-                                                    class="fa fa-shopping-cart me-2"></i>Buy Now</button>
-                                        </form>
-                                    @endguest
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
-    <!-- Practice Quizzes End -->
+    @include('partials.footer')
 
-    <!-- Instructors Start -->
-    <div class="container-xxl py-5" id="instructors">
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Instructors</h6>
-                <h1 class="mb-5">Expert Instructors</h1>
-            </div>
-            <div class="row g-4 d-flex justify-content-center">
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="team-item bg-light">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="{{ asset('frontend/img/team-1.jpg') }}" alt="">
-                        </div>
-                        <div class="position-relative d-flex justify-content-center" style="margin-top: -23px;">
-                            <div class="bg-light d-flex justify-content-center pt-2 px-1">
-                                <a class="btn btn-sm-square btn-primary mx-1" href=""><i
-                                        class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-sm-square btn-primary mx-1" href=""><i
-                                        class="fab fa-twitter"></i></a>
-                                <a class="btn btn-sm-square btn-primary mx-1" href=""><i
-                                        class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                        <div class="text-center p-4">
-                            <h5 class="mb-0">Instructor Name</h5>
-                            <small>Designation</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="team-item bg-light">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="{{ asset('frontend/img/team-2.jpg') }}" alt="">
-                        </div>
-                        <div class="position-relative d-flex justify-content-center" style="margin-top: -23px;">
-                            <div class="bg-light d-flex justify-content-center pt-2 px-1">
-                                <a class="btn btn-sm-square btn-primary mx-1" href=""><i
-                                        class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-sm-square btn-primary mx-1" href=""><i
-                                        class="fab fa-twitter"></i></a>
-                                <a class="btn btn-sm-square btn-primary mx-1" href=""><i
-                                        class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                        <div class="text-center p-4">
-                            <h5 class="mb-0">Instructor Name</h5>
-                            <small>Designation</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="team-item bg-light">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="{{ asset('frontend/img/team-3.jpg') }}" alt="">
-                        </div>
-                        <div class="position-relative d-flex justify-content-center" style="margin-top: -23px;">
-                            <div class="bg-light d-flex justify-content-center pt-2 px-1">
-                                <a class="btn btn-sm-square btn-primary mx-1" href=""><i
-                                        class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-sm-square btn-primary mx-1" href=""><i
-                                        class="fab fa-twitter"></i></a>
-                                <a class="btn btn-sm-square btn-primary mx-1" href=""><i
-                                        class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                        <div class="text-center p-4">
-                            <h5 class="mb-0">Instructor Name</h5>
-                            <small>Designation</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
-                    <div class="team-item bg-light">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="{{ asset('frontend/img/team-4.jpg') }}" alt="">
-                        </div>
-                        <div class="position-relative d-flex justify-content-center" style="margin-top: -23px;">
-                            <div class="bg-light d-flex justify-content-center pt-2 px-1">
-                                <a class="btn btn-sm-square btn-primary mx-1" href=""><i
-                                        class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-sm-square btn-primary mx-1" href=""><i
-                                        class="fab fa-twitter"></i></a>
-                                <a class="btn btn-sm-square btn-primary mx-1" href=""><i
-                                        class="fab fa-instagram"></i></a>
-                            </div>
-                        </div>
-                        <div class="text-center p-4">
-                            <h5 class="mb-0">Instructor Name</h5>
-                            <small>Designation</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Instructors End -->
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="{{ asset('frontend/js/main.js') }}"></script>
+    <script src="{{ asset('frontend/js/components.js') }}"></script>
+</body>
 
-    <!-- Testimonial Start -->
-    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container">
-            <div class="text-center">
-                <h6 class="section-title bg-white text-center text-primary px-3">Testimonial</h6>
-                <h1 class="mb-5">Our Students Say!</h1>
-            </div>
-            <div class="owl-carousel testimonial-carousel position-relative">
-                <div class="testimonial-item text-center">
-                    <img class="border rounded-circle p-2 mx-auto mb-3"
-                        src="{{ asset('frontend/img/testimonial-1.jpg') }}" style="width: 80px; height: 80px;">
-                    <h5 class="mb-0">Client Name</h5>
-                    <p>Profession</p>
-                    <div class="testimonial-text bg-light text-center p-4">
-                        <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et
-                            eos. Clita erat ipsum et lorem et sit.</p>
-                    </div>
-                </div>
-                <div class="testimonial-item text-center">
-                    <img class="border rounded-circle p-2 mx-auto mb-3"
-                        src="{{ asset('frontend/img/testimonial-2.jpg') }}" style="width: 80px; height: 80px;">
-                    <h5 class="mb-0">Client Name</h5>
-                    <p>Profession</p>
-                    <div class="testimonial-text bg-light text-center p-4">
-                        <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et
-                            eos. Clita erat ipsum et lorem et sit.</p>
-                    </div>
-                </div>
-                <div class="testimonial-item text-center">
-                    <img class="border rounded-circle p-2 mx-auto mb-3"
-                        src="{{ asset('frontend/img/testimonial-3.jpg') }}" style="width: 80px; height: 80px;">
-                    <h5 class="mb-0">Client Name</h5>
-                    <p>Profession</p>
-                    <div class="testimonial-text bg-light text-center p-4">
-                        <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et
-                            eos. Clita erat ipsum et lorem et sit.</p>
-                    </div>
-                </div>
-                <div class="testimonial-item text-center">
-                    <img class="border rounded-circle p-2 mx-auto mb-3"
-                        src="{{ asset('frontend/img/testimonial-4.jpg') }}" style="width: 80px; height: 80px;">
-                    <h5 class="mb-0">Client Name</h5>
-                    <p>Profession</p>
-                    <div class="testimonial-text bg-light text-center p-4">
-                        <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et
-                            eos. Clita erat ipsum et lorem et sit.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Testimonial End -->
-@endsection
+</html>

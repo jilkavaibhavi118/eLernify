@@ -1,86 +1,73 @@
-<!-- Footer Start -->
-<div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
-    <div class="container py-5">
-        <div class="row g-5">
-            <div class="col-lg-3 col-md-6">
-                <h4 class="text-white mb-3">Quick Link</h4>
-                <a class="btn btn-link" href="{{ route('about') }}">About Us</a>
-                <a class="btn btn-link" href="{{ route('contact') }}">Contact Us</a>
-                <a class="btn btn-link" href="">Privacy Policy</a>
-                <a class="btn btn-link" href="">Terms & Condition</a>
-                <a class="btn btn-link" href="">FAQs & Help</a>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <h4 class="text-white mb-3">Contact</h4>
-                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
-                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
-                <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@example.com</p>
-                <div class="d-flex pt-2">
-                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-twitter"></i></a>
-                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-facebook-f"></i></a>
-                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-youtube"></i></a>
-                    <a class="btn btn-outline-light btn-social" href=""><i class="fab fa-linkedin-in"></i></a>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <h4 class="text-white mb-3">Gallery</h4>
-                <div class="row g-2 pt-2">
-                    <div class="col-4">
-                        <img class="img-fluid bg-light p-1" src="{{ asset('frontend/img/course-1.jpg') }}"
-                            alt="">
-                    </div>
-                    <div class="col-4">
-                        <img class="img-fluid bg-light p-1" src="{{ asset('frontend/img/course-2.jpg') }}"
-                            alt="">
-                    </div>
-                    <div class="col-4">
-                        <img class="img-fluid bg-light p-1" src="{{ asset('frontend/img/course-3.jpg') }}"
-                            alt="">
-                    </div>
-                    <div class="col-4">
-                        <img class="img-fluid bg-light p-1" src="{{ asset('frontend/img/course-2.jpg') }}"
-                            alt="">
-                    </div>
-                    <div class="col-4">
-                        <img class="img-fluid bg-light p-1" src="{{ asset('frontend/img/course-3.jpg') }}"
-                            alt="">
-                    </div>
-                    <div class="col-4">
-                        <img class="img-fluid bg-light p-1" src="{{ asset('frontend/img/course-1.jpg') }}"
-                            alt="">
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <h4 class="text-white mb-3">Newsletter</h4>
-                <p>Subscribe to our newsletter for the latest course updates.</p>
-                <div class="position-relative mx-auto" style="max-width: 400px;">
-                    <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email">
-                    <button type="button"
-                        class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<footer class="footer-section text-white pt-5 pb-4">
     <div class="container">
-        <div class="copyright">
-            <div class="row">
-                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    &copy; <a class="border-bottom" href="{{ url('/') }}">
-                        <img src="{{ asset('assets/img/elearnify (2).png') }}" alt="eLEARNIFY"
-                            style="height: 25px; margin-right: 5px; filter: brightness(0) invert(1);">
-                    </a>, All Right Reserved.
+        <div class="row g-4 justify-content-between">
+            <div class="col-lg-4 col-md-6">
+                <a class="navbar-brand text-white fw-bold fs-3 mb-3 d-block" href="{{ url('/') }}">
+                    <img src="{{ asset('frontend/img/logo.png') }}" alt="Elearnify Logo" class="footer-logo"> <span
+                        class="text-white">Elearnify</span>
+                </a>
+                <p class="text-light opacity-75 small mb-4">
+                    Empowering learners worldwide with accessible, high-quality education. Join the revolution today.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="#" class="footer-social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="footer-social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="footer-social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="footer-social-icon"><i class="fab fa-instagram"></i></a>
                 </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <div class="footer-menu">
-                        <a href="{{ url('/') }}">Home</a>
-                        <a href="">Cookies</a>
-                        <a href="">Help</a>
-                        <a href="">FQAs</a>
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <h6 class="fw-bold mb-3 text-white">Platform</h6>
+                <ul class="list-unstyled footer-links">
+                    <li><a href="{{ route('courses') }}">Browse Courses</a></li>
+                    <li><a href="{{ route('about') }}">About Us</a></li>
+                    <li><a href="{{ route('instructors') }}">Instructors</a></li>
+                    <li><a href="#">Enterprise</a></li>
+                    <li><a href="#">Pricing</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <h6 class="fw-bold mb-3 text-white">Contact Us</h6>
+                <ul class="list-unstyled footer-contact">
+                    <li class="mb-2 opacity-75 small">
+                        <i class="fas fa-envelope me-2 text-primary"></i> support@elearnify.com
+                    </li>
+                    <li class="mb-2 opacity-75 small">
+                        <i class="fas fa-phone me-2 text-primary"></i> +1 (555) 123-4567
+                    </li>
+                    <li class="opacity-75 small">
+                        <i class="fas fa-map-marker-alt me-2 text-primary"></i> 123 Education St, Tech City
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <h6 class="fw-bold mb-3 text-white">Stay Updated</h6>
+                <form action="#">
+                    <div class="input-group">
+                        <input type="email" class="form-control border-0 shadow-none fs-small"
+                            placeholder="Enter your email">
+                        <button class="btn btn-primary" type="button"><i class="fas fa-paper-plane"></i></button>
                     </div>
+                </form>
+                <small class="text-light opacity-50 d-block mt-2" style="font-size: 11px;">
+                    We respect your privacy. No spam.
+                </small>
+            </div>
+        </div>
+        <hr class="my-4 opacity-25">
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="small mb-0 opacity-75">&copy; 2024 Elearnify Inc. All rights reserved.</p>
+            </div>
+            <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                <div class="small">
+                    <a href="#" class="text-white text-decoration-none opacity-75 me-3">Privacy Policy</a>
+                    <a href="#" class="text-white text-decoration-none opacity-75">Terms of Service</a>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!-- Footer End -->
+</footer>
