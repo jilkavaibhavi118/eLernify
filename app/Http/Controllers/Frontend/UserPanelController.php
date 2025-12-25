@@ -30,7 +30,15 @@ class UserPanelController extends Controller
             })->count()
         ];
 
-        return view('frontend.user-panel.dashboard', compact('enrollments', 'stats'));
+        // Recommended Courses: Active courses the user is NOT enrolled in
+        $enrolledCourseIds = $enrollments->pluck('course_id')->toArray();
+        $recommendedCourses = \App\Models\Course::where('status', 'active') // Assuming 'active' is the status for visible courses
+            ->whereNotIn('id', $enrolledCourseIds)
+            ->inRandomOrder()
+            ->take(3)
+            ->get();
+
+        return view('frontend.user-panel.dashboard', compact('enrollments', 'stats', 'recommendedCourses'));
     }
 
     public function myCourses()
@@ -53,11 +61,12 @@ class UserPanelController extends Controller
         return view('frontend.user-panel.course-view', compact('enrollment'));
     }
 
-    public function lectureView($lectureId)
+    public function lectureView($lectureId, $materialId = null)
     {
         // Load lecture with course and its hierarchy (lectures -> quizzes)
         $lecture = Lecture::with([
-                'course.lectures.quizzes', // Hierarchical data for sidebar
+                'course.lectures.materials', 
+                'course.lectures.quizzes',
                 'materials',
                 'quizzes'
             ])->findOrFail($lectureId);
@@ -67,53 +76,81 @@ class UserPanelController extends Controller
             ->where('course_id', $lecture->course_id)
             ->firstOrFail();
 
-        // Calculate Progress
-        $lectures = $enrollment->course->lectures->sortBy('id')->values();
-        $totalLectures = max(1, $lectures->count());
-        $currentIndex = $lectures->search(fn ($l) => $l->id === $lecture->id);
+        // Find the specific material if provided, otherwise default to first video material
+        $activeMaterial = null;
+        if ($materialId) {
+            $activeMaterial = $lecture->materials->find($materialId);
+        }
         
-        // Simple progress: (Current Index + 1) / Total Lectures
-        if ($currentIndex !== false) {
-             // Logic could be improved to account for quizzes too, but keeping simple for now
-            $progressFromLectures = (($currentIndex + 1) / $totalLectures) * 100;
-            $enrollment->updateProgress($progressFromLectures);
+        if (!$activeMaterial) {
+            $activeMaterial = $lecture->materials->filter(fn($m) => !empty($m->video_path) || !empty($m->content_url))->first();
         }
 
         // Navigation Logic (Next/Previous)
         $next_url = null;
         $prev_url = null;
 
-        // Flatten the content sequence: Lecture -> [Quizzes] -> Next Lecture
+        // Flatten the content sequence: Lecture -> [Materials/Videos] -> [Quizzes] -> Next Lecture
         $sequence = collect([]);
         foreach ($enrollment->course->lectures as $l) {
-            // Add Lecture (Video)
-            $sequence->push(['type' => 'lecture', 'id' => $l->id, 'url' => route('user.lecture.view', $l->id)]);
+            // Add Video Materials for this Lecture
+            foreach ($l->materials as $m) {
+                if (!empty($m->video_path) || !empty($m->content_url)) {
+                    $sequence->push([
+                        'type' => 'material', 
+                        'id' => $m->id, 
+                        'title' => $m->title,
+                        'lecture_id' => $l->id,
+                        'url' => route('user.lecture.view', ['lectureId' => $l->id, 'materialId' => $m->id])
+                    ]);
+                }
+            }
             
             // Add Quizzes for this Lecture
             if ($l->quizzes) {
                 foreach ($l->quizzes as $q) {
-                    $sequence->push(['type' => 'quiz', 'id' => $q->id, 'url' => route('user.quiz.view', $q->id)]);
+                    $sequence->push([
+                        'type' => 'quiz', 
+                        'id' => $q->id, 
+                        'title' => 'Quiz: ' . $q->title,
+                        'lecture_id' => $l->id,
+                        'url' => route('user.quiz.view', $q->id)
+                    ]);
                 }
             }
         }
 
-        // Find current position
-        $currentPosition = $sequence->search(function ($item) use ($lecture) {
-            return $item['type'] === 'lecture' && $item['id'] === $lecture->id;
+        // Find current position in sequence
+        $currentPosition = $sequence->search(function ($item) use ($lecture, $activeMaterial) {
+            if ($item['type'] === 'material') {
+                return $activeMaterial && $item['id'] === $activeMaterial->id;
+            }
+            return false; // Quizzes are handled on the quiz view page anyway
         });
 
+        $prev_title = null;
+        $next_title = null;
         if ($currentPosition !== false) {
-            // Previous
+            // Update Progress: (Total items viewed / Total items) * 100
+            $totalItems = max(1, $sequence->count());
+            $newProgress = (($currentPosition + 1) / $totalItems) * 100;
+            
+            // Only update if it's an improvement (to handle going back)
+            if ($newProgress > ($enrollment->progress ?? 0)) {
+                $enrollment->updateProgress($newProgress);
+            }
+
             if ($currentPosition > 0) {
                 $prev_url = $sequence[$currentPosition - 1]['url'];
+                $prev_title = $sequence[$currentPosition - 1]['title'];
             }
-            // Next
             if ($currentPosition < $sequence->count() - 1) {
                 $next_url = $sequence[$currentPosition + 1]['url'];
+                $next_title = $sequence[$currentPosition + 1]['title'];
             }
         }
 
-        return view('frontend.user-panel.lecture-view', compact('lecture', 'enrollment', 'next_url', 'prev_url'));
+        return view('frontend.user-panel.lecture-view', compact('lecture', 'activeMaterial', 'enrollment', 'next_url', 'prev_url', 'next_title', 'prev_title'));
     }
 
     public function quizView($quizId)
@@ -145,10 +182,29 @@ class UserPanelController extends Controller
         // Safety check regarding course existence
         if ($enrollment->course && $enrollment->course->lectures) {
             foreach ($enrollment->course->lectures as $l) {
-                $sequence->push(['type' => 'lecture', 'id' => $l->id, 'url' => route('user.lecture.view', $l->id)]);
+                // Add Video Materials
+                foreach ($l->materials as $m) {
+                    if (!empty($m->video_path) || !empty($m->content_url)) {
+                        $sequence->push([
+                            'type' => 'material', 
+                            'id' => $m->id, 
+                            'title' => $m->title,
+                            'lecture_id' => $l->id,
+                            'url' => route('user.lecture.view', ['lectureId' => $l->id, 'materialId' => $m->id])
+                        ]);
+                    }
+                }
+
+                // Add Quizzes
                 if ($l->quizzes) {
                     foreach ($l->quizzes as $q) {
-                        $sequence->push(['type' => 'quiz', 'id' => $q->id, 'url' => route('user.quiz.view', $q->id)]);
+                        $sequence->push([
+                            'type' => 'quiz', 
+                            'id' => $q->id, 
+                            'title' => 'Quiz: ' . $q->title,
+                            'lecture_id' => $l->id,
+                            'url' => route('user.quiz.view', $q->id)
+                        ]);
                     }
                 }
             }
@@ -159,16 +215,35 @@ class UserPanelController extends Controller
         });
 
         if ($currentPosition !== false) {
-            if ($currentPosition > 0) $prev_url = $sequence[$currentPosition - 1]['url'];
-            if ($currentPosition < $sequence->count() - 1) $next_url = $sequence[$currentPosition + 1]['url'];
-        }
+            // Update Progress for Quiz (optional, usually quizzes also count towards progress)
+            $totalItems = max(1, $sequence->count());
+            $newProgress = (($currentPosition + 1) / $totalItems) * 100;
+            if ($newProgress > ($enrollment->progress ?? 0)) {
+                $enrollment->updateProgress($newProgress);
+            }
 
-        return view('frontend.user-panel.quiz-view', compact('quiz', 'enrollment', 'next_url', 'prev_url'));
+            if ($currentPosition > 0) {
+                $prev_url = $sequence[$currentPosition - 1]['url'];
+                $prev_title = $sequence[$currentPosition - 1]['title'];
+            }
+            if ($currentPosition < $sequence->count() - 1) {
+                $next_url = $sequence[$currentPosition + 1]['url'];
+                $next_title = $sequence[$currentPosition + 1]['title'];
+            }
+        }
+        
+        $prev_title = $prev_title ?? null;
+        $next_title = $next_title ?? null;
+
+        return view('frontend.user-panel.quiz-view', compact('quiz', 'enrollment', 'next_url', 'prev_url', 'next_title', 'prev_title'));
     }
 
     public function quizSubmit(Request $request, $quizId)
     {
         $quiz = Quiz::with(['questions.options', 'lecture'])->findOrFail($quizId);
+
+        // Define courseId for enrollment check
+        $courseId = $quiz->course_id ?? ($quiz->lecture ? $quiz->lecture->course_id : null);
 
         // Verify access (either free, enrolled, or purchased)
         $hasAccess = $quiz->is_free || auth()->user()->hasPurchased('quiz', $quizId);
@@ -240,6 +315,7 @@ class UserPanelController extends Controller
             ->firstOrFail();
 
         $quiz = $attempt->quiz;
+        $courseId = $quiz->course_id ?? ($quiz->lecture ? $quiz->lecture->course_id : null);
         
         // Verify access (either free, enrolled, or purchased)
         $hasAccess = $quiz->is_free || auth()->user()->hasPurchased('quiz', $quiz->id);
@@ -351,5 +427,20 @@ class UserPanelController extends Controller
             ->get();
 
         return view('frontend.user-panel.purchases', compact('orders'));
+    }
+
+    public function downloadCertificate($enrollmentId)
+    {
+        $enrollment = Enrollment::where('id', $enrollmentId)
+            ->where('user_id', Auth::id())
+            ->where('status', 'completed')
+            ->with('course', 'user')
+            ->firstOrFail();
+
+        // Generate PDF certificate
+        $pdf = \PDF::loadView('frontend.certificates.template', compact('enrollment'))
+            ->setPaper('a4', 'landscape'); // Landscape/Rectangle format
+
+        return $pdf->download('certificate-' . str_replace(' ', '-', $enrollment->course->title) . '.pdf');
     }
 }

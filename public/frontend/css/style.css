@@ -30,6 +30,20 @@ body {
     /* Slate Gray for body text */
 }
 
+/*** Spinner ***/
+#spinner {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .5s ease-out, visibility 0s linear .5s;
+    z-index: 99999;
+}
+
+#spinner.show {
+    transition: opacity .5s ease-out, visibility 0s linear 0s;
+    visibility: visible;
+    opacity: 1;
+}
+
 /* --- 2. NAVBAR --- */
 .navbar {
     padding-top: 1rem;
@@ -1504,103 +1518,196 @@ body {
     height: 550px;
     width: 100%;
     margin-top: 20px;
+    perspective: 1000px;
 }
 
 .collage-img {
     position: absolute;
-    border-radius: 24px; /* More rounded corners */
-    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
     object-fit: cover;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: 6px solid white;
 }
 
 .collage-img:hover {
-    transform: scale(1.02) translateY(-10px);
-    z-index: 20;
+    transform: translateY(-15px) scale(1.03);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.18);
+    z-index: 30 !important;
 }
 
 .img-main {
-    width: 320px;
-    height: 480px;
+    width: 340px;
+    height: 500px;
     z-index: 5;
     left: 0;
     top: 0;
 }
 
 .img-secondary-top {
-    width: 300px;
-    height: 200px;
+    width: 320px;
+    height: 220px;
     right: 0;
     top: 40px;
     z-index: 10;
-    border: 8px solid white; /* Premium border look */
 }
 
 .img-secondary-bottom {
-    width: 280px;
-    height: 200px;
+    width: 300px;
+    height: 220px;
     right: 40px;
     bottom: 20px;
     z-index: 10;
-    border: 8px solid white;
+}
+
+/* Floating Experience Badge */
+.experience-badge-float {
+    position: absolute;
+    left: -30px;
+    top: 60%;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(10, 34, 131, 0.15);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    max-width: 200px;
+    border: 1px solid rgba(10, 34, 131, 0.05);
+}
+
+.experience-badge-float .icon-circle {
+    width: 50px;
+    height: 50px;
+    background: var(--primary-blue);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.experience-badge-float .badge-text h4 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--primary-blue) !important;
+}
+
+.experience-badge-float .badge-text p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-gray);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+/* Floating Student Stats Card */
+.stats-card-float {
+    position: absolute;
+    right: -20px;
+    bottom: 15%;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    padding: 1.25rem;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    z-index: 25;
+    border: 1px solid white;
+}
+
+.stats-card-float .stat-item-mini {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stats-card-float .stat-icon {
+    width: 40px;
+    height: 40px;
+    background: #eef2ff;
+    color: var(--primary-blue);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.stats-card-float .stat-info h5 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-dark) !important;
+}
+
+.stats-card-float .stat-info p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--text-gray);
+    font-weight: 500;
 }
 
 /* Decorative Shapes */
 .shape-dots {
     position: absolute;
-    width: 120px;
-    height: 120px;
-    background-image: radial-gradient(#3b82f6 2px, transparent 2px);
-    background-size: 16px 16px;
+    width: 140px;
+    height: 140px;
+    background-image: radial-gradient(var(--primary-blue) 2px, transparent 2px);
+    background-size: 20px 20px;
     z-index: 1;
-    opacity: 0.25;
+    opacity: 0.15;
 }
 
 .dots-left-bottom {
-    left: -20px;
-    bottom: 20px;
+    left: -40px;
+    bottom: -20px;
 }
 
 .dots-right-top {
-    right: 20px;
-    top: -10px;
+    right: -20px;
+    top: -30px;
 }
 
 .shape-arc {
     position: absolute;
-    width: 140px;
-    height: 140px;
-    border: 40px solid #22d3ee;
+    width: 160px;
+    height: 160px;
+    border: 45px solid #22d3ee;
     border-bottom: 0;
     border-left: 0;
-    border-radius: 0 140px 0 0;
-    right: -20px;
-    top: -20px;
+    border-radius: 0 160px 0 0;
+    right: -40px;
+    top: -40px;
     z-index: 2;
-    opacity: 0.8;
+    opacity: 0.4;
 }
 
 .shape-triangle {
     position: absolute;
     width: 0;
     height: 0;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-    border-bottom: 35px solid #f97316; /* Orange triangle */
-    right: 10%;
-    top: 50%;
+    border-left: 25px solid transparent;
+    border-right: 25px solid transparent;
+    border-bottom: 40px solid #f97316;
+    right: 15%;
+    top: 45%;
     z-index: 2;
-    transform: rotate(15deg);
+    transform: rotate(20deg);
 }
 
 .shape-star {
     position: absolute;
-    font-size: 70px;
+    font-size: 80px;
     color: #fbbf24;
-    right: -10px;
-    bottom: 40px;
+    left: -40px;
+    top: 10px;
     z-index: 2;
-    animation: rotateStar 15s linear infinite;
+    animation: rotateStar 20s linear infinite;
+    opacity: 0.8;
 }
 
 @keyframes rotateStar {
@@ -1609,19 +1716,25 @@ body {
 }
 
 @media (max-width: 1200px) {
-    .img-main { width: 280px; height: 420px; }
-    .img-secondary-top { width: 260px; height: 180px; }
-    .img-secondary-bottom { width: 240px; height: 180px; }
+    .img-main { width: 300px; height: 450px; }
+    .img-secondary-top { width: 280px; height: 200px; }
+    .img-secondary-bottom { width: 260px; height: 200px; }
+    .experience-badge-float { left: -10px; padding: 1rem; }
 }
 
 @media (max-width: 991px) {
     .about-image-collage {
-        height: 650px;
+        height: 600px;
         margin-top: 40px;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
     }
     .img-main { left: 50%; transform: translateX(-50%); top: 0; }
-    .img-secondary-top { top: 220px; left: 60%; right: auto; border: 4px solid white;}
-    .img-secondary-bottom { bottom: 0; left: 10%; right: auto; border: 4px solid white;}
+    .img-secondary-top { top: 220px; left: 60%; right: auto; }
+    .img-secondary-bottom { bottom: 0; left: 0%; right: auto; }
+    .experience-badge-float { left: 0; top: 10%; }
+    .stats-card-float { right: 0; bottom: 5%; }
 }
 
 /* --- CUSTOM PROGRESS BAR --- */
@@ -1687,6 +1800,247 @@ body {
     font-size: 0.75rem;
     color: #6b7280;
     margin-top: 10px;
+}
+
+/* --- ACADEMIC SYSTEM SECTION --- */
+.academic-section {
+    position: relative;
+    padding: 100px 0;
+    background-color: #f8fafc;
+    overflow: hidden;
+}
+
+/* Background Decorations */
+.academic-bg-shape {
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+.shape-wave-top {
+    top: 50px;
+    right: -50px;
+    width: 300px;
+    height: 300px;
+    transform: rotate(-15deg);
+}
+
+.shape-wave-bottom {
+    bottom: 50px;
+    left: -50px;
+    width: 300px;
+    height: 300px;
+    transform: rotate(15deg);
+}
+
+.shape-circles {
+    top: 20%;
+    left: 5%;
+    width: 150px;
+    height: 150px;
+    opacity: 0.1;
+}
+
+/* Heading Style */
+.section-title-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 50px;
+}
+
+.title-underline {
+    position: relative;
+    display: inline-block;
+}
+
+.title-underline::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -15px;
+    width: 100%;
+    height: 18px;
+    background: url("data:image/svg+xml,%3Csvg width='200' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 Q 25 20 50 10 T 100 10 T 150 10 T 200 10' stroke='%23f59e0b' stroke-width='6' fill='transparent'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: -1;
+}
+
+/* Academic Cards */
+.academic-cards-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 20px;
+}
+
+.academic-card {
+    background: white;
+    padding: 40px 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    width: calc(20% - 20px); /* 5 cards in a row */
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+}
+
+.academic-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 20px 50px rgba(10, 34, 131, 0.12);
+    border-color: rgba(10, 34, 131, 0.1);
+}
+
+.academic-card .icon-wrapper {
+    width: 70px;
+    height: 70px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 25px;
+    transition: transform 0.4s ease;
+}
+
+.academic-card:hover .icon-wrapper {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.academic-card h5 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-dark) !important;
+    line-height: 1.4;
+    margin-top: 0;
+}
+
+/* Icon Variations */
+.icon-zoom { background-color: #eef2ff; color: #2d8cff; }
+.icon-expert { background-color: #f0fdf4; color: #22c55e; }
+.icon-methods { background-color: #fff7ed; color: #f97316; }
+.icon-support { background-color: #fdf2f8; color: #ec4899; }
+.icon-help { background-color: #eff6ff; color: #3b82f6; }
+
+@media (max-width: 1200px) {
+    .academic-card {
+        width: calc(33.33% - 20px);
+    }
+}
+
+@media (max-width: 768px) {
+    .academic-card {
+        width: 100%;
+        max-width: 350px;
+    }
+    .academic-section {
+        padding: 60px 0;
+    }
+}
+
+/* --- WHY ELEARNIFY SHOWCASE --- */
+.feature-showcase-wrapper {
+    position: relative;
+    padding: 30px;
+    display: inline-block;
+}
+
+.main-feature-img {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 30px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    border: 8px solid white;
+    transition: transform 0.5s ease;
+}
+
+.feature-showcase-wrapper:hover .main-feature-img {
+    transform: scale(1.02);
+}
+
+/* Floating Badge Base */
+.feature-badge-float {
+    position: absolute;
+    background: white;
+    padding: 12px 20px;
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 10;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    animation: floatAnimation 4s ease-in-out infinite;
+}
+
+@keyframes floatAnimation {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+/* Specific Badge Positions */
+.badge-support {
+    top: 10%;
+    right: -20px;
+    animation-delay: 0s;
+}
+
+.badge-certificate {
+    bottom: 20%;
+    left: -40px;
+    animation-delay: 1s;
+}
+
+.badge-feedback {
+    bottom: -10px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    animation-delay: 0.5s;
+}
+
+.feature-badge-float .badge-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.icon-blue { background: #eff6ff; color: #3b82f6; }
+.icon-orange { background: #fff7ed; color: #f97316; }
+.icon-green { background: #f0fdf4; color: #22c55e; }
+
+.badge-info h6 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-dark) !important;
+}
+
+.badge-info p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--text-gray);
+    font-weight: 500;
+}
+
+@media (max-width: 991px) {
+    .feature-showcase-wrapper {
+        margin-top: 50px;
+    }
+    .badge-certificate { left: 0; }
+    .badge-support { right: 0; }
 }
 
 

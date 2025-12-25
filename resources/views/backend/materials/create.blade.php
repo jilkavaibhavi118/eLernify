@@ -92,10 +92,12 @@
 
                             <div class="col-md-12 mt-3">
                                 <div class="form-group">
-                                    <label for="content_url">External URL</label>
+                                    <label for="content_url">External URL / YouTube Link</label>
                                     <input type="url" name="content_url"
                                         class="form-control @error('content_url') is-invalid @enderror"
-                                        placeholder="https://example.com/video" value="{{ old('content_url') }}">
+                                        placeholder="https://example.com/video or https://youtube.com/watch?v=..."
+                                        value="{{ old('content_url') }}">
+                                    <small class="text-muted">Enter a YouTube URL to embed the video directly.</small>
                                     @error('content_url')
                                         <div class="text-danger mt-1" style="font-size: 0.875rem;">{{ $message }}</div>
                                     @enderror

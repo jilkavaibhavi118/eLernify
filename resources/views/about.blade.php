@@ -71,19 +71,42 @@
                         <div class="shape-dots dots-right-top" data-aos="fade-down"></div>
                         <div class="shape-arc" data-aos="zoom-in"></div>
                         <div class="shape-triangle" data-aos="fade-right" data-aos-delay="400"></div>
-                        <i class="fas fa-sun shape-star" data-aos="zoom-in" data-aos-delay="600"></i>
+                        <i class="fas fa-star shape-star" data-aos="zoom-in" data-aos-delay="600"></i>
 
-                        <!-- Images -->
+                        <!-- images -->
                         <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80"
-                            class="collage-img img-main" alt="Instructor" data-aos="fade-up">
+                            class="collage-img img-main" alt="Instructor" data-aos="fade-right" data-aos-delay="200">
 
                         <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=400&q=80"
-                            class="collage-img img-secondary-top" alt="Students Learning" data-aos="fade-down"
-                            data-aos-delay="300">
+                            class="collage-img img-secondary-top shadow-lg" alt="Students Learning" data-aos="fade-down"
+                            data-aos-delay="400">
 
                         <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=400&q=80"
-                            class="collage-img img-secondary-bottom" alt="Study Materials" data-aos="fade-up"
-                            data-aos-delay="500">
+                            class="collage-img img-secondary-bottom shadow-lg" alt="Study Materials" data-aos="fade-up"
+                            data-aos-delay="600">
+
+                        <!-- Floating Badges -->
+                        <div class="experience-badge-float" data-aos="fade-right" data-aos-delay="800">
+                            <div class="icon-circle">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <div class="badge-text">
+                                <h4>10+</h4>
+                                <p>Years of Academic Excellence</p>
+                            </div>
+                        </div>
+
+                        <div class="stats-card-float" data-aos="fade-left" data-aos-delay="900">
+                            <div class="stat-item-mini">
+                                <div class="stat-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h5>25k+</h5>
+                                    <p>Happy Students</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -91,77 +114,68 @@
         </div>
     </section>
 
-    <section class="py-5 bg-light">
-        <div class="container text-center">
-            <span class="text-primary fw-semibold">Our Academic System</span>
-            <h2 class="fw-bold mt-2">Structured & Practical Learning</h2>
-            <p class="text-muted mt-3 mb-5">
-                Our academic system is designed to keep learning simple, effective
-                and industry focused.
-            </p>
-
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm p-4">
-                        <h5 class="fw-semibold">Step-by-Step Learning</h5>
-                        <p class="text-muted mb-0">
-                            Courses are structured from basics to advanced topics.
-                        </p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm p-4">
-                        <h5 class="fw-semibold">Practical Approach</h5>
-                        <p class="text-muted mb-0">
-                            Learn with real-world examples and projects.
-                        </p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm p-4">
-                        <h5 class="fw-semibold">Progress Tracking</h5>
-                        <p class="text-muted mb-0">
-                            Track performance using quizzes and milestones.
-                        </p>
-                    </div>
-                </div>
-            </div>
+    <!-- ACADEMIC SYSTEM SECTION -->
+    <section class="academic-section">
+        <!-- Background Decorations -->
+        <div class="academic-bg-shape shape-wave-top" data-aos="fade-left">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#0A2283"
+                    d="M44.7,-76.4C58.1,-69.2,69.2,-58.1,76.4,-44.7C83.7,-31.3,87.1,-15.7,87.1,0C87.1,15.7,83.7,31.3,76.4,44.7C69.2,58.1,58.1,69.2,44.7,76.4C31.3,83.7,15.7,87.1,0,87.1C-15.7,87.1,-31.3,83.7,-44.7,76.4C-58.1,69.2,-69.2,58.1,-76.4,44.7C-83.7,31.3,-87.1,15.7,-87.1,0C-87.1,-15.7,-83.7,-31.3,-76.4,-44.7C-69.2,-58.1,-58.1,-69.2,-44.7,-76.4C-31.3,-83.7,-15.7,-87.1,0,-87.1C15.7,-87.1,31.3,-83.7,44.7,-76.4Z"
+                    transform="translate(100 100)" opacity="0.05" />
+            </svg>
         </div>
-    </section>
+        <div class="academic-bg-shape shape-wave-bottom" data-aos="fade-right">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#22D3EE"
+                    d="M38.1,-65.4C50.1,-58.5,61.1,-49.4,68.6,-37.7C76.1,-26,80.1,-13,79.1,-0.6C78,11.8,71.9,23.6,63.6,33.9C55.3,44.2,44.8,53.1,32.9,59.8C20.9,66.4,7.5,70.9,-5.8,70.9C-19.1,70.9,-32.2,66.4,-43.8,58.1C-55.5,49.8,-65.7,37.7,-71.4,24C-77.1,10.3,-78.3,-4.9,-75.1,-19.1C-71.9,-33.3,-64.3,-46.5,-53.1,-53.9C-41.9,-61.2,-27.1,-62.7,-14.2,-64.8C-1.3,-66.9,12.5,-69.6,26.1,-72.3C39.7,-75,53.1,-77.7,38.1,-65.4Z"
+                    transform="translate(100 100)" opacity="0.1" />
+            </svg>
+        </div>
 
-    <section class="py-5">
         <div class="container text-center">
-            <span class="text-primary fw-semibold">Instructors</span>
-            <h2 class="fw-bold mt-2">Learn from Industry Experts</h2>
-            <p class="text-muted mt-3 mb-5">
-                Our instructors focus on teaching skills that are actually
-                required in real projects.
-            </p>
+            <div class="section-title-wrapper" data-aos="fade-up">
+                <h2 class="fw-extrabold mt-2 display-6 title-underline">Modern & Industry Focused Curriculum</h2>
+            </div>
 
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm p-4 h-100">
-                        <h5 class="fw-semibold">Experienced Mentors</h5>
-                        <p class="text-muted mb-0">
-                            Professionals with strong industry experience.
-                        </p>
+            <div class="academic-cards-row">
+                <!-- Card 1: Live Zoom -->
+                <div class="academic-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="icon-wrapper icon-zoom">
+                        <i class="fas fa-video"></i>
                     </div>
+                    <h5>Live Zoom sessions</h5>
                 </div>
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm p-4 h-100">
-                        <h5 class="fw-semibold">Clear Teaching Style</h5>
-                        <p class="text-muted mb-0">
-                            Simple explanations with practical examples.
-                        </p>
+
+                <!-- Card 2: Skilled Educators -->
+                <div class="academic-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="icon-wrapper icon-expert">
+                        <i class="fas fa-graduation-cap"></i>
                     </div>
+                    <h5>Highly skilled online educators</h5>
                 </div>
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm p-4 h-100">
-                        <h5 class="fw-semibold">Continuous Guidance</h5>
-                        <p class="text-muted mb-0">
-                            Support throughout the learning journey.
-                        </p>
+
+                <!-- Card 3: Teaching Methods -->
+                <div class="academic-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="icon-wrapper icon-methods">
+                        <i class="fas fa-layer-group"></i>
                     </div>
+                    <h5>Modern Teaching Methods & Materials</h5>
+                </div>
+
+                <!-- Card 4: 10-Min Support -->
+                <div class="academic-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="icon-wrapper icon-support">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h5>10-minute academic support after class</h5>
+                </div>
+
+                <!-- Card 5: Weekly Help -->
+                <div class="academic-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="icon-wrapper icon-help">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h5>Weekly extra help & guidance</h5>
                 </div>
             </div>
         </div>
@@ -188,9 +202,43 @@
                 </div>
 
                 <div class="col-lg-6 text-center">
-                    <div class="p-5 bg-white shadow-sm rounded" data-aos="fade-left">
-                        <!-- Illustration / image placeholder -->
-                        <h5 class="fw-semibold mb-0">Elearnify Learning Experience</h5>
+                    <div class="feature-showcase-wrapper" data-aos="fade-left">
+                        <!-- Main Illustration Image -->
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop"
+                            class="main-feature-img shadow-lg" alt="Elearnify Learning Experience">
+
+                        <!-- Floating Badge 1: Support -->
+                        <div class="feature-badge-float badge-support">
+                            <div class="badge-icon icon-blue">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <div class="badge-info">
+                                <h6>Access Materials</h6>
+                                <p>vedios, pdf, quizes</p>
+                            </div>
+                        </div>
+
+                        <!-- Floating Badge 2: Certificate -->
+                        <div class="feature-badge-float badge-certificate">
+                            <div class="badge-icon icon-orange">
+                                <i class="fas fa-certificate"></i>
+                            </div>
+                            <div class="badge-info">
+                                <h6>Official Certificates</h6>
+                                <p>Verified & Valid</p>
+                            </div>
+                        </div>
+
+                        <!-- Floating Badge 3: Feedback -->
+                        <div class="feature-badge-float badge-feedback">
+                            <div class="badge-icon icon-green">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="badge-info">
+                                <h6>98% Positive</h6>
+                                <p>Student Feedback</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

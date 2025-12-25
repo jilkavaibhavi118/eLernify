@@ -92,7 +92,8 @@ Route::get('/contact', function () {
 })->name('contact');
 
 Route::get('/instructors', function () {
-    return view('partials.instructors');
+    $instructors = \App\Models\Instructor::where('status', 'active')->get();
+    return view('partials.instructors', compact('instructors'));
 })->name('instructors');
 
 // ✅ Course Detail Page
@@ -109,12 +110,13 @@ Route::middleware(['auth', 'check.user.status'])->prefix('my')->name('user.')->g
     Route::get('/dashboard', [UserPanelController::class, 'dashboard'])->name('dashboard');
     Route::get('/courses', [UserPanelController::class, 'myCourses'])->name('courses');
     Route::get('/course/{enrollmentId}', [UserPanelController::class, 'courseView'])->name('course.view');
-    Route::get('/lecture/{lectureId}', [UserPanelController::class, 'lectureView'])->name('lecture.view');
+    Route::get('/lecture/{lectureId}/{materialId?}', [UserPanelController::class, 'lectureView'])->name('lecture.view');
     Route::get('/quiz/{quizId}', [UserPanelController::class, 'quizView'])->name('quiz.view');
     Route::post('/quiz/{quizId}/submit', [UserPanelController::class, 'quizSubmit'])->name('quiz.submit');
     Route::get('/quiz/result/{attemptId}', [UserPanelController::class, 'quizResult'])->name('quiz.result'); // New Route
     Route::get('/profile', [UserPanelController::class, 'profile'])->name('profile');
     Route::post('/profile', [UserPanelController::class, 'profileUpdate'])->name('profile.update');
+    Route::get('/certificate/download/{enrollmentId}', [UserPanelController::class, 'downloadCertificate'])->name('certificate.download');
     Route::post('/profile/experience', [UserPanelController::class, 'addExperience'])->name('profile.experience.add');
     Route::delete('/profile/experience/{id}', [UserPanelController::class, 'deleteExperience'])->name('profile.experience.delete');
     Route::post('/profile/education', [UserPanelController::class, 'addEducation'])->name('profile.education.add');

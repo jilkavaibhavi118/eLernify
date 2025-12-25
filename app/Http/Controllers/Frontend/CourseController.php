@@ -116,7 +116,10 @@ class CourseController extends Controller
             'status' => 'pending'
         ]);
 
-        return view('frontend.payment-checkout', compact('course', 'razorpayOrder'));
+        return view('frontend.payment-checkout', compact('course', 'razorpayOrder'))->with([
+            'item' => $course,
+            'type' => 'course'
+        ]);
     }
 
     public function verifyPayment(Request $request)

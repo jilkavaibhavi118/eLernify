@@ -26,6 +26,9 @@ class ResourceController extends Controller
         } elseif ($material->video_path) {
             return view('frontend.resources.video', compact('material'));
         } elseif ($material->content_url) {
+            if (str_contains($material->content_url, 'youtube.com') || str_contains($material->content_url, 'youtu.be')) {
+                return view('frontend.resources.video', compact('material'));
+            }
             return redirect()->away($material->content_url);
         }
 

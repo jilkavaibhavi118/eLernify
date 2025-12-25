@@ -55,6 +55,13 @@
                         if (!empty($material->video_path)) {
                             $type = 'Video';
                             $icon = 'fa-video';
+                        } elseif (
+                            !empty($material->content_url) &&
+                            (str_contains($material->content_url, 'youtube.com') ||
+                                str_contains($material->content_url, 'youtu.be'))
+                        ) {
+                            $type = 'Video';
+                            $icon = 'fa-video';
                         } elseif (!empty($material->file_path)) {
                             $type = 'PDF / Document';
                             $icon = 'fa-file-pdf';

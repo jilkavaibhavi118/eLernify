@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Quiz;
+use App\Models\Lecture;
 use App\Models\Question;
 use App\Models\QuestionOption;
 use Illuminate\Http\Request;

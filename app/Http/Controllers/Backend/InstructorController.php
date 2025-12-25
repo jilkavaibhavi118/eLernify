@@ -67,8 +67,16 @@ class InstructorController extends Controller
             'name'    => 'required|string|max:255',
             'email'   => 'required|email|unique:instructors',
             'phone'   => 'nullable|string',
+            'bio'     => 'nullable|string',
             'status'  => 'required|in:active,inactive',
             'image'   => 'nullable|image|max:2048',
+            'designation' => 'nullable|string|max:255',
+            'specialty'   => 'nullable|string|max:255',
+            'linkedin_url' => 'nullable|url',
+            'twitter_url' => 'nullable|url',
+            'github_url' => 'nullable|url',
+            'instagram_url' => 'nullable|url',
+            'website_url' => 'nullable|url',
         ]);
 
         if ($request->hasFile('image')) {
@@ -99,8 +107,16 @@ class InstructorController extends Controller
             'name'    => 'required|string|max:255',
             'email'   => 'required|email|unique:instructors,email,'.$id,
             'phone'   => 'nullable|string',
+            'bio'     => 'nullable|string',
             'status'  => 'required|in:active,inactive',
             'image'   => 'nullable|image|max:2048',
+            'designation' => 'nullable|string|max:255',
+            'specialty'   => 'nullable|string|max:255',
+            'linkedin_url' => 'nullable|url',
+            'twitter_url' => 'nullable|url',
+            'github_url' => 'nullable|url',
+            'instagram_url' => 'nullable|url',
+            'website_url' => 'nullable|url',
         ]);
 
         if ($request->hasFile('image')) {

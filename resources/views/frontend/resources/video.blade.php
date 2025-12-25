@@ -8,10 +8,38 @@
             <div class="row justify-content-center">
                 <div class="col-lg-10">
                     <div class="bg-dark rounded overflow-hidden shadow mb-4" style="aspect-ratio: 16/9;">
-                        <video width="100%" height="100%" controls controlsList="nodownload" oncontextmenu="return false;">
-                            <source src="{{ asset('storage/' . $material->video_path) }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                        @if (!empty($material->video_path))
+                            <video width="100%" height="100%" controls controlsList="nodownload"
+                                oncontextmenu="return false;">
+                                <source src="{{ asset('storage/' . $material->video_path) }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        @elseif(!empty($material->content_url))
+                            @php
+                                $video_id = '';
+                                if (
+                                    preg_match(
+                                        '%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i',
+                                        $material->content_url,
+                                        $match,
+                                    )
+                                ) {
+                                    $video_id = $match[1];
+                                }
+                            @endphp
+                            @if ($video_id)
+                                <iframe width="100%" height="100%"
+                                    src="https://www.youtube.com/embed/{{ $video_id }}" title="YouTube video player"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowfullscreen style="width: 100%; height: 100%;">
+                                </iframe>
+                            @else
+                                <div class="d-flex align-items-center justify-content-center h-100 text-white">
+                                    <p>Invalid Video URL</p>
+                                </div>
+                            @endif
+                        @endif
                     </div>
 
                     <div class="bg-light rounded p-5 shadow-sm border">

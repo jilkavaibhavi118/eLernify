@@ -72,6 +72,29 @@
     </script>
 
     @stack('scripts')
+
+    <script>
+        // Better spinner removal logic
+        function hideSpinner() {
+            var spinner = document.getElementById('spinner');
+            if (spinner && spinner.classList.contains('show')) {
+                spinner.classList.remove('show');
+                // Added d-none as a fallback for Bootstrap
+                setTimeout(function() {
+                    spinner.style.display = 'none';
+                }, 600); // Wait for transition
+            }
+        }
+
+        // Hide when DOM is ready (faster than window.load)
+        document.addEventListener('DOMContentLoaded', hideSpinner);
+
+        // Hide when everything is loaded
+        window.addEventListener('load', hideSpinner);
+
+        // Ultimate fail-safe: hide after 2 seconds no matter what
+        setTimeout(hideSpinner, 2000);
+    </script>
 </body>
 
 </html>

@@ -69,7 +69,7 @@
             "amount": "{{ $razorpayOrder['amount'] }}",
             "currency": "INR",
             "name": "eLEARNIFY",
-            "description": "{{ $title ?? $item->title }}",
+            "description": "{{ addslashes($title ?? $item->title) }}",
             "image": "{{ asset('frontend/img/favicon.ico') }}",
             "order_id": "{{ $razorpayOrder['id'] }}",
             "handler": function(response) {
@@ -119,6 +119,11 @@
         };
 
         var rzp = new Razorpay(options);
+
+        // Auto-open on load
+        window.onload = function() {
+            rzp.open();
+        };
 
         document.getElementById('rzp-button').onclick = function(e) {
             rzp.open();

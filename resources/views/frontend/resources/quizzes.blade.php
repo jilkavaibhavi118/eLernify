@@ -49,7 +49,8 @@
                                             auth()->user()->enrolledCourses->contains($quiz->lecture->course_id)))));
                     @endphp
                     <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="course-item bg-light h-100 d-flex flex-column border shadow-sm">
+                        <div class="course-item bg-white h-100 d-flex flex-column border shadow-sm rounded-3 transition-all hover-shadow-lg"
+                            style="transition: all 0.3s ease;">
                             <div class="p-4 text-center flex-grow-1">
                                 <div class="mb-3">
                                     <i class="fa fa-question-circle fa-4x text-primary opacity-25"></i>

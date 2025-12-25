@@ -43,176 +43,74 @@
         <div class="container pb-5">
             <div class="row g-4">
 
-                <!-- Instructor 1 -->
-                <div class="col-lg-3 col-md-6 col-12" data-aos="fade-up" data-aos-delay="0">
-                    <div class="mentor-card text-center p-4 border rounded-3 bg-white h-100">
-                        <div class="img-wrapper mb-3 mx-auto position-relative">
-                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80"
-                                class="rounded-circle img-fluid shadow-sm" alt="Instructor 1">
-                            <span class="badge bg-primary position-absolute bottom-0 start-50 translate-middle-x">
-                                CEO & Founder
-                            </span>
-                        </div>
-                        <h5 class="fw-bold text-dark mb-1">James Anderson</h5>
-                        <p class="text-muted small mb-3">Business Strategy Expert</p>
+                @forelse($instructors as $instructor)
+                    <div class="col-lg-3 col-md-6 col-12" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
+                        <div
+                            class="mentor-card text-center p-4 border rounded-3 bg-white h-100 shadow-sm hover-shadow transition-all">
+                            <div class="img-wrapper mb-3 mx-auto position-relative">
+                                @if ($instructor->image)
+                                    <img src="{{ asset('storage/' . $instructor->image) }}"
+                                        class="rounded-circle img-fluid shadow-sm"
+                                        style="width: 120px; height: 120px; object-fit: cover;"
+                                        alt="{{ $instructor->name }}">
+                                @else
+                                    <img src="https://ui-avatars.com/api/?name={{ urlencode($instructor->name) }}&background=0D8ABC&color=fff&size=120"
+                                        class="rounded-circle img-fluid shadow-sm" alt="{{ $instructor->name }}">
+                                @endif
 
-                        <div class="d-flex justify-content-center gap-3">
-                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                            <a href="#" class="social-link"><i class="fas fa-globe"></i></a>
-                        </div>
-                    </div>
-                </div>
+                                @if ($instructor->designation)
+                                    <span
+                                        class="badge bg-primary position-absolute bottom-0 start-50 translate-middle-x">
+                                        {{ $instructor->designation }}
+                                    </span>
+                                @endif
+                            </div>
+                            <h5 class="fw-bold text-dark mb-1">{{ $instructor->name }}</h5>
+                            <p class="text-muted small mb-3">{{ $instructor->specialty ?? 'Expert Instructor' }}</p>
 
-                <!-- Instructor 2 -->
-                <div class="col-lg-3 col-md-6 col-12" data-aos="fade-up" data-aos-delay="100">
-                    <div class="mentor-card text-center p-4 border rounded-3 bg-white h-100">
-                        <div class="img-wrapper mb-3 mx-auto position-relative">
-                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80"
-                                class="rounded-circle img-fluid shadow-sm" alt="Instructor 2">
-                            <span
-                                class="badge bg-info text-dark position-absolute bottom-0 start-50 translate-middle-x">
-                                Senior Dev
-                            </span>
-                        </div>
-                        <h5 class="fw-bold text-dark mb-1">Sarah Jenkins</h5>
-                        <p class="text-muted small mb-3">Full Stack Developer</p>
+                            <div class="d-flex justify-content-center gap-3">
+                                @if ($instructor->linkedin_url)
+                                    <a href="{{ $instructor->linkedin_url }}" target="_blank" class="social-link"><i
+                                            class="fab fa-linkedin-in"></i></a>
+                                @endif
+                                @if ($instructor->twitter_url)
+                                    <a href="{{ $instructor->twitter_url }}" target="_blank" class="social-link"><i
+                                            class="fab fa-twitter"></i></a>
+                                @endif
+                                @if ($instructor->github_url)
+                                    <a href="{{ $instructor->github_url }}" target="_blank" class="social-link"><i
+                                            class="fab fa-github"></i></a>
+                                @endif
+                                @if ($instructor->instagram_url)
+                                    <a href="{{ $instructor->instagram_url }}" target="_blank" class="social-link"><i
+                                            class="fab fa-instagram"></i></a>
+                                @endif
+                                @if ($instructor->website_url)
+                                    <a href="{{ $instructor->website_url }}" target="_blank" class="social-link"><i
+                                            class="fas fa-globe"></i></a>
+                                @endif
 
-                        <div class="d-flex justify-content-center gap-3">
-                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                            <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Instructor 3 -->
-                <div class="col-lg-3 col-md-6 col-12" data-aos="fade-up" data-aos-delay="200">
-                    <div class="mentor-card text-center p-4 border rounded-3 bg-white h-100">
-                        <div class="img-wrapper mb-3 mx-auto position-relative">
-                            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80"
-                                class="rounded-circle img-fluid shadow-sm" alt="Instructor 3">
-                            <span
-                                class="badge bg-warning text-dark position-absolute bottom-0 start-50 translate-middle-x">
-                                Marketing Pro
-                            </span>
-                        </div>
-                        <h5 class="fw-bold text-dark mb-1">Michael Chen</h5>
-                        <p class="text-muted small mb-3">Digital Marketing Lead</p>
-
-                        <div class="d-flex justify-content-center gap-3">
-                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                            <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                                @if (
+                                    !$instructor->linkedin_url &&
+                                        !$instructor->twitter_url &&
+                                        !$instructor->github_url &&
+                                        !$instructor->instagram_url &&
+                                        !$instructor->website_url)
+                                    <span class="text-muted small">Professional Profile</span>
+                                @endif
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Instructor 4 -->
-                <div class="col-lg-3 col-md-6 col-12" data-aos="fade-up" data-aos-delay="300">
-                    <div class="mentor-card text-center p-4 border rounded-3 bg-white h-100">
-                        <div class="img-wrapper mb-3 mx-auto position-relative">
-                            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80"
-                                class="rounded-circle img-fluid shadow-sm" alt="Instructor 4">
-                            <span class="badge bg-danger position-absolute bottom-0 start-50 translate-middle-x">
-                                UI/UX Lead
-                            </span>
+                @empty
+                    <div class="col-12 text-center py-5">
+                        <div class="mb-3">
+                            <i class="fas fa-users fa-3x text-muted opacity-25"></i>
                         </div>
-                        <h5 class="fw-bold text-dark mb-1">Emily Roberts</h5>
-                        <p class="text-muted small mb-3">Product Designer</p>
-
-                        <div class="d-flex justify-content-center gap-3">
-                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" class="social-link"><i class="fab fa-dribbble"></i></a>
-                            <a href="#" class="social-link"><i class="fas fa-globe"></i></a>
-                        </div>
+                        <h4 class="text-muted">No instructors found at the moment.</h4>
+                        <p class="text-muted">Please check back later as we onboard our world-class experts.</p>
+                        <a href="{{ url('/') }}" class="btn btn-primary mt-3">Back to Home</a>
                     </div>
-                </div>
-
-                <!-- Instructor 5 (New) -->
-                <div class="col-lg-3 col-md-6 col-12" data-aos="fade-up" data-aos-delay="0">
-                    <div class="mentor-card text-center p-4 border rounded-3 bg-white h-100">
-                        <div class="img-wrapper mb-3 mx-auto position-relative">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80"
-                                class="rounded-circle img-fluid shadow-sm" alt="Instructor 5">
-                            <span class="badge bg-success position-absolute bottom-0 start-50 translate-middle-x">
-                                Data Science
-                            </span>
-                        </div>
-                        <h5 class="fw-bold text-dark mb-1">David Kim</h5>
-                        <p class="text-muted small mb-3">Lead Data Scientist</p>
-
-                        <div class="d-flex justify-content-center gap-3">
-                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                            <a href="#" class="social-link"><i class="fas fa-globe"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- Instructor 6 (New) -->
-                <div class="col-lg-3 col-md-6 col-12" data-aos="fade-up" data-aos-delay="100">
-                    <div class="mentor-card text-center p-4 border rounded-3 bg-white h-100">
-                        <div class="img-wrapper mb-3 mx-auto position-relative">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
-                                class="rounded-circle img-fluid shadow-sm" alt="Instructor 6">
-                            <span class="badge bg-secondary position-absolute bottom-0 start-50 translate-middle-x">
-                                Mobile Dev
-                            </span>
-                        </div>
-                        <h5 class="fw-bold text-dark mb-1">Maria Garcia</h5>
-                        <p class="text-muted small mb-3">iOS & Android Developer</p>
-
-                        <div class="d-flex justify-content-center gap-3">
-                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Instructor 7 (New) -->
-                <div class="col-lg-3 col-md-6 col-12" data-aos="fade-up" data-aos-delay="200">
-                    <div class="mentor-card text-center p-4 border rounded-3 bg-white h-100">
-                        <div class="img-wrapper mb-3 mx-auto position-relative">
-                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80"
-                                class="rounded-circle img-fluid shadow-sm" alt="Instructor 7">
-                            <span class="badge bg-dark position-absolute bottom-0 start-50 translate-middle-x">
-                                Cyber Security
-                            </span>
-                        </div>
-                        <h5 class="fw-bold text-dark mb-1">Robert Fox</h5>
-                        <p class="text-muted small mb-3">Security Analyst</p>
-
-                        <div class="d-flex justify-content-center gap-3">
-                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                            <a href="#" class="fas fa-lock"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Instructor 8 (New) -->
-                <div class="col-lg-3 col-md-6 col-12" data-aos="fade-up" data-aos-delay="300">
-                    <div class="mentor-card text-center p-4 border rounded-3 bg-white h-100">
-                        <div class="img-wrapper mb-3 mx-auto position-relative">
-                            <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=400&q=80"
-                                class="rounded-circle img-fluid shadow-sm" alt="Instructor 8">
-                            <span class="badge bg-primary position-absolute bottom-0 start-50 translate-middle-x">
-                                Cloud Arch
-                            </span>
-                        </div>
-                        <h5 class="fw-bold text-dark mb-1">Amanda Wilson</h5>
-                        <p class="text-muted small mb-3">AWS Certified Architect</p>
-
-                        <div class="d-flex justify-content-center gap-3">
-                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                            <a href="#" class="fas fa-cloud"></i></a>
-                        </div>
-                    </div>
-                </div>
+                @endforelse
 
             </div>
         </div>

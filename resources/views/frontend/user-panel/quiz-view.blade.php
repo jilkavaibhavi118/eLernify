@@ -4,162 +4,469 @@
 
 @push('styles')
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        :root {
+            --player-bg: #f9fafb;
+            --sidebar-width: 380px;
+            --primary-color: #0a2283;
+            --primary-light: rgba(10, 34, 131, 0.1);
+            --text-dark: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            background-color: var(--player-bg);
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Player Header (Sync with Lecture View) */
+        .player-header {
+            background: #fff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .back-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--primary-color);
+        }
+
+        /* Main Layout */
+        .player-container {
+            display: flex;
+            min-height: calc(100vh - 120px);
+            max-width: 1600px;
+            margin: 2rem auto;
+            gap: 2rem;
+            padding: 0 2rem;
+        }
+
+        .player-main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .quiz-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 2.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Sidebar (Sync with Lecture View) */
+        .player-sidebar {
+            width: var(--sidebar-width);
+            flex-shrink: 0;
+        }
+
+        .sidebar-card {
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - 160px);
+            position: sticky;
+            top: 100px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 2px solid var(--primary-color);
+            background: #fff;
+        }
+
+        .sidebar-header h5 {
+            color: var(--text-dark);
+            margin: 0;
+            position: relative;
+        }
+
+        .sidebar-content {
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .section-group {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-group:last-child {
+            border-bottom: none;
+        }
+
+        .section-header {
+            background-color: #f8fafc;
+            padding: 1.25rem 1.25rem 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .lesson-list-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.2s;
+            border-bottom: 1px solid var(--border-color);
+            gap: 1rem;
+        }
+
+        .lesson-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .lesson-list-item:hover {
+            background: #f8fafc;
+            color: var(--primary-color);
+        }
+
+        .lesson-list-item.active {
+            background-color: var(--primary-light);
+            border-left: 4px solid var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .lesson-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3f4f6;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            color: var(--text-muted);
+        }
+
+        .active .lesson-icon {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .material-title {
+            flex-grow: 1;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Question Styles */
+        .question-badge {
+            width: 30px;
+            height: 30px;
+            background: var(--primary-color);
+            color: #fff;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .form-check {
+            border: 1px solid var(--border-color);
+            padding: 1.25rem 1.25rem 1.25rem 3rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .form-check:hover {
+            border-color: var(--primary-color);
+            background: var(--primary-light);
+        }
+
+        .form-check-input:checked+.form-check-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Navigation Cards */
+        .nav-cards-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .nav-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            height: 100%;
+        }
+
+        .nav-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .nav-card:hover .nav-card-icon {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .nav-card-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .nav-card-label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-card-title {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .progress-bar {
+            background-color: var(--primary-color);
+        }
+
+        .text-primary {
+            color: var(--primary-color) !important;
+        }
+
+        @media (max-width: 1200px) {
+            .player-container {
+                flex-direction: column;
+            }
+
+            .player-sidebar {
+                width: 100%;
+            }
+
+            .sidebar-card {
+                position: static;
+                max-height: none;
+            }
+        }
+    </style>
 @endpush
 
 @section('content')
-    <!-- PAGE HERO -->
-    <section class="page-hero">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h1 data-aos="fade-right">{{ $quiz->title }}</h1>
-                    <nav aria-label="breadcrumb" data-aos="fade-right" data-aos-delay="100">
-                        <ol class="breadcrumb-custom">
-                            <li class="breadcrumb-item"><a href="{{ url('/') }}">Elearnify</a></li>
-                            <span class="breadcrumb-separator">></span>
-                            <li class="breadcrumb-item"><a href="{{ route('user.courses') }}">My Courses</a></li>
-                            <span class="breadcrumb-separator">></span>
-                            <li class="breadcrumb-item"><a
-                                    href="{{ route('user.course.view', $enrollment->id) }}">{{ $enrollment->course->title }}</a>
-                            </li>
-                            <span class="breadcrumb-separator">></span>
-                            <li class="breadcrumb-item active" aria-current="page"><span>Quiz</span></li>
-                        </ol>
-                    </nav>
-                </div>
+    <!-- Header -->
+    <header class="player-header">
+        <div class="header-container">
+            <a href="{{ route('user.course.view', $enrollment->id) }}" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                Back to Course Dashboard
+            </a>
+            <div class="player-title-section">
+                <h1>{{ $quiz->title }}</h1>
             </div>
         </div>
-    </section>
+    </header>
 
-    <div class="container mt-5 px-5">
-        <div class="row g-4">
-            <!-- Main Content Area -->
-            <div class="col-lg-9">
-                <div class="container">
-                    <div class="bg-light rounded p-5 mb-4 shadow-sm border">
-                        <div class="text-center mb-5">
-                            <h3 class="mb-3">{{ $quiz->title }}</h3>
-                            <div class="d-flex justify-content-center align-items-center mb-4">
-                                <div class="bg-white px-4 py-2 rounded-pill shadow-sm border d-flex align-items-center">
-                                    <i class="fa fa-clock text-danger me-2"></i>
-                                    <span class="text-muted me-2">Time Remaining:</span>
-                                    <span id="timer" class="h4 mb-0 text-danger fw-bold">00:00</span>
+    <div class="player-container">
+        <!-- Main Content Area -->
+        <main class="player-main">
+            <div class="quiz-card">
+                <div class="text-center mb-5">
+                    <div class="d-flex justify-content-center align-items-center mb-4">
+                        <div class="bg-white px-4 py-2 rounded-pill shadow-sm border d-flex align-items-center">
+                            <i class="fa fa-clock text-danger me-2"></i>
+                            <span class="text-muted me-2">Time Remaining:</span>
+                            <span id="timer" class="h4 mb-0 text-danger fw-bold">00:00</span>
+                        </div>
+                    </div>
+
+                    @if ($quiz->instructions)
+                        <div class="alert alert-info text-start border-0 shadow-sm"
+                            style="background: var(--primary-light); color: var(--primary-color);">
+                            <h6 class="alert-heading fw-bold"><i class="fa fa-info-circle me-2"></i>Instructions:</h6>
+                            <p class="mb-0 small">{{ $quiz->instructions }}</p>
+                        </div>
+                    @endif
+                </div>
+
+                <form id="quizForm" action="{{ route('user.quiz.submit', $quiz->id) }}" method="POST">
+                    @csrf
+
+                    @forelse($quiz->questions as $index => $question)
+                        <div class="mb-5">
+                            <h5 class="fw-bold mb-4 d-flex align-items-start">
+                                <span class="question-badge">{{ $index + 1 }}</span>
+                                <span class="flex-grow-1">{{ $question->question_text }}</span>
+                            </h5>
+
+                            <div class="options-group ps-4 ms-2">
+                                @foreach ($question->options as $option)
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="answers[{{ $question->id }}]"
+                                            id="option_{{ $option->id }}" value="{{ $option->id }}" required>
+                                        <label class="form-check-label w-100" for="option_{{ $option->id }}">
+                                            {{ $option->option_text }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @empty
+                        <div class="alert alert-warning text-center">
+                            <i class="fa fa-exclamation-triangle me-2"></i>No questions available in this quiz.
+                        </div>
+                    @endforelse
+
+                    @if ($quiz->questions->count() > 0)
+                        <div class="text-center mt-5">
+                            <button type="submit"
+                                class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow-sm border-0">
+                                Submit My Answers <i class="fa fa-paper-plane ms-2"></i>
+                            </button>
+                        </div>
+                    @endif
+                </form>
+
+                <div class="nav-cards-container">
+                    <div>
+                        @if ($prev_url)
+                            <a href="{{ $prev_url }}" class="nav-card">
+                                <div class="nav-card-icon">
+                                    <i class="fas fa-arrow-left"></i>
+                                </div>
+                                <div class="nav-card-content">
+                                    <span class="nav-card-label">Previous Lesson</span>
+                                    <span class="nav-card-title">{{ $prev_title }}</span>
+                                </div>
+                            </a>
+                        @endif
+                    </div>
+                    <div>
+                        @if ($next_url)
+                            <a href="{{ $next_url }}" class="nav-card flex-row-reverse">
+                                <div class="nav-card-icon">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                                <div class="nav-card-content text-end">
+                                    <span class="nav-card-label">Next Lesson</span>
+                                    <span class="nav-card-title">{{ $next_title }}</span>
+                                </div>
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Sidebar -->
+        <aside class="player-sidebar">
+            <div class="sidebar-card">
+                <div class="sidebar-header">
+                    <h5 class="fw-bold mb-1">Course Lessons</h5>
+                    <div class="progress mt-3" style="height: 6px;">
+                        @php
+                            $progress = $enrollment->progress ?? 0;
+                        @endphp
+                        <div class="progress-bar" role="progressbar" style="width: {{ $progress }}%"></div>
+                    </div>
+                </div>
+                <div class="sidebar-content">
+                    @php $materialCounter = 1; @endphp
+                    @foreach ($enrollment->course->lectures as $l)
+                        <div class="section-group">
+                            <div class="section-header">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <span class="text-primary fw-bold small text-uppercase">Lecture
+                                        {{ $loop->iteration }}</span>
+                                    <span class="badge bg-light text-primary fw-normal border"
+                                        style="font-size: 0.65rem; border-color: var(--primary-light) !important;">
+                                        {{ $l->materials->filter(fn($m) => !empty($m->video_path) || !empty($m->content_url))->count() }}
+                                        Videos
+                                    </span>
+                                </div>
+                                <div class="fw-bold" style="font-size: 0.95rem; line-height: 1.3; color: var(--text-dark);">
+                                    {{ $l->title }}
                                 </div>
                             </div>
 
-                            @if ($quiz->instructions)
-                                <div class="alert alert-info text-start border-0 shadow-sm">
-                                    <h6 class="alert-heading"><i class="fa fa-info-circle me-2"></i>Instructions:</h6>
-                                    <p class="mb-0 small">{{ $quiz->instructions }}</p>
-                                </div>
-                            @endif
-                        </div>
-
-                        <form id="quizForm" action="{{ route('user.quiz.submit', $quiz->id) }}" method="POST">
-                            @csrf
-
-                            @forelse($quiz->questions as $index => $question)
-                                <div class="card mb-4 border-0 shadow-sm">
-                                    <div class="card-body p-4">
-                                        <h5 class="card-title mb-4">
-                                            <span class="badge bg-primary me-2">{{ $index + 1 }}</span>
-                                            {{ $question->question_text }}
-                                        </h5>
-
-                                        <div class="options-group">
-                                            @foreach ($question->options as $option)
-                                                <div
-                                                    class="form-check mb-3 p-3 border rounded transition-all hover-bg-light">
-                                                    <input class="form-check-input ms-0" type="radio"
-                                                        name="answers[{{ $question->id }}]"
-                                                        id="option_{{ $option->id }}" value="{{ $option->id }}"
-                                                        required>
-                                                    <label class="form-check-label ms-2 d-block w-100"
-                                                        for="option_{{ $option->id }}">
-                                                        {{ $option->option_text }}
-                                                    </label>
-                                                </div>
-                                            @endforeach
+                            @foreach ($l->materials as $m)
+                                @if (!empty($m->video_path) || !empty($m->content_url))
+                                    <a href="{{ route('user.lecture.view', ['lectureId' => $l->id, 'materialId' => $m->id]) }}"
+                                        class="lesson-list-item">
+                                        <div class="lesson-icon">
+                                            <i class="fas fa-play-circle"></i>
                                         </div>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="alert alert-warning text-center">
-                                    <i class="fa fa-exclamation-triangle me-2"></i>No questions available in this quiz.
-                                </div>
-                            @endforelse
-
-                            @if ($quiz->questions->count() > 0)
-                                <div class="text-center mt-5">
-                                    <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill shadow">
-                                        Submit My Answers <i class="fa fa-paper-plane ms-2"></i>
-                                    </button>
-                                </div>
-                            @endif
-                        </form>
-                    </div>
-
-                    <div class="d-flex justify-content-between mt-4">
-                        @if (isset($prev_url) && $prev_url)
-                            <a href="{{ $prev_url }}" class="btn btn-primary">
-                                <i class="bi bi-chevron-left me-1"></i>Previous
-                            </a>
-                        @else
-                            <button class="btn btn-outline-primary" disabled>
-                                <i class="bi bi-chevron-left me-1"></i>Previous
-                            </button>
-                        @endif
-
-                        @if (isset($next_url) && $next_url)
-                            <a href="{{ $next_url }}" class="btn btn-primary">
-                                Next <i class="bi bi-chevron-right ms-1"></i>
-                            </a>
-                        @endif
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sidebar - Course Lessons -->
-            <div class="col-lg-3">
-                <div class="course-lessons-sidebar sticky-top"
-                    style="top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; background: #ffffff; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                    <!-- Header -->
-                    <h5 class="fw-bold mb-4" style="color: #1f2937;">Course Lessons</h5>
-
-                    <!-- Active Course Section -->
-                    <div class="lesson-section mb-3">
-                        <p class="section-header small fw-semibold mb-2" style="color: #6b7280;">Curriculum</p>
-
-                        @foreach ($enrollment->course->lectures as $index => $l)
-                            <a href="{{ route('user.lecture.view', $l->id) }}"
-                                class="lesson-item d-flex align-items-center py-2 px-3 mb-1"
-                                style="border-radius: 6px; text-decoration: none;">
-                                <i class="bi bi-play-fill text-muted me-3" style="font-size: 1.1rem;"></i>
-                                <span class="lesson-title flex-grow-1" style="font-size: 0.9rem; color: #374151;">
-                                    {{ sprintf('%02d', $index + 1) }} - {{ $l->title }}
-                                </span>
-                                <span class="lesson-duration small" style="color: #6b7280;">{{ $l->duration ?? '' }}</span>
-                            </a>
-
-                            @if ($l->quizzes && $l->quizzes->count() > 0)
-                                @foreach ($l->quizzes as $q)
-                                    <a href="{{ route('user.quiz.view', $q->id) }}"
-                                        class="lesson-item {{ $q->id == $quiz->id ? 'active' : '' }} d-flex align-items-center py-2 px-3 mb-1 ms-4"
-                                        style="{{ $q->id == $quiz->id ? 'background: rgba(99, 102, 241, 0.1); border-left: 3px solid #6366f1;' : '' }} border-radius: 6px; text-decoration: none;">
-                                        <i class="bi bi-question-circle {{ $q->id == $quiz->id ? 'text-primary' : 'text-muted' }} me-2"
-                                            style="font-size: 1rem;"></i>
-                                        <span class="lesson-title flex-grow-1"
-                                            style="font-size: 0.9rem; color: {{ $q->id == $quiz->id ? '#1f2937' : '#374151' }};">
-                                            {{ $q->title }}
-                                        </span>
+                                        <div class="material-title">
+                                            {{ sprintf('%02d', $materialCounter++) }} - {{ $m->title }}
+                                        </div>
                                     </a>
-                                @endforeach
-                            @endif
-                        @endforeach
-                    </div>
+                                @endif
+                            @endforeach
+
+                            @foreach ($l->quizzes as $q)
+                                <a href="{{ route('user.quiz.view', $q->id) }}"
+                                    class="lesson-list-item {{ $q->id == $quiz->id ? 'active' : '' }}">
+                                    <div class="lesson-icon">
+                                        <i
+                                            class="fas {{ $q->id == $quiz->id ? 'fa-question-circle' : 'fa-question-circle' }}"></i>
+                                    </div>
+                                    <div class="material-title">
+                                        Quiz: {{ $q->title }}
+                                    </div>
+                                </a>
+                            @endforeach
+                        </div>
+                    @endforeach
                 </div>
             </div>
-        </div>
+        </aside>
     </div>
 @endsection
 

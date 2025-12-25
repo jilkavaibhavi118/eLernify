@@ -1,5 +1,13 @@
 // Wait for DOM to load
 document.addEventListener('DOMContentLoaded', function () {
+    // Spinner Removal Logic
+    var spinner = document.getElementById('spinner');
+    if (spinner) {
+        setTimeout(function () {
+            spinner.classList.remove('show');
+        }, 1);
+    }
+    
     // Initialize AOS (Animate On Scroll)
     if (typeof AOS !== 'undefined') {
         AOS.init({
@@ -167,6 +175,7 @@ let isDeleting = false;
 let typeSpeed = 100; // Speed of typing (ms)
 
 function typeWriter() {
+    if (!textElement) return;
     const currentPhrase = phrases[phraseIndex];
 
     if (isDeleting) {

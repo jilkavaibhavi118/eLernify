@@ -34,11 +34,39 @@
                         <a href="{{ route('login') }}" class="login-link">Log In</a>
                         <a href="{{ route('register') }}" class="btn btn-premium">Join Premium</a>
                     @else
-                        <a href="{{ route('user.dashboard') }}" class="login-link">Dashboard</a>
-                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn btn-premium">Logout</button>
-                        </form>
+                        <div class="nav-item dropdown ms-3">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 py-1 px-3 border rounded-pill"
+                                href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                @if (Auth::user()->profile_photo)
+                                    <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" alt=""
+                                        class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+                                @else
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                                        style="width: 32px; height: 32px; font-weight: bold;">
+                                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                    </div>
+                                @endif
+                                <span class="fw-medium text-dark">{{ Auth::user()->name }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2"
+                                aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item py-2" href="{{ route('user.dashboard') }}"><i
+                                            class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                                <li><a class="dropdown-item py-2" href="{{ route('user.profile') }}"><i
+                                            class="bi bi-person me-2"></i>Profile</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <form action="{{ route('logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item py-2 text-danger"><i
+                                                class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
                     @endguest
                 </div>
             </div>

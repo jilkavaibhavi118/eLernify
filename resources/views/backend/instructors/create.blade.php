@@ -59,8 +59,69 @@
                                 </div>
                             </div>
 
-                            {{-- Status --}}
+                            {{-- Bio --}}
+                            <div class="col-md-12 mt-3">
+                                <div class="form-group">
+                                    <label>Bio</label>
+                                    <textarea name="bio" class="form-control" rows="3" placeholder="Enter short bio">{{ old('bio') }}</textarea>
+                                </div>
+                            </div>
+
+                            {{-- Designation & Specialty --}}
                             <div class="col-md-6 mt-3">
+                                <div class="form-group">
+                                    <label>Designation (e.g. CEO & Founder)</label>
+                                    <input type="text" name="designation" class="form-control"
+                                        value="{{ old('designation') }}" placeholder="e.g. Senior Instructor">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <div class="form-group">
+                                    <label>Specialty (e.g. Expert in Java)</label>
+                                    <input type="text" name="specialty" class="form-control"
+                                        value="{{ old('specialty') }}" placeholder="e.g. Web Development">
+                                </div>
+                            </div>
+
+                            {{-- Social Links --}}
+                            <div class="col-md-4 mt-3">
+                                <div class="form-group">
+                                    <label>LinkedIn URL</label>
+                                    <input type="url" name="linkedin_url" class="form-control"
+                                        value="{{ old('linkedin_url') }}" placeholder="https://linkedin.com/in/...">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-3">
+                                <div class="form-group">
+                                    <label>Twitter URL</label>
+                                    <input type="url" name="twitter_url" class="form-control"
+                                        value="{{ old('twitter_url') }}" placeholder="https://twitter.com/...">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-3">
+                                <div class="form-group">
+                                    <label>Github URL</label>
+                                    <input type="url" name="github_url" class="form-control"
+                                        value="{{ old('github_url') }}" placeholder="https://github.com/...">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-3">
+                                <div class="form-group">
+                                    <label>Instagram URL</label>
+                                    <input type="url" name="instagram_url" class="form-control"
+                                        value="{{ old('instagram_url') }}" placeholder="https://instagram.com/...">
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-3">
+                                <div class="form-group">
+                                    <label>Website URL</label>
+                                    <input type="url" name="website_url" class="form-control"
+                                        value="{{ old('website_url') }}" placeholder="https://example.com">
+                                </div>
+                            </div>
+
+                            {{-- Status --}}
+                            <div class="col-md-4 mt-3">
                                 <div class="form-group">
                                     <label>Status <span class="text-danger">*</span></label>
                                     <select name="status" class="form-control">
