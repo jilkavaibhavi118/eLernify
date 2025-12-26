@@ -2,129 +2,270 @@
 
 @section('title', $enrollment->course->title . ' | eLEARNIFY')
 
+@push('styles')
+    <style>
+        .dashboard-container {
+            background-color: #f5f7f9;
+            min-height: 100vh;
+            padding-top: 140px;
+            padding-bottom: 50px;
+        }
+
+        /* Sidebar Styling */
+        .dashboard-sidebar {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px 0;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+
+        .dashboard-menu .nav-link {
+            padding: 12px 20px;
+            color: #555;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .dashboard-menu .nav-link:hover,
+        .dashboard-menu .nav-link.active {
+            color: var(--primary);
+            background-color: #f8f9fa;
+            border-left-color: var(--primary);
+        }
+
+        .dashboard-menu .nav-link i {
+            width: 24px;
+            margin-right: 10px;
+            text-align: center;
+        }
+
+        /* Course View Content */
+        .courses-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            padding: 30px;
+            min-height: 500px;
+        }
+
+        .course-page-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+
+        .course-page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .instructor-badge i {
+            color: #0a2283;
+            margin-right: 8px;
+        }
+
+        .content-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .list-group-item {
+            border: 1px solid #eee;
+            margin-bottom: 10px;
+            border-radius: 8px !important;
+            transition: all 0.2s;
+        }
+
+        .list-group-item:hover {
+            background-color: #f8f9fa;
+            border-color: #0a2283;
+        }
+
+        .progress-compact {
+            height: 8px;
+            border-radius: 10px;
+            background-color: #f0f0f0;
+        }
+
+        /* Aggressive Branding Overrides */
+        .btn-primary,
+        .btn-primary:active,
+        .btn-primary:focus {
+            background-color: #0a2283 !important;
+            border-color: #0a2283 !important;
+            color: #fff !important;
+        }
+
+        .btn-primary:hover {
+            background-color: #081b6a !important;
+            border-color: #081b6a !important;
+            color: #fff !important;
+        }
+
+        .text-primary {
+            color: #0a2283 !important;
+        }
+
+        .bg-primary {
+            background-color: #0a2283 !important;
+        }
+
+        .progress-bar {
+            background-color: #0a2283 !important;
+        }
+
+        .dashboard-menu .nav-link:hover,
+        .dashboard-menu .nav-link.active {
+            color: #0a2283 !important;
+            border-left-color: #0a2283 !important;
+        }
+
+        .instructor-badge i,
+        .content-section-title i {
+            color: #0a2283 !important;
+        }
+    </style>
+@endpush
+
 @section('content')
-    <!-- Course Content Start -->
-    <div class="container-xxl py-5">
+    <div class="dashboard-container">
         <div class="container">
-            <div class="row g-5">
+            <div class="row g-4">
                 <!-- Sidebar -->
-                <div class="col-lg-4">
-                    <div class="bg-light rounded p-4 sticky-top shadow-sm border" style="top: 100px;">
-                        <h5 class="mb-4">{{ $enrollment->course->title }}</h5>
-
-                        <div class="progress mb-3" style="height: 10px; border-radius: 5px;">
-                            <div class="progress-bar bg-primary" role="progressbar"
-                                style="width:{{ $enrollment->progress }}%" aria-valuenow="{{ $enrollment->progress }}"
-                                aria-valuemin="0" aria-valuemax="100">
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between mb-4">
-                            <small class="text-muted small">Course Progress</small>
-                            <small class="text-primary fw-bold">{{ $enrollment->progress }}%</small>
-                        </div>
-
-                        <h6 class="mb-3">Course Content</h6>
-
-                        <!-- Lectures -->
-                        @if ($enrollment->course->lectures->count() > 0)
-                            <div class="mb-4">
-                                <h6 class="text-primary mb-2 small fw-bold text-uppercase"><i
-                                        class="fa fa-book-open me-2"></i>Lectures</h6>
-                                <div class="list-group list-group-flush border rounded overflow-hidden">
-                                    @foreach ($enrollment->course->lectures as $lecture)
-                                        <a href="{{ route('user.lecture.view', $lecture->id) }}"
-                                            class="list-group-item list-group-item-action py-3 border-bottom-0">
-                                            <i class="fa fa-play-circle me-2 text-primary"></i>{{ $lecture->title }}
-                                        </a>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endif
-
-                        <!-- Quizzes -->
-                        @if ($enrollment->course->quizzes->count() > 0)
-                            <div class="mb-4">
-                                <h6 class="text-primary mb-2 small fw-bold text-uppercase"><i
-                                        class="fa fa-question-circle me-2"></i>Quizzes</h6>
-                                <div class="list-group list-group-flush border rounded overflow-hidden">
-                                    @foreach ($enrollment->course->quizzes as $quiz)
-                                        <a href="{{ route('user.quiz.view', $quiz->id) }}"
-                                            class="list-group-item list-group-item-action py-3 border-bottom-0">
-                                            <i class="fa fa-clipboard-list me-2 text-primary"></i>{{ $quiz->title }}
-                                        </a>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endif
-
-                        <a href="{{ route('user.dashboard') }}" class="btn btn-outline-secondary w-100 py-2 rounded-pill">
-                            <i class="fa fa-arrow-left me-2"></i>Back to Dashboard
-                        </a>
-                    </div>
+                <div class="col-lg-3">
+                    @include('frontend.user-panel.components.sidebar')
                 </div>
 
                 <!-- Main Content -->
-                <div class="col-lg-8">
-                    @if (session('quiz_result'))
-                        <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 mb-4" role="alert">
-                            <div class="d-flex align-items-center">
-                                <i class="fa fa-check-circle fa-2x me-3"></i>
-                                <div>
-                                    <h5 class="alert-heading mb-1">Quiz Completed!</h5>
-                                    <p class="mb-0">You scored
-                                        <strong>{{ session('quiz_result')['score'] }}/{{ session('quiz_result')['total'] }}</strong>
-                                        ({{ session('quiz_result')['percentage'] }}%)</p>
+                <div class="col-lg-9">
+                    <div class="courses-card">
+                        @if (session('quiz_result'))
+                            <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 mb-4"
+                                role="alert">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-check-circle-fill fs-3 me-3"></i>
+                                    <div>
+                                        <h6 class="alert-heading mb-1">Quiz Completed!</h6>
+                                        <p class="mb-0 small">You scored
+                                            <strong>{{ session('quiz_result')['score'] }}/{{ session('quiz_result')['total'] }}</strong>
+                                            ({{ session('quiz_result')['percentage'] }}%)
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    @endif
-
-                    <div class="bg-light rounded p-5 shadow-sm border">
-                        <h2 class="mb-4">{{ $enrollment->course->title }}</h2>
-
-                        @if ($enrollment->course->instructor)
-                            <div class="d-flex align-items-center mb-4 p-3 bg-white rounded border shadow-sm">
-                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
-                                    style="width: 50px; height: 50px; font-weight: bold; font-size: 1.2rem;">
-                                    {{ strtoupper(substr($enrollment->course->instructor->name, 0, 1)) }}
-                                </div>
-                                <div>
-                                    <h6 class="mb-0">Course Instructor</h6>
-                                    <p class="mb-0 text-primary fw-bold">{{ $enrollment->course->instructor->name }}</p>
-                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
                         @endif
 
-                        <h5 class="mb-3">About this course</h5>
-                        <p class="text-muted">{{ $enrollment->course->description ?? 'No description available.' }}</p>
+                        <div class="course-page-header">
+                            <a href="{{ route('user.courses') }}" class="btn btn-outline-secondary btn-sm rounded-circle">
+                                <i class="bi bi-arrow-left"></i>
+                            </a>
+                            <h2 class="course-page-title mb-0">{{ $enrollment->course->title }}</h2>
+                        </div>
 
-                        <div class="row g-3 mt-4">
-                            <div class="col-md-6 wow fadeIn" data-wow-delay="0.1s">
-                                <div class="bg-white p-4 rounded text-center border shadow-sm">
-                                    <i class="fa fa-book-open fa-2x text-primary mb-3"></i>
-                                    <h5>{{ $enrollment->course->lectures->count() }}</h5>
-                                    <p class="mb-0 text-muted">Total Lectures</p>
-                                </div>
+                        @if ($enrollment->course->instructor)
+                            <div class="instructor-badge">
+                                <i class="bi bi-person-workspace"></i>
+                                Instructor: <strong>{{ $enrollment->course->instructor->name }}</strong>
                             </div>
-                            <div class="col-md-6 wow fadeIn" data-wow-delay="0.3s">
-                                <div class="bg-white p-4 rounded text-center border shadow-sm">
-                                    <i class="fa fa-question-circle fa-2x text-primary mb-3"></i>
-                                    <h5>{{ $enrollment->course->quizzes->count() }}</h5>
-                                    <p class="mb-0 text-muted">Practice Quizzes</p>
+                        @endif
+
+                        <div class="row mb-5">
+                            <div class="col-md-12">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted small">Course Progress</span>
+                                    <span class="fw-bold text-primary">{{ round($enrollment->progress) }}%</span>
+                                </div>
+                                <div class="progress progress-compact">
+                                    <div class="progress-bar bg-primary" role="progressbar"
+                                        style="width: {{ $enrollment->progress }}%; background-color: #0a2283;">
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="alert alert-primary mt-5 border-0 shadow-sm d-flex align-items-center">
-                            <i class="fa fa-info-circle fa-2x me-3"></i>
-                            <p class="mb-0 fw-bold">Ready to start? Select a lecture or quiz from the sidebar to begin your
-                                learning journey!</p>
+                        <div class="row g-4">
+                            <!-- Lectures List -->
+                            <div class="col-md-7">
+                                <h5 class="content-section-title">
+                                    <i class="bi bi-play-btn text-primary"></i> Lectures
+                                </h5>
+                                <div class="list-group list-group-flush">
+                                    @forelse ($enrollment->course->lectures as $lecture)
+                                        <a href="{{ route('user.lecture.view', $lecture->id) }}"
+                                            class="list-group-item list-group-item-action py-3 d-flex justify-content-between align-items-center">
+                                            <span><i
+                                                    class="bi bi-play-circle me-3 text-primary"></i>{{ $lecture->title }}</span>
+                                            <i class="bi bi-chevron-right small text-muted"></i>
+                                        </a>
+                                    @empty
+                                        <div class="text-center py-4 text-muted">No lectures available yet.</div>
+                                    @endforelse
+                                </div>
+                            </div>
+
+                            <!-- Quizzes & Info -->
+                            <div class="col-md-5">
+                                <h5 class="content-section-title">
+                                    <i class="bi bi-clipboard-check text-primary"></i> Practice Quizzes
+                                </h5>
+                                <div class="list-group list-group-flush mb-4">
+                                    @forelse ($enrollment->course->quizzes as $quiz)
+                                        <a href="{{ route('user.quiz.view', $quiz->id) }}"
+                                            class="list-group-item list-group-item-action py-3 d-flex justify-content-between align-items-center">
+                                            <span><i
+                                                    class="bi bi-question-circle me-3 text-primary"></i>{{ $quiz->title }}</span>
+                                            <i class="bi bi-chevron-right small text-muted"></i>
+                                        </a>
+                                    @empty
+                                        <div class="text-center py-4 text-muted">No quizzes available for this course.</div>
+                                    @endforelse
+                                </div>
+
+                                <div class="card border-0 bg-light p-4 rounded-3">
+                                    <h6 class="fw-bold mb-3">Course Info</h6>
+                                    <ul class="list-unstyled mb-0 small text-muted">
+                                        <li class="mb-2"><i class="bi bi-book me-2"></i>
+                                            {{ $enrollment->course->lectures->count() }} Lectures</li>
+                                        <li class="mb-2"><i class="bi bi-patch-question me-2"></i>
+                                            {{ $enrollment->course->quizzes->count() }} Quizzes</li>
+                                        <li><i class="bi bi-clock me-2"></i>
+                                            {{ $enrollment->course->duration ?? 'Self-paced' }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 pt-4 border-top">
+                            <h6 class="fw-bold mb-3">About this course</h6>
+                            <p class="text-muted small leading-relaxed">
+                                {{ $enrollment->course->description ?? 'No detailed description available.' }}
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Course Content End -->
 @endsection

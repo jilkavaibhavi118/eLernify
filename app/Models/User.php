@@ -90,4 +90,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Instructor::class);
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

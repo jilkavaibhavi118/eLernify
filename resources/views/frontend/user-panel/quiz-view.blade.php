@@ -275,12 +275,26 @@
             text-overflow: ellipsis;
         }
 
-        .progress-bar {
-            background-color: var(--primary-color);
+        .btn-primary,
+        .btn-primary:active,
+        .btn-primary:focus {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+            color: #fff !important;
+        }
+
+        .btn-primary:hover {
+            background-color: #081b6a !important;
+            border-color: #081b6a !important;
+            color: #fff !important;
         }
 
         .text-primary {
             color: var(--primary-color) !important;
+        }
+
+        .progress-bar {
+            background-color: var(--primary-color) !important;
         }
 
         @media (max-width: 1200px) {

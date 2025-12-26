@@ -32,6 +32,38 @@
     <!-- Template Stylesheet -->
     <link href="{{ asset('frontend/css/style.css') }}" rel="stylesheet">
 
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+
+    <!-- Global Branding Fix -->
+    <style>
+        .btn-primary,
+        .btn-primary:active,
+        .btn-primary:focus {
+            background-color: #0a2283 !important;
+            border-color: #0a2283 !important;
+            color: #fff !important;
+        }
+
+        .btn-primary:hover {
+            background-color: #081b6a !important;
+            border-color: #081b6a !important;
+            color: #fff !important;
+        }
+
+        .text-primary {
+            color: #0a2283 !important;
+        }
+
+        .bg-primary {
+            background-color: #0a2283 !important;
+        }
+
+        .progress-bar {
+            background-color: #0a2283 !important;
+        }
+    </style>
+
     @stack('styles')
 </head>
 
@@ -67,6 +99,7 @@
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         lucide.createIcons();
     </script>

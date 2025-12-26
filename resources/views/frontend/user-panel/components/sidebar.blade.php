@@ -6,23 +6,19 @@
         <a class="nav-link {{ Route::is('user.courses') ? 'active' : '' }}" href="{{ route('user.courses') }}">
             <i class="bi bi-book"></i> My Courses
         </a>
-        <a class="nav-link" href="#">
-            <i class="bi bi-people"></i> Referrals
+        <a class="nav-link {{ Route::is('user.quizzes') ? 'active' : '' }}" href="{{ route('user.quizzes') }}">
+            <i class="bi bi-clipboard-check"></i> My Quizzes
         </a>
-        <a class="nav-link" href="#">
-            <i class="bi bi-file-earmark-text"></i> Resume Builder
+        <a class="nav-link {{ Route::is('user.certificates') ? 'active' : '' }}"
+            href="{{ route('user.certificates') }}">
+            <i class="bi bi-award"></i> My Certificates
         </a>
-        <a class="nav-link" href="#">
-            <i class="bi bi-calendar3"></i> Calendar
-        </a>
-        <a class="nav-link" href="#">
-            <i class="bi bi-chat-left-text"></i> Forums
-        </a>
+
         <a class="nav-link {{ Route::is('user.profile') ? 'active' : '' }}" href="{{ route('user.profile') }}">
             <i class="bi bi-person"></i> Profile
         </a>
-        <a class="nav-link" href="#">
-            <i class="bi bi-gear"></i> Settings
+        <a class="nav-link {{ Route::is('user.purchases') ? 'active' : '' }}" href="{{ route('user.purchases') }}">
+            <i class="bi bi-cart"></i> Purchases
         </a>
     </nav>
 

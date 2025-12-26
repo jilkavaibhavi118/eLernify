@@ -1,297 +1,214 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <title>Certificate of Completion</title>
+    <meta charset="utf-8">
+    <title>Certificate for {{ $enrollment->course->title }}</title>
     <style>
         @page {
-            margin: 20px;
-        }
-
-        * {
             margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            size: a4 landscape;
         }
 
         body {
-            font-family: 'DejaVu Sans', sans-serif;
-            background: white;
-            width: 100%;
-            height: 100%;
-        }
-
-        .certificate-wrapper {
-            width: 100%;
-            height: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .certificate {
-            background: white;
-            width: 100%;
-            height: 100%;
-            padding: 35px 50px;
-            border: 12px solid #f0f0f0;
-            position: relative;
-        }
-
-        .inner-border {
-            position: absolute;
-            top: 25px;
-            left: 25px;
-            right: 25px;
-            bottom: 25px;
-            border: 2px solid #667eea;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 5px;
-            letter-spacing: 2px;
-        }
-
-        .certificate-title {
-            font-size: 12px;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 12px;
-        }
-
-        .main-title {
-            font-size: 24px;
+            font-family: 'Helvetica', 'Arial', sans-serif;
             color: #333;
-            margin-bottom: 18px;
-            font-weight: normal;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+        }
+
+        .cert-container {
+            width: 100%;
+            height: 100%;
+            padding: 40px;
+            box-sizing: border-box;
+            background: #fff;
+            position: relative;
+            border: 20px solid #0a2283;
+            /* Premium Blue Border */
+        }
+
+        .cert-inner {
+            border: 2px solid #e2e8f0;
+            height: 100%;
+            padding: 60px;
             text-align: center;
             position: relative;
-            z-index: 2;
+            box-sizing: border-box;
         }
 
-        .recipient {
-            text-align: center;
-            margin: 15px 0;
-            position: relative;
-            z-index: 2;
+        .cert-header {
+            margin-bottom: 40px;
         }
 
-        .label {
-            font-size: 10px;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 6px;
-        }
-
-        .name {
+        .logo-text {
             font-size: 32px;
-            color: #667eea;
             font-weight: bold;
-            margin-bottom: 12px;
-            border-bottom: 3px solid #667eea;
-            display: inline-block;
-            padding-bottom: 6px;
+            color: #0a2283;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
         }
 
-        .description {
-            font-size: 13px;
-            color: #666;
-            line-height: 1.5;
-            text-align: center;
-            margin: 12px auto;
-            max-width: 600px;
-            position: relative;
-            z-index: 2;
+        .cert-title {
+            font-size: 56px;
+            color: #1e293b;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-transform: uppercase;
         }
 
-        .course-name {
+        .cert-subtitle {
+            font-size: 20px;
+            color: #64748b;
+            margin-bottom: 50px;
+        }
+
+        .student-name {
+            font-size: 48px;
+            color: #0a2283;
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 30px;
+        }
+
+        .course-details {
             font-size: 22px;
-            color: #333;
-            font-weight: bold;
-            margin: 12px 0;
-            text-align: center;
-            position: relative;
-            z-index: 2;
+            color: #334155;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto 60px;
         }
 
-        .footer {
+        .cert-footer {
             position: absolute;
-            bottom: 50px;
-            left: 50px;
-            right: 50px;
-            display: table;
-            width: calc(100% - 100px);
-            border-top: 1px solid #ddd;
-            padding-top: 15px;
-            z-index: 2;
+            bottom: 60px;
+            left: 60px;
+            right: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
         }
 
-        .signature {
-            display: table-cell;
+        .signature-block {
             text-align: center;
-            width: 33%;
-        }
-
-        .signature-line {
-            border-top: 2px solid #333;
-            width: 130px;
-            margin: 0 auto 6px;
+            width: 200px;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 10px;
         }
 
         .signature-name {
             font-weight: bold;
-            color: #333;
-            margin-bottom: 2px;
-            font-size: 12px;
+            color: #1e293b;
+            font-size: 16px;
         }
 
         .signature-title {
-            font-size: 10px;
-            color: #999;
+            color: #64748b;
+            font-size: 14px;
         }
 
-        .date-section {
-            text-align: center;
-            margin-top: 15px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .date {
+        .cert-id {
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
             font-size: 12px;
-            color: #666;
-            font-weight: bold;
+            color: #94a3b8;
         }
 
-        .seal {
+        .cert-date {
+            font-size: 18px;
+            color: #475569;
+            margin-top: 20px;
+        }
+
+        /* Achievement Badge */
+        .badge-container {
             position: absolute;
-            bottom: 60px;
-            right: 70px;
-            width: 80px;
-            height: 80px;
-            border: 3px solid #667eea;
+            top: 20px;
+            right: 20px;
+        }
+
+        .achievement-badge {
+            width: 120px;
+            height: 120px;
+            background: #0a2283;
+            color: white;
             border-radius: 50%;
-            background: white;
-            z-index: 10;
-            text-align: center;
-            padding-top: 22px;
-        }
-
-        .seal-text {
-            font-size: 8px;
-            color: #667eea;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
             font-weight: bold;
-            line-height: 1.3;
-        }
-
-        .decorative-corner {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            z-index: 1;
-        }
-
-        .corner-tl {
-            top: 20px;
-            left: 20px;
-            border-top: 3px solid #667eea;
-            border-left: 3px solid #667eea;
-        }
-
-        .corner-tr {
-            top: 20px;
-            right: 20px;
-            border-top: 3px solid #667eea;
-            border-right: 3px solid #667eea;
-        }
-
-        .corner-bl {
-            bottom: 20px;
-            left: 20px;
-            border-bottom: 3px solid #667eea;
-            border-left: 3px solid #667eea;
-        }
-
-        .corner-br {
-            bottom: 20px;
-            right: 20px;
-            border-bottom: 3px solid #667eea;
-            border-right: 3px solid #667eea;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 5px double #fff;
         }
     </style>
 </head>
 
 <body>
-    <div class="certificate-wrapper">
-        <div class="certificate">
-            <div class="inner-border"></div>
-            <div class="decorative-corner corner-tl"></div>
-            <div class="decorative-corner corner-tr"></div>
-            <div class="decorative-corner corner-bl"></div>
-            <div class="decorative-corner corner-br"></div>
-
-            <div class="header">
-                <div class="logo">eLEARNIFY</div>
-                <div class="certificate-title">Certificate of Completion</div>
-            </div>
-
-            <div class="main-title">This is to certify that</div>
-
-            <div class="recipient">
-                <div class="label">Student Name</div>
-                <div class="name">{{ $enrollment->user->name }}</div>
-            </div>
-
-            <div class="description">
-                has successfully completed the online course
-            </div>
-
-            <div class="recipient">
-                <div class="course-name">{{ $enrollment->course->title }}</div>
-            </div>
-
-            <div class="description">
-                with dedication and commitment, demonstrating proficiency in the subject matter.<br>
-                This achievement reflects exceptional hard work and determination to excel in learning.
-            </div>
-
-            <div class="date-section">
-                <div class="label">Date of Completion</div>
-                <div class="date">{{ $enrollment->updated_at->format('F d, Y') }}</div>
-            </div>
-
-            <div class="footer">
-                <div class="signature">
-                    <div class="signature-line"></div>
-                    <div class="signature-name">{{ $enrollment->course->instructor->name ?? 'Instructor' }}</div>
-                    <div class="signature-title">Course Instructor</div>
-                </div>
-                <div class="signature">
-                    <div class="signature-line"></div>
-                    <div class="signature-name">eLEARNIFY</div>
-                    <div class="signature-title">Learning Platform</div>
-                </div>
-                <div class="signature">
-                    <div class="signature-line"></div>
-                    <div class="signature-name">Certificate ID</div>
-                    <div class="signature-title">#{{ str_pad($enrollment->id, 6, '0', STR_PAD_LEFT) }}</div>
+    <div class="cert-container">
+        <div class="cert-inner">
+            <div class="badge-container">
+                <div class="achievement-badge">
+                    <span>SEAL OF</span><br>
+                    <span>EXCELLENCE</span>
                 </div>
             </div>
 
-            <div class="seal">
-                <div class="seal-text">VERIFIED<br>CERTIFICATE</div>
+            <div class="cert-header">
+                <div class="logo-text">eLEARNIFY</div>
+                <div class="cert-title">Certificate</div>
+                <div class="cert-subtitle">of Course Completion</div>
+            </div>
+
+            <div class="student-text" style="font-size: 24px; color: #64748b; margin-bottom: 20px;">
+                This is to certify that
+            </div>
+
+            <div class="student-name">
+                {{ strtoupper($enrollment->user->name) }}
+            </div>
+
+            <div class="course-details">
+                has successfully completed the professional course on
+                <strong>“{{ $enrollment->course->title }}”</strong> demonstrating exceptional understanding and
+                dedication throughout the curriculum.
+            </div>
+
+            <div class="cert-date">
+                Awarded on:
+                <strong>{{ $enrollment->completed_at ? $enrollment->completed_at->format('F d, Y') : now()->format('F d, Y') }}</strong>
+            </div>
+
+            <div class="cert-footer" style="margin-top: 100px;">
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="text-align: left; width: 33%;">
+                            <div class="signature-block">
+                                <div class="signature-name">
+                                    {{ $enrollment->course->instructor ? $enrollment->course->instructor->name : 'Course Instructor' }}
+                                </div>
+                                <div class="signature-title">Lead Instructor</div>
+                            </div>
+                        </td>
+                        <td style="text-align: center; width: 34%;">
+                            <!-- Central Decoration or QR if needed -->
+                        </td>
+                        <td style="text-align: right; width: 33%;">
+                            <div class="signature-block" style="margin-left: auto;">
+                                <div class="signature-name">eLEARNIFY Academy</div>
+                                <div class="signature-title">Official Recognition</div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="cert-id">
+                Certificate ID: eLN-{{ strtoupper(substr(md5($enrollment->id), 0, 10)) }}
             </div>
         </div>
     </div>

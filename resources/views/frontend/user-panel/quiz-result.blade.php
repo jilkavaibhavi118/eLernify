@@ -191,6 +191,30 @@
                 max-height: none;
             }
         }
+
+        /* Aggressive Branding Overrides */
+        .btn-primary {
+            background-color: #0a2283 !important;
+            border-color: #0a2283 !important;
+            color: #ffffff !important;
+        }
+
+        .btn-primary:hover {
+            background-color: #081b6a !important;
+            border-color: #081b6a !important;
+        }
+
+        .text-primary {
+            color: #0a2283 !important;
+        }
+
+        .bg-primary {
+            background-color: #0a2283 !important;
+        }
+
+        .progress-bar {
+            background-color: #0a2283 !important;
+        }
     </style>
 @endpush
 

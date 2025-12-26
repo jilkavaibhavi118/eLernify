@@ -12,6 +12,7 @@ use App\Http\Controllers\Backend\CourseController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\InstructorController;
 use App\Http\Controllers\Backend\OrderController;
+use App\Http\Controllers\Backend\CommentController as BackendCommentController;
 use App\Http\Controllers\Backend\PaymentController;
 use App\Http\Controllers\Frontend\CourseController as FrontendCourseController;
 use App\Http\Controllers\Frontend\UserPanelController;
@@ -109,6 +110,8 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
 Route::middleware(['auth', 'check.user.status'])->prefix('my')->name('user.')->group(function () {
     Route::get('/dashboard', [UserPanelController::class, 'dashboard'])->name('dashboard');
     Route::get('/courses', [UserPanelController::class, 'myCourses'])->name('courses');
+    Route::get('/quizzes', [UserPanelController::class, 'myQuizzes'])->name('quizzes');
+    Route::get('/certificates', [UserPanelController::class, 'certificates'])->name('certificates');
     Route::get('/course/{enrollmentId}', [UserPanelController::class, 'courseView'])->name('course.view');
     Route::get('/lecture/{lectureId}/{materialId?}', [UserPanelController::class, 'lectureView'])->name('lecture.view');
     Route::get('/quiz/{quizId}', [UserPanelController::class, 'quizView'])->name('quiz.view');
@@ -121,9 +124,14 @@ Route::middleware(['auth', 'check.user.status'])->prefix('my')->name('user.')->g
     Route::delete('/profile/experience/{id}', [UserPanelController::class, 'deleteExperience'])->name('profile.experience.delete');
     Route::post('/profile/education', [UserPanelController::class, 'addEducation'])->name('profile.education.add');
     Route::delete('/profile/education/{id}', [UserPanelController::class, 'deleteEducation'])->name('profile.education.delete');
-    Route::post('/profile', [UserPanelController::class, 'profileUpdate'])->name('profile.update');
     Route::get('/purchases', [UserPanelController::class, 'purchases'])->name('purchases');
+    Route::post('/comment/store', [App\Http\Controllers\CommentController::class, 'store'])->name('comments.store');
+    Route::post('/comment/{id}/react', [App\Http\Controllers\CommentController::class, 'react'])->name('comments.react');
+    Route::get('/notifications/mark-as-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
+    Route::get('/notifications/{id}/mark-as-read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.markRead');
+    Route::delete('/comment/{id}/destroy', [App\Http\Controllers\CommentController::class, 'destroy'])->name('comments.user.destroy');
 });
+
 
 
 // ✅ Admin Routes
@@ -159,5 +167,7 @@ Route::middleware(['auth'])->prefix('admin')->name('backend.')->group(function (
     Route::resource('orders', OrderController::class)->only(['index', 'show']);
     Route::post('orders/{id}/refund', [OrderController::class, 'refund'])->name('orders.refund');
 
+    Route::resource('comments', BackendCommentController::class)->only(['index', 'destroy']);
+    Route::post('comments/{id}/reply', [BackendCommentController::class, 'reply'])->name('comments.reply');
     Route::resource('payments', PaymentController::class)->only(['index', 'show']);
 });

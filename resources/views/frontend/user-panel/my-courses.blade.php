@@ -90,13 +90,13 @@
         }
 
         .custom-tab-item.active {
-            color: #004aad;
+            color: #0a2283;
             /* Dark Blue */
-            border-bottom-color: #004aad;
+            border-bottom-color: #0a2283;
         }
 
         .custom-tab-item:hover {
-            color: #004aad;
+            color: #0a2283;
         }
 
         .empty-state-alert {
@@ -140,6 +140,48 @@
             transform: translateY(-5px);
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
         }
+
+        /* Aggressive Branding Overrides */
+        .btn-primary,
+        .btn-primary:active,
+        .btn-primary:focus {
+            background-color: #0a2283 !important;
+            border-color: #0a2283 !important;
+            color: #fff !important;
+        }
+
+        .btn-primary:hover {
+            background-color: #081b6a !important;
+            border-color: #081b6a !important;
+            color: #fff !important;
+        }
+
+        .text-primary {
+            color: #0a2283 !important;
+        }
+
+        .bg-primary {
+            background-color: #0a2283 !important;
+        }
+
+        .progress-bar {
+            background-color: #0a2283 !important;
+        }
+
+        .dashboard-menu .nav-link:hover,
+        .dashboard-menu .nav-link.active {
+            color: #0a2283 !important;
+            border-left-color: #0a2283 !important;
+        }
+
+        .custom-tab-item.active {
+            color: #0a2283 !important;
+            border-bottom-color: #0a2283 !important;
+        }
+
+        .custom-tab-item:hover {
+            color: #0a2283 !important;
+        }
     </style>
 @endpush
 
@@ -164,9 +206,9 @@
 
                         <!-- Tabs -->
                         <div class="custom-tabs">
-                            <a href="#" class="custom-tab-item active">Courses</a>
-                            <a href="#" class="custom-tab-item">Live Lecures</a>
-                            <a href="#" class="custom-tab-item">Certificates</a>
+                            <a href="{{ route('user.courses') }}" class="custom-tab-item active">Courses</a>
+                            <a href="{{ route('user.quizzes') }}" class="custom-tab-item">My Quizzes</a>
+                            <a href="{{ route('user.certificates') }}" class="custom-tab-item">Certificates</a>
                         </div>
 
                         @if ($enrollments->count() > 0)
@@ -184,7 +226,8 @@
                                                     {{ $enrollment->course->title }}</h6>
                                                 <div class="progress mb-2" style="height: 5px;">
                                                     <div class="progress-bar" role="progressbar"
-                                                        style="width: {{ $enrollment->progress }}%"></div>
+                                                        style="width: {{ $enrollment->progress }}%; background-color: #0a2283;">
+                                                    </div>
                                                 </div>
                                                 <small class="text-muted">{{ $enrollment->progress }}% Completed</small>
                                                 <a href="{{ route('user.course.view', $enrollment->id) }}"

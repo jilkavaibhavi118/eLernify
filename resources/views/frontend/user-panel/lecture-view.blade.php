@@ -225,14 +225,18 @@
             }
         }
 
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
+        .btn-primary,
+        .btn-primary:active,
+        .btn-primary:focus {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+            color: #fff !important;
         }
 
         .btn-primary:hover {
-            background-color: #081b6a;
-            border-color: #081b6a;
+            background-color: #081b6a !important;
+            border-color: #081b6a !important;
+            color: #fff !important;
         }
 
         .text-primary {
@@ -240,7 +244,7 @@
         }
 
         .progress-bar {
-            background-color: var(--primary-color);
+            background-color: var(--primary-color) !important;
         }
 
         /* Sidebar Section Styling Override */
@@ -423,6 +427,96 @@
     <div class="player-container">
         <!-- Main Player Area -->
         <main class="player-main">
+            @if ($lecture->live_class_available)
+                <div class="live-class-card mb-4 overflow-hidden border-0 shadow-sm"
+                    style="background: linear-gradient(135deg, #0a2283 0%, #1e3a8a 100%); border-radius: 16px;">
+                    <div class="card-body p-4 text-white">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="live-indicator">
+                                    <span class="pulse"></span>
+                                    LIVE SESSION
+                                </div>
+                                <h4 class="mb-0 fw-bold">Online Live Class</h4>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-white text-primary rounded-pill px-3 py-2 fw-bold">
+                                    <i class="bi bi-calendar-event me-2"></i>
+                                    {{ \Carbon\Carbon::parse($lecture->live_date)->format('M d, Y') }} |
+                                    {{ \Carbon\Carbon::parse($lecture->live_time)->format('h:i A') }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row g-4 align-items-center">
+                            <div class="col-md-7">
+                                <p class="mb-0 opacity-75">Join our interactive live session to discuss this lecture in
+                                    real-time with the instructor and other students.</p>
+                                <div class="mt-4 d-flex flex-wrap gap-4">
+                                    <div>
+                                        <small class="d-block opacity-50 text-uppercase fw-bold"
+                                            style="font-size: 0.65rem;">Meeting ID</small>
+                                        <span class="fw-bold">{{ $lecture->zoom_meeting_id }}</span>
+                                    </div>
+                                    <div>
+                                        <small class="d-block opacity-50 text-uppercase fw-bold"
+                                            style="font-size: 0.65rem;">Password</small>
+                                        <span class="fw-bold">{{ $lecture->zoom_meeting_password }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5 text-md-end">
+                                <a href="{{ $lecture->zoom_meeting_link }}" target="_blank"
+                                    class="btn btn-light btn-lg px-5 rounded-pill fw-bold"
+                                    style="color: #0a2283; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                                    <i class="bi bi-zoom me-2"></i> Join Meeting
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <style>
+                    .live-indicator {
+                        background: rgba(255, 255, 255, 0.15);
+                        padding: 0.4rem 0.8rem;
+                        border-radius: 8px;
+                        font-size: 0.75rem;
+                        font-weight: 800;
+                        letter-spacing: 0.05em;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                    }
+
+                    .pulse {
+                        display: inline-block;
+                        width: 8px;
+                        height: 8px;
+                        background: #ef4444;
+                        border-radius: 50%;
+                        animation: pulse-animation 2s infinite;
+                    }
+
+                    @keyframes pulse-animation {
+                        0% {
+                            transform: scale(0.95);
+                            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+                        }
+
+                        70% {
+                            transform: scale(1);
+                            box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+                        }
+
+                        100% {
+                            transform: scale(0.95);
+                            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+                        }
+                    }
+                </style>
+            @endif
+
             <div class="video-wrapper">
                 @if ($videoType === 'youtube')
                     <iframe src="{{ $videoSource }}" title="{{ $activeMaterial->title ?? $lecture->title }}"
@@ -587,6 +681,8 @@
                         @endif
                     </div>
                 </div>
+
+                @include('frontend.user-panel.components.comments')
             </div>
         </main>
 

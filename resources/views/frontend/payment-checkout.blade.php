@@ -109,7 +109,7 @@
                 "email": "{{ Auth::user()->email }}",
             },
             "theme": {
-                "color": "#06BBCC"
+                "color": "#0a2283"
             },
             "modal": {
                 "ondismiss": function() {

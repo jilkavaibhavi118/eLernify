@@ -34,6 +34,87 @@
                         <a href="{{ route('login') }}" class="login-link">Log In</a>
                         <a href="{{ route('register') }}" class="btn btn-premium">Join Premium</a>
                     @else
+                        <!-- Notifications -->
+                        <div class="nav-item dropdown ms-2">
+                            <a class="nav-link p-2 position-relative" href="#" id="notificationDropdown"
+                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-bell fs-5 text-dark"></i>
+                                @if (Auth::user()->unreadNotifications->count() > 0)
+                                    <span
+                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge"
+                                        style="font-size: 0.6rem;">
+                                        {{ Auth::user()->unreadNotifications->count() }}
+                                    </span>
+                                @endif
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-0"
+                                aria-labelledby="notificationDropdown"
+                                style="width: 320px; max-height: 450px; overflow-y: auto;">
+                                <li class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0 fw-bold">Notifications</h6>
+                                    @if (Auth::user()->unreadNotifications->count() > 0)
+                                        <a href="javascript:void(0)" id="markAllRead"
+                                            class="small text-primary text-decoration-none">Mark all as read</a>
+                                    @endif
+                                </li>
+                                <div class="notification-list">
+                                    @forelse(Auth::user()->notifications->take(5) as $notification)
+                                        <li>
+                                            <a class="dropdown-item p-3 border-bottom notification-item {{ $notification->read_at ? 'opacity-75' : 'bg-light' }}"
+                                                href="{{ $notification->data['link'] ?? '#' }}"
+                                                data-id="{{ $notification->id }}">
+                                                <div class="d-flex gap-2">
+                                                    <div class="bg-primary-light rounded-circle p-2 d-flex align-items-center justify-content-center"
+                                                        style="width: 40px; height: 40px;">
+                                                        <i class="bi bi-camera-video text-primary"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <p class="mb-1 small fw-bold text-dark">
+                                                            {{ $notification->data['title'] }}</p>
+                                                        <p class="mb-1 small text-muted text-wrap">
+                                                            {{ $notification->data['message'] }}</p>
+                                                        <small class="text-muted"
+                                                            style="font-size: 0.7rem;">{{ $notification->created_at->diffForHumans() }}</small>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    @empty
+                                        <li class="p-4 text-center">
+                                            <i class="bi bi-bell-slash fs-2 text-muted d-block mb-2"></i>
+                                            <span class="text-muted small">No notifications yet</span>
+                                        </li>
+                                    @endforelse
+                                </div>
+                                <li class="text-center p-2 border-top">
+                                    <a href="#" class="small text-muted text-decoration-none">View all
+                                        notifications</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                // Mark Single as Read
+                                $('.notification-item').on('click', function(e) {
+                                    const id = $(this).data('id');
+                                    const url = `{{ url('my/notifications') }}/${id}/mark-as-read`;
+                                    $.get(url); // Background request
+                                });
+
+                                // Mark All as Read
+                                $('#markAllRead').on('click', function(e) {
+                                    e.preventDefault();
+                                    const url = "{{ route('user.notifications.markAllRead') }}";
+                                    $.get(url, function(response) {
+                                        if (response.success) {
+                                            $('.notification-item').removeClass('bg-light').addClass('opacity-75');
+                                            $('.notification-badge').fadeOut();
+                                            $('#markAllRead').fadeOut();
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
                         <div class="nav-item dropdown ms-3">
                             <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 py-1 px-3 border rounded-pill"
                                 href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"

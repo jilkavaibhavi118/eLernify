@@ -187,20 +187,40 @@
             margin: 0 auto;
         }
 
-        /* Button Shadow Customization */
-        .dashboard-card .btn {
-            box-shadow: none !important;
+        /* Aggressive Branding Overrides */
+        .btn-primary,
+        .btn-primary:active,
+        .btn-primary:focus {
+            background-color: #0a2283 !important;
+            border-color: #0a2283 !important;
+            color: #fff !important;
+            box-shadow: 0 4px 10px rgba(10, 34, 131, 0.3) !important;
         }
 
-        .dashboard-card .btn-primary {
-            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3) !important;
-            /* Website related color shadow */
-            transition: all 0.3s ease;
-        }
-
-        .dashboard-card .btn-primary:hover {
-            box-shadow: 0 6px 15px rgba(13, 110, 253, 0.4) !important;
+        .btn-primary:hover {
+            background-color: #081b6a !important;
+            border-color: #081b6a !important;
+            color: #fff !important;
+            box-shadow: 0 6px 15px rgba(10, 34, 131, 0.4) !important;
             transform: translateY(-2px);
+        }
+
+        .text-primary {
+            color: #0a2283 !important;
+        }
+
+        .bg-primary {
+            background-color: #0a2283 !important;
+        }
+
+        .progress-bar {
+            background-color: #0a2283 !important;
+        }
+
+        .dashboard-menu .nav-link:hover,
+        .dashboard-menu .nav-link.active {
+            color: #0a2283 !important;
+            border-left-color: #0a2283 !important;
         }
     </style>
 @endpush
@@ -335,6 +355,82 @@
                         </div>
                     </div>
 
+                    <!-- Row 2.5: Upcoming Live Classes -->
+                    @if ($upcomingLiveClasses->count() > 0)
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="dashboard-card border-0 shadow-sm"
+                                    style="border-left: 5px solid #0a2283 !important;">
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <h5 class="mb-0 d-flex align-items-center">
+                                            <span class="live-dot-pulse me-2"></span>
+                                            Upcoming Live Classes
+                                        </h5>
+                                        <span class="badge bg-primary-light text-primary rounded-pill px-3">
+                                            {{ $upcomingLiveClasses->count() }} Sessions Scheduled
+                                        </span>
+                                    </div>
+
+                                    <div class="row g-3">
+                                        @foreach ($upcomingLiveClasses->take(2) as $live)
+                                            <div class="col-md-6">
+                                                <div class="p-3 border rounded-3 bg-light">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <h6 class="mb-0 fw-bold text-truncate" style="max-width: 70%;">
+                                                            {{ $live->title }}</h6>
+                                                        <span class="badge bg-white text-dark border small">
+                                                            {{ \Carbon\Carbon::parse($live->live_date)->format('M d') }}
+                                                        </span>
+                                                    </div>
+                                                    <p class="text-muted small mb-3 text-truncate">
+                                                        {{ $live->course->title }}</p>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div class="text-primary fw-bold small">
+                                                            <i class="bi bi-clock me-1"></i>
+                                                            {{ \Carbon\Carbon::parse($live->live_time)->format('h:i A') }}
+                                                        </div>
+                                                        <a href="{{ route('user.lecture.view', $live->id) }}"
+                                                            class="btn btn-sm btn-primary">
+                                                            Join Hub
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <style>
+                            .live-dot-pulse {
+                                width: 10px;
+                                height: 10px;
+                                background: #ef4444;
+                                border-radius: 50%;
+                                display: inline-block;
+                                animation: dash-pulse 2s infinite;
+                            }
+
+                            @keyframes dash-pulse {
+                                0% {
+                                    transform: scale(0.95);
+                                    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+                                }
+
+                                70% {
+                                    transform: scale(1.1);
+                                    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+                                }
+
+                                100% {
+                                    transform: scale(0.95);
+                                    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+                                }
+                            }
+                        </style>
+                    @endif
+
                     <!-- Row 3: Certificates & Recommended -->
                     <div class="row g-4">
                         <!-- My Certificates -->
@@ -355,7 +451,8 @@
                                     @foreach ($completedCourses as $enrollment)
                                         <div class="d-flex align-items-center mb-3 p-2 border rounded">
                                             <div class="me-3">
-                                                <i class="bi bi-patch-check-fill text-success" style="font-size: 2rem;"></i>
+                                                <i class="bi bi-patch-check-fill text-success"
+                                                    style="font-size: 2rem;"></i>
                                             </div>
                                             <div class="flex-grow-1" style="min-width: 0;">
                                                 <h6 class="mb-1 text-truncate fw-bold" style="font-size: 0.9rem;">

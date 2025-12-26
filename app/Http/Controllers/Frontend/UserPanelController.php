@@ -32,13 +32,22 @@ class UserPanelController extends Controller
 
         // Recommended Courses: Active courses the user is NOT enrolled in
         $enrolledCourseIds = $enrollments->pluck('course_id')->toArray();
-        $recommendedCourses = \App\Models\Course::where('status', 'active') // Assuming 'active' is the status for visible courses
+        $recommendedCourses = \App\Models\Course::where('status', 'active')
             ->whereNotIn('id', $enrolledCourseIds)
             ->inRandomOrder()
             ->take(3)
             ->get();
 
-        return view('frontend.user-panel.dashboard', compact('enrollments', 'stats', 'recommendedCourses'));
+        // Upcoming Live Classes for enrolled courses
+        $upcomingLiveClasses = Lecture::whereIn('course_id', $enrolledCourseIds)
+            ->where('live_class_available', 1)
+            ->where('live_date', '>=', now()->toDateString())
+            ->with('course')
+            ->orderBy('live_date', 'asc')
+            ->orderBy('live_time', 'asc')
+            ->get();
+
+        return view('frontend.user-panel.dashboard', compact('enrollments', 'stats', 'recommendedCourses', 'upcomingLiveClasses'));
     }
 
     public function myCourses()
@@ -48,7 +57,49 @@ class UserPanelController extends Controller
             ->latest('enrolled_at')
             ->paginate(12);
 
+
         return view('frontend.user-panel.my-courses', compact('enrollments'));
+    }
+
+    public function myQuizzes()
+    {
+        // Get all quiz attempts by the logged-in user
+        $attempts = QuizAttempt::where('user_id', Auth::id())
+            ->with(['quiz.course', 'quiz.lecture'])
+            ->latest('completed_at')
+            ->paginate(12);
+
+        // Calculate stats
+        $stats = [
+            'total' => QuizAttempt::where('user_id', Auth::id())->count(),
+            'passed' => QuizAttempt::where('user_id', Auth::id())
+                ->whereRaw('score >= total_questions * 0.6') // 60% pass rate
+                ->count(),
+            'failed' => QuizAttempt::where('user_id', Auth::id())
+                ->whereRaw('score < total_questions * 0.6')
+                ->count(),
+            'avg_score' => QuizAttempt::where('user_id', Auth::id())
+                ->selectRaw('AVG((score / total_questions) * 100) as avg')
+                ->value('avg') ?? 0,
+        ];
+
+        return view('frontend.user-panel.my-quizzes', compact('attempts', 'stats'));
+    }
+
+    public function certificates()
+    {
+        // Get all completed enrollments (these are eligible for certificates)
+        $completedEnrollments = Enrollment::where('user_id', Auth::id())
+            ->where('status', 'completed')
+            ->with(['course.instructor', 'course.category'])
+            ->latest('completed_at')
+            ->get();
+
+        $stats = [
+            'total' => $completedEnrollments->count(),
+        ];
+
+        return view('frontend.user-panel.certificates', compact('completedEnrollments', 'stats'));
     }
 
     public function courseView($enrollmentId)
@@ -63,18 +114,29 @@ class UserPanelController extends Controller
 
     public function lectureView($lectureId, $materialId = null)
     {
-        // Load lecture with course and its hierarchy (lectures -> quizzes)
+        // Load lecture with course and its hierarchy (lectures -> quizzes) and comments
         $lecture = Lecture::with([
+                'course.instructor.user',
                 'course.lectures.materials', 
                 'course.lectures.quizzes',
                 'materials',
-                'quizzes'
+                'quizzes',
+                'comments'
             ])->findOrFail($lectureId);
 
-        // Verify user is enrolled in this course
+        // Verify user is enrolled or is the instructor/admin
+        $isInstructor = $lecture->course->instructor && $lecture->course->instructor->user_id == Auth::id();
+        $isAdmin = Auth::user()->hasRole('Admin');
+        
         $enrollment = Enrollment::where('user_id', Auth::id())
             ->where('course_id', $lecture->course_id)
-            ->firstOrFail();
+            ->first();
+
+        if (!$enrollment && !$isInstructor && !$isAdmin) {
+             abort(403, 'Unauthorized access to this lecture.');
+        }
+
+        $course = $enrollment ? $enrollment->course : $lecture->course;
 
         // Find the specific material if provided, otherwise default to first video material
         $activeMaterial = null;
@@ -92,7 +154,7 @@ class UserPanelController extends Controller
 
         // Flatten the content sequence: Lecture -> [Materials/Videos] -> [Quizzes] -> Next Lecture
         $sequence = collect([]);
-        foreach ($enrollment->course->lectures as $l) {
+        foreach ($course->lectures as $l) {
             // Add Video Materials for this Lecture
             foreach ($l->materials as $m) {
                 if (!empty($m->video_path) || !empty($m->content_url)) {
@@ -135,8 +197,8 @@ class UserPanelController extends Controller
             $totalItems = max(1, $sequence->count());
             $newProgress = (($currentPosition + 1) / $totalItems) * 100;
             
-            // Only update if it's an improvement (to handle going back)
-            if ($newProgress > ($enrollment->progress ?? 0)) {
+            // Only update if it's an improvement and enrollment exists
+            if ($enrollment && $newProgress > ($enrollment->progress ?? 0)) {
                 $enrollment->updateProgress($newProgress);
             }
 

@@ -1,258 +1,287 @@
 @extends('layouts.frontend')
 
-@section('title', 'My Learning Library | eLEARNIFY')
+@section('title', 'My Purchases | eLEARNIFY')
 
 @push('styles')
     <style>
-        :root {
-            --primary-blue: #0a2283;
-            --primary-gradient: linear-gradient(135deg, #0a2283 0%, #081b6a 100%);
-            --bg-light: #f8f9fa;
-            --text-dark: #1f2937;
+        .dashboard-container {
+            background-color: #f5f7f9;
+            min-height: 100vh;
+            padding-top: 140px;
+            padding-bottom: 50px;
         }
 
-        .learning-header {
+        /* Sidebar Styling */
+        .dashboard-sidebar {
             background: #fff;
-            padding: 4rem 0 3rem;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 3rem;
+            border-radius: 10px;
+            padding: 20px 0;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
         }
 
-        .premium-card {
-            background: #fff;
-            border-radius: 20px;
-            border: 1px solid #f0f0f0;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            height: 100%;
+        .dashboard-menu .nav-link {
+            padding: 12px 20px;
+            color: #555;
+            font-weight: 500;
             display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            align-items: center;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
         }
 
-        .premium-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(10, 34, 131, 0.1), 0 10px 10px -5px rgba(10, 34, 131, 0.04);
-            border-color: rgba(10, 34, 131, 0.1);
+        .dashboard-menu .nav-link:hover,
+        .dashboard-menu .nav-link.active {
+            color: var(--primary);
+            background-color: #f8f9fa;
+            border-left-color: var(--primary);
         }
 
-        .card-image-box {
-            position: relative;
-            height: 200px;
-            overflow: hidden;
+        .dashboard-menu .nav-link i {
+            width: 24px;
+            margin-right: 10px;
+            text-align: center;
         }
 
-        .card-image-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s ease;
+        /* Purchases Content */
+        .courses-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            padding: 30px;
+            min-height: 500px;
         }
 
-        .premium-card:hover .card-image-box img {
-            transform: scale(1.05);
+        .courses-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .courses-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Card Hover Effect */
+        .course-card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .course-card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
         }
 
         .card-badge {
             position: absolute;
-            top: 1rem;
-            left: 1rem;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-size: 0.75rem;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.7rem;
             font-weight: 700;
-            color: var(--primary-blue);
-            backdrop-filter: blur(4px);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            color: #0a2283;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1;
         }
 
-        .card-content {
-            padding: 1.5rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
+        .empty-state-alert {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
         }
 
-        .item-type {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #94a3b8;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+        .empty-state-alert a {
+            color: #0a2283;
+            text-decoration: underline;
         }
 
-        .item-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 1rem;
-            line-height: 1.4;
+        /* Aggressive Branding Overrides */
+        .btn-primary,
+        .btn-primary:active,
+        .btn-primary:focus {
+            background-color: #0a2283 !important;
+            border-color: #0a2283 !important;
+            color: #fff !important;
         }
 
-        .progress-box {
-            margin-top: auto;
-            padding-top: 1rem;
+        .btn-primary:hover {
+            background-color: #081b6a !important;
+            border-color: #081b6a !important;
+            color: #fff !important;
         }
 
-        .progress {
-            height: 8px;
-            border-radius: 10px;
-            background-color: #f1f5f9;
-            margin-bottom: 0.5rem;
+        .text-primary {
+            color: #0a2283 !important;
+        }
+
+        .bg-primary {
+            background-color: #0a2283 !important;
         }
 
         .progress-bar {
-            background: var(--primary-gradient);
-            border-radius: 10px;
+            background-color: #0a2283 !important;
         }
 
-        .progress-text {
-            font-size: 0.875rem;
-            color: var(--primary-blue);
-            font-weight: 600;
+        .dashboard-menu .nav-link:hover,
+        .dashboard-menu .nav-link.active {
+            color: #0a2283 !important;
+            border-left-color: #0a2283 !important;
         }
 
-        .btn-continue {
-            background: var(--primary-gradient);
-            color: #fff;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            width: 100%;
-            margin-top: 1rem;
-            transition: all 0.3s;
-        }
-
-        .btn-continue:hover {
-            transform: scale(1.02);
-            box-shadow: 0 10px 15px -3px rgba(10, 34, 131, 0.3);
-            color: #fff;
-        }
-
-        .empty-state {
-            color: var(--primary-blue);
+        .card-badge {
+            color: #0a2283 !important;
         }
     </style>
 @endpush
 
 @section('content')
-    <div class="learning-header">
-        <div class="container text-center">
-            <h6 class="section-title bg-white text-center text-primary px-3 mb-3">My Learning</h6>
-            <h1 class="display-5 fw-bold mb-0">Your Library</h1>
-            <p class="text-muted mt-3">All your purchased courses, lectures, and resources in one place.</p>
-        </div>
-    </div>
+    <div class="dashboard-container">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Sidebar -->
+                <div class="col-lg-3">
+                    @include('frontend.user-panel.components.sidebar')
+                </div>
 
-    <div class="container mb-5 pb-5">
-        <div class="row g-4">
-            @php $hasItems = false; @endphp
-            @foreach ($orders as $order)
-                @foreach ($order->items as $item)
-                    @php
-                        $hasItems = true;
-                        $title = '';
-                        $type = '';
-                        $icon = 'fa-book';
-                        $viewRoute = '#';
-                        $image = null;
-                        $progress = 0;
-
-                        if ($item->course) {
-                            $title = $item->course->title;
-                            $type = 'Course';
-                            $icon = 'fa-graduation-cap';
-                            // Redirect to the first lecture if available
-                            $firstLecture = $item->course->lectures->first();
-                            $viewRoute = $firstLecture
-                                ? route('user.lecture.view', $firstLecture->id)
-                                : route('course.detail', $item->course_id);
-                            if ($item->course->image) {
-                                $image = asset('storage/' . $item->course->image);
-                            }
-                            // Find enrollment for progress
-                            $enrollment = \App\Models\Enrollment::where('user_id', Auth::id())
-                                ->where('course_id', $item->course_id)
-                                ->first();
-                            $progress = $enrollment ? $enrollment->progress : 0;
-                        } elseif ($item->material) {
-                            $title = $item->material->title;
-                            $type = 'Resource';
-                            $icon = !empty($item->material->video_path) ? 'fa-video' : 'fa-file-alt';
-                            $viewRoute = route('material.view', $item->material_id);
-                        } elseif ($item->lecture) {
-                            $title = $item->lecture->title;
-                            $type = 'Lecture';
-                            $icon = 'fa-play-circle';
-                            $viewRoute = route('lecture.view', $item->lecture_id);
-                        } elseif ($item->quiz) {
-                            $title = $item->quiz->title;
-                            $type = 'Quiz';
-                            $icon = 'fa-tasks';
-                            $viewRoute = route('quiz.view', $item->quiz_id);
-                        }
-                    @endphp
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="premium-card">
-                            <div class="card-image-box">
-                                @if ($image)
-                                    <img src="{{ $image }}" alt="{{ $title }}">
-                                @else
-                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-light">
-                                        <i class="fa {{ $icon }} fa-3x text-primary opacity-25"></i>
-                                    </div>
-                                @endif
-                                <div class="card-badge">{{ $type }}</div>
-                            </div>
-                            <div class="card-content">
-                                <div class="item-type">{{ $type }}</div>
-                                <h5 class="item-title">{{ $title }}</h5>
-
-                                <div class="progress-box">
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <small
-                                            class="text-muted">{{ $type == 'Course' ? 'Course Progress' : 'Purchased on' }}</small>
-                                        <small
-                                            class="fw-bold text-dark">{{ $type == 'Course' ? round($progress) . '%' : $order->created_at->format('M d') }}</small>
-                                    </div>
-                                    @if ($type == 'Course')
-                                        <div class="progress">
-                                            <div class="progress-bar" style="width:{{ $progress }}%"></div>
-                                        </div>
-                                    @else
-                                        <div class="text-muted small">
-                                            <i class="far fa-check-circle text-success me-1"></i> Access Secured
-                                        </div>
-                                    @endif
-                                </div>
-
-                                <div class="card-footer-action">
-                                    <a href="{{ $viewRoute }}" class="btn-continue">
-                                        {{ $type == 'Course' ? 'Continue Learning' : 'View Content' }}
-                                    </a>
-                                </div>
+                <!-- Main Content -->
+                <div class="col-lg-9">
+                    <div class="courses-card">
+                        <div class="courses-header">
+                            <div class="courses-title">
+                                <i class="bi bi-cart me-2"></i> My Purchases
                             </div>
                         </div>
-                    </div>
-                @endforeach
-            @endforeach
 
-            @if (!$hasItems)
-                <div class="col-12 empty-state">
-                    <div class="empty-icon">
-                        <i class="fa fa-layer-group fa-4x"></i>
+                        <div class="row g-4">
+                            @php $hasItems = false; @endphp
+                            @forelse ($orders as $order)
+                                @foreach ($order->items as $item)
+                                    @php
+                                        $hasItems = true;
+                                        $title = '';
+                                        $type = '';
+                                        $icon = 'bi-journal-bookmark';
+                                        $viewRoute = '#';
+                                        $image = null;
+                                        $progress = 0;
+
+                                        if ($item->course) {
+                                            $title = $item->course->title;
+                                            $type = 'Course';
+                                            $icon = 'bi-mortarboard';
+                                            $firstLecture = $item->course->lectures->first();
+                                            $viewRoute = $firstLecture
+                                                ? route('user.lecture.view', $firstLecture->id)
+                                                : route('course.detail', $item->course_id);
+                                            if ($item->course->image) {
+                                                $image = asset('storage/' . $item->course->image);
+                                            }
+                                            $enrollment = \App\Models\Enrollment::where('user_id', Auth::id())
+                                                ->where('course_id', $item->course_id)
+                                                ->first();
+                                            $progress = $enrollment ? $enrollment->progress : 0;
+                                        } elseif ($item->material) {
+                                            $title = $item->material->title;
+                                            $type = 'Resource';
+                                            $icon = !empty($item->material->video_path)
+                                                ? 'bi-play-circle'
+                                                : 'bi-file-earmark-text';
+                                            $viewRoute = route('material.view', $item->material_id);
+                                        } elseif ($item->lecture) {
+                                            $title = $item->lecture->title;
+                                            $type = 'Lecture';
+                                            $icon = 'bi-play-btn';
+                                            $viewRoute = route('lecture.view', $item->lecture_id);
+                                        } elseif ($item->quiz) {
+                                            $title = $item->quiz->title;
+                                            $type = 'Quiz';
+                                            $icon = 'bi-clipboard-check';
+                                            $viewRoute = route('quiz.view', $item->quiz_id);
+                                        }
+                                    @endphp
+
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="card h-100 border-0 shadow-sm course-card-hover position-relative">
+                                            <div class="card-badge">{{ $type }}</div>
+                                            @if ($image)
+                                                <img src="{{ $image }}" class="card-img-top"
+                                                    alt="{{ $title }}" style="height: 160px; object-fit: cover;">
+                                            @else
+                                                <div class="card-img-top d-flex align-items-center justify-content-center bg-light"
+                                                    style="height: 160px;">
+                                                    <i class="bi {{ $icon }} text-primary"
+                                                        style="font-size: 3rem; opacity: 0.3;"></i>
+                                                </div>
+                                            @endif
+                                            <div class="card-body">
+                                                <h6 class="card-title mb-2 text-truncate" title="{{ $title }}">
+                                                    {{ $title }}
+                                                </h6>
+
+                                                <div class="mt-auto">
+                                                    @if ($type == 'Course')
+                                                        <div class="progress mb-2" style="height: 5px;">
+                                                            <div class="progress-bar" role="progressbar"
+                                                                style="width: {{ $progress }}%; background-color: #0a2283;">
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                                            <small class="text-muted">{{ round($progress) }}%
+                                                                Completed</small>
+                                                        </div>
+                                                        <a href="{{ $viewRoute }}"
+                                                            class="btn btn-primary btn-sm w-100">Continue learning</a>
+                                                    @else
+                                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                                            <small class="text-muted"><i
+                                                                    class="bi bi-calendar-event me-1"></i>
+                                                                {{ $order->created_at->format('M d, Y') }}</small>
+                                                        </div>
+                                                        <a href="{{ $viewRoute }}"
+                                                            class="btn btn-primary btn-sm w-100">View Content</a>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @empty
+                                <div class="col-12">
+                                    <div class="empty-state-alert">
+                                        You have not purchased any courses or resources yet, <a
+                                            href="{{ route('courses') }}">explore our library</a>
+                                    </div>
+                                    <div class="text-center py-5">
+                                        <h3 class="mb-3" style="color: #00235B; font-weight: 700;">Start Your Learning
+                                            Journey</h3>
+                                        <p class="text-muted mb-4">Level up your skills and take the next step in your
+                                            career with our online video courses.</p>
+                                        <a href="{{ route('courses') }}" class="btn btn-primary px-4 py-2">Explore
+                                            Courses</a>
+                                    </div>
+                                </div>
+                            @endforelse
+
+                            @if (!$hasItems && $orders->count() > 0)
+                                <div class="col-12">
+                                    <div class="empty-state-alert">
+                                        You have not purchased any courses or resources yet, <a
+                                            href="{{ route('courses') }}">explore our library</a>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                     </div>
-                    <h2 class="fw-bold">Your library is empty</h2>
-                    <p class="text-muted mb-4">Explore our premium courses and start learning today.</p>
-                    <a href="{{ route('courses') }}" class="btn btn-primary px-5 py-3 rounded-pill fw-bold">
-                        Browse Courses
-                    </a>
                 </div>
-            @endif
+            </div>
         </div>
     </div>
 @endsection

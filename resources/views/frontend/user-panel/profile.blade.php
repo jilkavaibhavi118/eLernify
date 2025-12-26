@@ -157,8 +157,8 @@
             box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
             /* Fallback blue/primary shadow */
             /* If --primary is defined as a hex, we might need a specific rgba here,
-                       but usually standard bootstrap uses a specific variable.
-                       Let's try to match the "website related color" which likely links to --primary. */
+                           but usually standard bootstrap uses a specific variable.
+                           Let's try to match the "website related color" which likely links to --primary. */
             outline: none;
         }
 
@@ -185,6 +185,40 @@
             transform: translateY(-50%);
             color: #6c757d;
             pointer-events: none;
+        }
+
+        /* Aggressive Branding Overrides */
+        .btn-primary,
+        .btn-primary:active,
+        .btn-primary:focus {
+            background-color: #0a2283 !important;
+            border-color: #0a2283 !important;
+            color: #fff !important;
+        }
+
+        .btn-primary:hover {
+            background-color: #081b6a !important;
+            border-color: #081b6a !important;
+            color: #fff !important;
+        }
+
+        .text-primary,
+        .section-label {
+            color: #0a2283 !important;
+        }
+
+        .bg-primary {
+            background-color: #0a2283 !important;
+        }
+
+        .progress-bar {
+            background-color: #0a2283 !important;
+        }
+
+        .dashboard-menu .nav-link:hover,
+        .dashboard-menu .nav-link.active {
+            color: #0a2283 !important;
+            border-left-color: #0a2283 !important;
         }
     </style>
 @endpush

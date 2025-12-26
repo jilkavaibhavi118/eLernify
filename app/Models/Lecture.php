@@ -15,6 +15,11 @@ class Lecture extends Model
         'status',
         'is_free',
         'live_class_available',
+        'zoom_meeting_id',
+        'zoom_meeting_password',
+        'zoom_meeting_link',
+        'live_date',
+        'live_time',
         'video_url',
     ];
 
@@ -37,5 +42,10 @@ class Lecture extends Model
     public function quizzes()
     {
         return $this->hasMany(Quiz::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class)->whereNull('parent_id')->with(['user', 'replies', 'reactions'])->orderBy('created_at', 'desc');
     }
 }

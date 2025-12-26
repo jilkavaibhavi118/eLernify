@@ -30,6 +30,11 @@ class StoreLectureRequest extends FormRequest
             'price' => 'required_if:is_free,0|nullable|numeric|min:0',
             'status' => 'required|in:active,inactive',
             'live_class_available' => 'required|boolean',
+            'zoom_meeting_id' => 'required_if:live_class_available,1|nullable|string|max:255',
+            'zoom_meeting_password' => 'required_if:live_class_available,1|nullable|string|max:255',
+            'zoom_meeting_link' => 'required_if:live_class_available,1|nullable|url',
+            'live_date' => 'required_if:live_class_available,1|nullable|date',
+            'live_time' => 'required_if:live_class_available,1|nullable',
         ];
     }
 

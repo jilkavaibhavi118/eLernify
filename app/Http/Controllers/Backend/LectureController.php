@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLectureRequest;
 use App\Models\Lecture;
 use App\Models\Course;
+use App\Notifications\LiveClassNotification;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -32,9 +34,12 @@ class LectureController extends Controller
                     return '<span class="badge '.$badgeClass.'">'.ucfirst($row->status).'</span>';
                 })
                 ->addColumn('live_class', function($row){
-                    return $row->live_class_available ?
-                        '<span class="badge bg-info">Yes</span>' :
-                        '<span class="badge bg-warning">No</span>';
+                    if ($row->live_class_available) {
+                        $date = \Carbon\Carbon::parse($row->live_date)->format('M d, Y');
+                        $time = \Carbon\Carbon::parse($row->live_time)->format('h:i A');
+                        return '<span class="badge bg-success">Live: ' . $date . ' @ ' . $time . '</span>';
+                    }
+                    return '<span class="badge bg-secondary">Disabled</span>';
                 })
                 ->addColumn('price', function($row){
                     if ($row->is_free) {
@@ -91,7 +96,17 @@ class LectureController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        Lecture::create($request->validated());
+        $lecture = Lecture::create($request->validated());
+
+        if ($lecture->live_class_available) {
+            $students = \App\Models\User::whereHas('enrollments', function($q) use ($lecture) {
+                $q->where('course_id', $lecture->course_id)->whereIn('status', ['active', 'completed']);
+            })->get();
+
+            if ($students->count() > 0) {
+                Notification::send($students, new LiveClassNotification($lecture));
+            }
+        }
 
         return response()->json([
             'success' => 'Lecture created successfully',
@@ -133,6 +148,16 @@ class LectureController extends Controller
         }
 
         $lecture->update($request->validated());
+
+        if ($lecture->live_class_available) {
+            $students = \App\Models\User::whereHas('enrollments', function($q) use ($lecture) {
+                $q->where('course_id', $lecture->course_id)->whereIn('status', ['active', 'completed']);
+            })->get();
+
+            if ($students->count() > 0) {
+                Notification::send($students, new LiveClassNotification($lecture));
+            }
+        }
 
         return response()->json([
             'success' => 'Lecture updated successfully',
