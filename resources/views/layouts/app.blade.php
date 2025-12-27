@@ -173,6 +173,14 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{{ route('backend.contact_messages.index') }}">
+                        <svg class="nav-icon">
+                            <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-comment-square"></use>
+                        </svg>
+                        Contact Messages
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{{ route('backend.roles.index') }}">
                         <svg class="nav-icon">
                             <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-shield-alt"></use>

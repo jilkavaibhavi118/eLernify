@@ -1211,11 +1211,8 @@ body {
 
 .learning-grid-scroll {
     display: flex;
-    overflow-x: auto;
     gap: 20px;
     padding: 10px 0 20px;
-    scrollbar-width: thin;
-    scrollbar-color: #e2e8f0 transparent;
 }
 
 .learning-grid-scroll::-webkit-scrollbar {
@@ -1228,7 +1225,8 @@ body {
 }
 
 .learning-mini-card {
-    min-width: 240px;
+    display: block;
+    width: 100%;
     background: #fff;
     border: 1px solid #eef2f6;
     border-radius: 12px;
@@ -1249,7 +1247,7 @@ body {
     aspect-ratio: 16/9;
     object-fit: cover;
     border-radius: 8px;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
 }
 
 .mini-card-title {

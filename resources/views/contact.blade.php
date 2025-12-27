@@ -43,35 +43,56 @@
         <div class="container pb-5">
             <div class="row g-5">
                 <!-- Contact Form -->
-                <div class="col-lg-7" data-aos="fade-up" data-aos-delay="0">
+                <div class="col-lg-8 mx-auto" data-aos="fade-up" data-aos-delay="0">
                     <div class="bg-white p-4 p-md-5 rounded-3 shadow-sm border h-100">
                         <h3 class="fw-bold mb-2">Get in Touch</h3>
                         <p class="text-muted mb-4">Have questions or feedback? We'd love to hear from you.</p>
 
-                        <form>
+                        @if(session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+
+                        <form action="{{ route('contact.store') }}" method="POST">
+                            @csrf
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label for="name" class="form-label fw-medium text-dark small">Your Name</label>
-                                    <input type="text" class="form-control bg-light border-0 py-3 px-3"
-                                        id="name" placeholder="John Doe">
+                                    <input type="text" class="form-control bg-light border-0 py-3 px-3 @error('name') is-invalid @enderror"
+                                        id="name" name="name" placeholder="John Doe" value="{{ old('name') }}" required>
+                                    @error('name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-md-6">
                                     <label for="email" class="form-label fw-medium text-dark small">Email
                                         Address</label>
-                                    <input type="email" class="form-control bg-light border-0 py-3 px-3"
-                                        id="email" placeholder="name@example.com">
+                                    <input type="email" class="form-control bg-light border-0 py-3 px-3 @error('email') is-invalid @enderror"
+                                        id="email" name="email" placeholder="name@example.com" value="{{ old('email') }}" required>
+                                    @error('email')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-12">
                                     <label for="subject" class="form-label fw-medium text-dark small">Subject</label>
-                                    <input type="text" class="form-control bg-light border-0 py-3 px-3"
-                                        id="subject" placeholder="How can we help?">
+                                    <input type="text" class="form-control bg-light border-0 py-3 px-3 @error('subject') is-invalid @enderror"
+                                        id="subject" name="subject" placeholder="How can we help?" value="{{ old('subject') }}" required>
+                                    @error('subject')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-12">
                                     <label for="message" class="form-label fw-medium text-dark small">Message</label>
-                                    <textarea class="form-control bg-light border-0 py-3 px-3" id="message" rows="5"
-                                        placeholder="Write your message here..."></textarea>
+                                    <textarea class="form-control bg-light border-0 py-3 px-3 @error('message') is-invalid @enderror" 
+                                        id="message" name="message" rows="5"
+                                        placeholder="Write your message here..." required>{{ old('message') }}</textarea>
+                                    @error('message')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                <div class="col-12 mt-4">
+                                <div class="col-12 mt-4 text-center">
                                     <button type="submit" class="btn btn-primary px-5 py-3 fw-bold rounded-pill">Send
                                         Message</button>
                                 </div>
@@ -80,60 +101,7 @@
                     </div>
                 </div>
 
-                <!-- Contact Info -->
-                <div class="col-lg-5" data-aos="fade-up" data-aos-delay="200">
-                    <div class="h-100 d-flex flex-column gap-4">
-                        <!-- Info Card -->
-                        <div class="bg-white p-4 rounded-3 shadow-sm border">
-                            <h4 class="fw-bold mb-4">Contact Information</h4>
 
-                            <div class="d-flex mb-4">
-                                <div class="flex-shrink-0">
-                                    <span
-                                        class="d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle"
-                                        style="width: 50px; height: 50px;">
-                                        <i class="fas fa-map-marker-alt fs-5"></i>
-                                    </span>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6 class="fw-bold mb-1">Our Location</h6>
-                                    <p class="text-muted small mb-0">123 Education Street, Tech City<br>Innovation
-                                        District, CA 94043</p>
-                                </div>
-                            </div>
-
-                            <div class="d-flex mb-4">
-                                <div class="flex-shrink-0">
-                                    <span
-                                        class="d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle"
-                                        style="width: 50px; height: 50px;">
-                                        <i class="fas fa-envelope fs-5"></i>
-                                    </span>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6 class="fw-bold mb-1">Email Address</h6>
-                                    <p class="text-muted small mb-0">hello@elearnify.com<br>support@elearnify.com</p>
-                                </div>
-                            </div>
-
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                    <span
-                                        class="d-flex align-items-center justify-content-center bg-warning bg-opacity-10 text-warning rounded-circle"
-                                        style="width: 50px; height: 50px;">
-                                        <i class="fas fa-phone-alt fs-5"></i>
-                                    </span>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6 class="fw-bold mb-1">Phone Number</h6>
-                                    <p class="text-muted small mb-0">+1 (555) 123-4567<br>Mon - Fri, 9am - 6pm EST</p>
-                                </div>
-                            </div>
-                        </div>
-
-
-                    </div>
-                </div>
             </div>
         </div>
     </section>

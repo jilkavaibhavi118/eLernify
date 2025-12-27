@@ -14,6 +14,7 @@ use App\Http\Controllers\Backend\InstructorController;
 use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\Backend\CommentController as BackendCommentController;
 use App\Http\Controllers\Backend\PaymentController;
+use App\Http\Controllers\Backend\ContactMessageController;
 use App\Http\Controllers\Frontend\CourseController as FrontendCourseController;
 use App\Http\Controllers\Frontend\UserPanelController;
 
@@ -95,6 +96,8 @@ Route::get('/courses', [FrontendCourseController::class, 'index'])->name('course
 Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
+
+Route::post('/contact', [App\Http\Controllers\Frontend\ContactController::class, 'store'])->name('contact.store');
 
 Route::get('/instructors', function () {
     $instructors = \App\Models\Instructor::where('status', 'active')->get();
@@ -178,4 +181,5 @@ Route::middleware(['auth'])->prefix('admin')->name('backend.')->group(function (
     Route::resource('comments', BackendCommentController::class)->only(['index', 'destroy']);
     Route::post('comments/{id}/reply', [BackendCommentController::class, 'reply'])->name('comments.reply');
     Route::resource('payments', PaymentController::class)->only(['index', 'show']);
+    Route::resource('contact_messages', ContactMessageController::class)->only(['index', 'show', 'update', 'destroy']);
 });

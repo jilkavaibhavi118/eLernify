@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="{{ asset('frontend/css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 </head>
 
 <body class="bg-light">
@@ -206,28 +208,34 @@
                 <i class="bi bi-collection-play-fill text-primary"></i> More Courses
             </h4>
 
-            <div class="learning-grid-scroll">
-                @foreach ($relatedCourses as $related)
-                    <a href="{{ route('course.detail', $related->id) }}" class="learning-mini-card">
-                        @if ($related->image)
-                            <img src="{{ asset('storage/' . $related->image) }}" class="mini-card-img"
-                                alt="{{ $related->title }}">
-                        @else
-                            <img src="https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&q=80&w=400"
-                                class="mini-card-img" alt="{{ $related->title }}">
-                        @endif
-                        <div class="mini-card-title">{{ $related->title }}</div>
-                        <div class="mini-card-instructor">With {{ $related->instructor->name ?? 'Expert' }}</div>
-                        <div class="mini-card-meta">
-                            <div class="meta-row"><i class="bi bi-list-ul"></i>
-                                {{ $related->lectures_count ?? $related->lectures->count() }} Episodes</div>
-                            <div class="meta-row"><i class="bi bi-bar-chart-steps"></i>
-                                {{ $related->duration ?? 'N/A' }}</div>
-                            <div class="meta-row"><i class="bi bi-folder2"></i>
-                                {{ $related->category->name ?? 'General' }}</div>
+            <div class="swiper moreCoursesSwiper">
+                <div class="swiper-wrapper">
+                    @foreach ($relatedCourses as $related)
+                        <div class="swiper-slide">
+                            <a href="{{ route('course.detail', $related->id) }}" class="learning-mini-card">
+                                @if ($related->image)
+                                    <img src="{{ asset('storage/' . $related->image) }}" class="mini-card-img"
+                                        alt="{{ $related->title }}">
+                                @else
+                                    <img src="https://images.unsplash.com/photo-1516116216624-53e697fedbea?auto=format&fit=crop&q=80&w=400"
+                                        class="mini-card-img" alt="{{ $related->title }}">
+                                @endif
+                                <div class="mini-card-title">{{ $related->title }}</div>
+                                <div class="mini-card-instructor">With {{ $related->instructor->name ?? 'Expert' }}</div>
+                                <div class="mini-card-meta">
+                                    <div class="meta-row"><i class="bi bi-list-ul"></i>
+                                        {{ $related->lectures_count ?? $related->lectures->count() }} Episodes</div>
+                                    <div class="meta-row"><i class="bi bi-bar-chart-steps"></i>
+                                        {{ $related->duration ?? 'N/A' }}</div>
+                                    <div class="meta-row"><i class="bi bi-folder2"></i>
+                                        {{ $related->category->name ?? 'General' }}</div>
+                                </div>
+                            </a>
                         </div>
-                    </a>
-                @endforeach
+                    @endforeach
+                </div>
+                <!-- Add Pagination -->
+                <div class="swiper-pagination"></div>
             </div>
         </div>
     </section>
@@ -237,8 +245,46 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="{{ asset('frontend/js/main.js') }}"></script>
     <script src="{{ asset('frontend/js/components.js') }}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var swiper = new Swiper(".moreCoursesSwiper", {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                loop: true,
+                autoplay: {
+                    delay: 2500,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+                breakpoints: {
+                    640: {
+                        slidesPerView: 2,
+                        spaceBetween: 20,
+                    },
+                    768: {
+                        slidesPerView: 3,
+                        spaceBetween: 30,
+                    },
+                    1024: {
+                        slidesPerView: 3,
+                        spaceBetween: 30,
+                    },
+                    1200: {
+                        slidesPerView: 4,
+                        spaceBetween: 30,
+                    },
+                },
+            });
+        });
+    </script>
 </body>
 
 </html>
