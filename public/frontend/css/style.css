@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
 /* --- 1. COLOR PALETTE: TRUST & TECH --- */
 :root {
@@ -25,9 +26,10 @@
 }
 
 body {
-    font-family: 'Inter', sans-serif !important;
-    color: #334155;
-    /* Slate Gray for body text */
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+    /* White background requested */
+    overflow-x: hidden;
 }
 
 /*** Spinner ***/
@@ -54,7 +56,8 @@ body {
 
 .navbar-brand {
     font-weight: 700;
-    font-size: 1.8rem; /* Slightly increased brand text size */
+    font-size: 1.8rem;
+    /* Slightly increased brand text size */
     color: var(--bs-heading-color) !important;
     display: flex;
     align-items: center;
@@ -65,9 +68,11 @@ body {
 }
 
 .brand-logo {
-    height: 60px; /* Increased from 40px */
+    height: 60px;
+    /* Increased from 40px */
     width: auto;
-    margin-right: -5px; /* Set to negative to pull text even closer, compensating for any image padding */
+    margin-right: -5px;
+    /* Set to negative to pull text even closer, compensating for any image padding */
 }
 
 .footer-logo {
@@ -75,7 +80,8 @@ body {
     width: auto;
     margin-right: 8px;
     vertical-align: middle;
-    filter: brightness(0) invert(1); /* Makes the logo white for the footer if it's dark text */
+    filter: brightness(0) invert(1);
+    /* Makes the logo white for the footer if it's dark text */
 }
 
 .nav-link {
@@ -122,31 +128,36 @@ body {
 }
 
 .btn-premium {
-    background-color: var(--bs-primary);
-    color: white;
+    background-color: #1266c2;
+    color: white !important;
     font-weight: 600;
-    padding: 8px 20px;
+    padding: 8px 25px;
     border-radius: 50px;
-    transition: all 0.3s;
-    border: 2px solid var(--bs-primary);
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 10px rgba(18, 102, 194, 0.2);
 }
 
 .btn-premium:hover {
-    background-color: white;
-    color: var(--bs-primary);
+    background-color: #0d4a8e;
+    color: white !important;
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(18, 102, 194, 0.3);
 }
 
 /* Global Button Overrides */
 .btn-primary {
-    background-color: var(--bs-primary) !important;
-    border-color: var(--bs-primary) !important;
+    background-color: #1266c2 !important;
+    border-color: #1266c2 !important;
     color: white !important;
+    transition: all 0.3s ease !important;
 }
 
 .btn-primary:hover {
-    background-color: #081b6a !important; /* Slightly darker shade for hover */
-    border-color: #081b6a !important;
-    color: white !important;
+    background-color: #0d4a8e !important;
+    border-color: #0d4a8e !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(18, 102, 194, 0.3);
 }
 
 .btn-outline-primary {
@@ -192,56 +203,289 @@ body {
 }
 
 /* --- 3. HERO SECTION --- */
-.hero-gradient {
-    /* Soft gradient from White to "Soft Sky" */
-    background: linear-gradient(180deg, var(--white) 0%, var(--bg-light) 100%);
-    min-height: 70vh;
+.hero-section {
+    padding: 80px 0 0 0;
+    margin: 0 !important;
+    background-color: #ffffff;
+    display: block;
+    /* Removed flex to avoid centering gaps */
+    position: relative;
+    overflow: hidden;
+    /* Ensure nothing inside adds to height */
+}
+
+.hero-section .container,
+.hero-section .row,
+.hero-section .row>div {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* Left Content Styling */
+.sub-heading {
+    color: #86b7fe;
+    /* Orange color */
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.main-heading {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* The squiggly underline effect for 'Online Course' */
+.highlight-text {
+    position: relative;
+    z-index: 1;
+}
+
+.highlight-text::after {
+    content: "";
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background-color: #86b7fe;
+    z-index: -1;
+    border-radius: 4px;
+    opacity: 0.3;
+    /* Subtle underline */
+}
+
+.description {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-bottom: 35px;
+    max-width: 90%;
+}
+
+/* Buttons */
+.btn-custom-green {
+    font-size: 18px !important;
+    font-weight: 600;
+    padding: 12px 40px;
+    background-color: #0b66c2;
+    /* LearnVern Primary Blue */
+    color: #ffffff !important;
+    border-radius: 4px;
+    border: none;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(11, 102, 194, 0.15);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-custom-green:hover {
+    background-color: #0953a0;
+    /* Darker blue on hover */
+    color: #ffffff !important;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(11, 102, 194, 0.25);
+}
+
+.btn-custom-outline {
+    font-size: 18px !important;
+    font-weight: 600;
+    padding: 12px 35px;
+    background-color: transparent;
+    color: #0b66c2;
+    border: 2px solid #0b66c2;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.btn-custom-outline:hover {
+    background-color: #0b66c2;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* --- Right Image & Floating Cards Styling --- */
+.image-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-top: 30px;
+    /* Space on mobile */
+}
+
+/* Main Student Image */
+.hero-img {
+    border-radius: 20px;
+    display: block;
+    /* Avoid baseline spacing */
+    max-width: 100%;
+    height: auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* Background Shapes (Green/Orange blocks behind girl) */
+.bg-shape-1 {
+    position: absolute;
+    top: -20px;
+    right: 40px;
+    width: 150px;
+    height: 150px;
+    background-color: #ffc107;
+    /* Yellow/Orange */
+    z-index: 0;
+    border-radius: 10px;
+}
+
+.bg-shape-2 {
+    position: absolute;
+    bottom: -20px;
+    left: 20px;
+    width: 200px;
+    height: 300px;
+    background-color: #2ecc71;
+    /* Green */
+    z-index: 0;
+    border-radius: 10px;
+    opacity: 0.2;
+}
+
+/* Floating Cards Common Style */
+.floating-card {
+    position: absolute;
+    background: white;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    z-index: 3;
+    /* Above image */
     display: flex;
     align-items: center;
-    margin-top: 0px !important;
+    gap: 15px;
+    animation: float 3s ease-in-out infinite;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    color: var(--bs-heading-color) !important;
+/* Card 1: 65k Students */
+.card-students {
+    top: 20%;
+    left: -60px;
+    opacity: 0.8;
 }
 
-.text-primary-custom {
-    color: var(--bs-primary) !important;
+.icon-box {
+    background: #eef2ff;
+    color: #4f46e5;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1.2rem;
 }
 
-/* Hero Buttons */
-.btn-primary-custom {
-    background-color: var(--bs-primary);
-    color: white;
-    border: 1px solid var(--bs-primary);
+/* Card 2: Improvement Graph */
+.card-graph {
+    bottom: 40px;
+    right: -120px;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px 20px;
+    min-width: 180px;
+    opacity: 0.8;
 }
 
-.btn-primary-custom:hover {
-    background-color: #081b6a;
-    /* Darker shade of blue */
-    color: white;
+.graph-line {
+    width: 100%;
+    height: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 25' fill='none' stroke='%234f46e5' stroke-width='3'%3E%3Cpath d='M0 20 Q 15 5, 30 15 T 60 10 T 100 5' /%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-top: 5px;
 }
 
-.image-wrapper img {
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
+/* Card 3: Trophy */
+.card-trophy {
+    top: 40px;
+    right: 6px;
+    background: white;
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    opacity: 0.8;
+
 }
 
-.image-wrapper img:hover {
-    transform: translateY(-10px);
+.trophy-icon {
+    color: #ffc107;
+    font-size: 1.5rem;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991px) {
+    .hero-section {
+        text-align: center;
+        padding: 40px 0 0 0;
+    }
+
+    .main-heading {
+        font-size: 2.5rem;
+    }
+
+    .description {
+        margin: 0 auto 30px auto;
+    }
+
+    .image-wrapper {
+        margin-top: 60px;
+    }
+
+    .card-students {
+        left: 0;
+    }
+
+    .card-graph {
+        right: 0;
+    }
 }
 
 /* --- 4. STATS SECTION (Blue Strip) --- */
 .stats-section {
     background-color: var(--bs-primary);
-    /* Royal Blue Background */
     padding: 60px 0;
+    margin: 0 !important;
+    margin-top: -5px !important;
+    /* Stronger overlap to kill sub-pixel gaps */
     color: white !important;
-    /* Force white text */
+    border: none !important;
+    position: relative;
+    z-index: 10;
+    /* Ensure it stays above any sub-pixel rendering from the hero */
+}
+
+.stats-section .container,
+.stats-section .row {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
 }
 
 /* Override dark text for stats to make them white */
@@ -591,33 +835,7 @@ body {
     width: 100%;
 }
 
-/* 2. Fix Hero Text Hiding Behind Navbar */
-/* The navbar is 'fixed-top', so we need to push the content down */
-.hero-gradient {
-    padding-top: 120px !important;
-    /* Adds space for the navbar */
-}
 
-/* On mobile, we might need a little less or more depending on content */
-@media (max-width: 991px) {
-    .hero-gradient {
-        padding-top: 100px !important;
-        text-align: center;
-        /* Ensures text is centered on mobile */
-    }
-
-    /* Center the buttons on mobile */
-    .hero-gradient .d-flex {
-        justify-content: center;
-    }
-
-    /* Center the Hero Image */
-    .hero-gradient .col-lg-6.ps-lg-5 {
-        padding-left: 0 !important;
-        /* Remove desktop padding */
-        margin-top: 40px;
-    }
-}
 
 /* 3. Course Cards: Show ONE at a time on Mobile */
 @media (max-width: 768px) {
@@ -680,32 +898,7 @@ body {
    (Paste at the very bottom of style.css)
    ========================================= */
 
-@media (min-width: 768px) and (max-width: 991px) {
 
-    /* 1. Reduce Hero Section Padding */
-    .hero-gradient {
-        min-height: 60vh !important;
-        /* Reduce minimum height */
-        padding-top: 100px !important;
-        /* Reduce top space */
-        padding-bottom: 40px !important;
-        /* Reduce bottom space */
-        align-items: center;
-        /* Vertically center content */
-    }
-
-    /* 2. Adjust Heading Size slightly for tablets */
-    .hero-gradient h1.display-4 {
-        font-size: 2.8rem;
-    }
-
-    /* 3. Ensure Image scales properly without adding extra height */
-    .hero-gradient .img-fluid {
-        max-width: 90%;
-        /* Prevent image from being too huge */
-        margin-top: 20px;
-    }
-}
 
 
 /* :root {
@@ -1106,13 +1299,15 @@ body {
 }
 
 .popular-courses-section .container {
-    max-width: 1040px; /* Even narrower for smaller card width */
+    max-width: 1040px;
+    /* Even narrower for smaller card width */
 }
 
 .popular-card {
     background: #fff;
     border: 1px solid #eef2f6;
-    border-radius: 16px; /* Slightly tighter radius */
+    border-radius: 16px;
+    /* Slightly tighter radius */
     padding: 0;
     position: relative;
     overflow: hidden;
@@ -1147,7 +1342,8 @@ body {
 }
 
 .popular-card-body {
-    padding: 16px; /* Trimmed padding for smaller height */
+    padding: 16px;
+    /* Trimmed padding for smaller height */
     position: relative;
     flex-grow: 1;
     display: flex;
@@ -1155,7 +1351,8 @@ body {
 }
 
 .popular-card-title {
-    font-size: 1.05rem; /* More compact font */
+    font-size: 1.05rem;
+    /* More compact font */
     font-weight: 700;
     line-height: 1.4;
     margin-bottom: 15px;
@@ -1171,25 +1368,30 @@ body {
 .popular-card-stats {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 15px; /* Reduced margin */
-    padding-top: 12px; /* Reduced padding */
+    margin-bottom: 15px;
+    /* Reduced margin */
+    padding-top: 12px;
+    /* Reduced padding */
     border-top: 1px solid #f1f5f9;
 }
 
 .stat-group {
     display: flex;
     flex-direction: column;
-    gap: 1px; /* Tighter gap */
+    gap: 1px;
+    /* Tighter gap */
 }
 
 .stat-value {
     font-weight: 700;
-    font-size: 0.85rem; /* Slightly smaller */
+    font-size: 0.85rem;
+    /* Slightly smaller */
     color: var(--text-dark);
 }
 
 .stat-label {
-    font-size: 0.65rem; /* Smaller labels */
+    font-size: 0.65rem;
+    /* Smaller labels */
     color: var(--text-gray);
     font-weight: 600;
     text-transform: uppercase;
@@ -1214,7 +1416,8 @@ body {
 }
 
 .btn-start-course:hover {
-    background-color: #081b6a; /* Darker blue */
+    background-color: #081b6a;
+    /* Darker blue */
     color: white;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(var(--bs-primary-rgb), 0.2);
@@ -1237,8 +1440,14 @@ body {
 }
 
 @media (max-width: 991px) {
-    .hero-title { font-size: 2rem; }
-    .sidebar { margin-top: -80px; position: static; }
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .sidebar {
+        margin-top: -80px;
+        position: static;
+    }
 }
 
 /* Course Lesson Page Styles */
@@ -1252,7 +1461,8 @@ body {
     border-radius: 12px;
     overflow: hidden;
     position: relative;
-    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    padding-top: 56.25%;
+    /* 16:9 Aspect Ratio */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     margin-bottom: 2rem;
 }
@@ -1373,8 +1583,8 @@ body {
 
 /* --- PAGE HERO --- */
 .page-hero {
-    background: linear-gradient(rgba(10, 34, 131, 0.85), rgba(10, 34, 131, 0.85)), 
-                url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1920&q=80');
+    background: linear-gradient(rgba(10, 34, 131, 0.85), rgba(10, 34, 131, 0.85)),
+        url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1920&q=80');
     background-size: cover;
     background-position: center;
     padding: 120px 0;
@@ -1396,7 +1606,8 @@ body {
     gap: 0;
     font-size: 1.05rem;
     font-weight: 600;
-    list-style: none; /* Remove numbers */
+    list-style: none;
+    /* Remove numbers */
     padding: 0;
     margin: 0;
 }
@@ -1423,7 +1634,8 @@ body {
 /* --- FILTER CARD SECTION --- */
 .filter-card-section {
     position: relative;
-    margin-top: 40px; /* Starts AFTER the hero section, no overlap */
+    margin-top: 40px;
+    /* Starts AFTER the hero section, no overlap */
     z-index: 10;
     margin-bottom: 50px;
 }
@@ -1501,7 +1713,7 @@ body {
     .page-hero {
         padding: 80px 0 100px;
     }
-    
+
     .page-hero h1 {
         font-size: 2.2rem;
     }
@@ -1711,15 +1923,35 @@ body {
 }
 
 @keyframes rotateStar {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 @media (max-width: 1200px) {
-    .img-main { width: 300px; height: 450px; }
-    .img-secondary-top { width: 280px; height: 200px; }
-    .img-secondary-bottom { width: 260px; height: 200px; }
-    .experience-badge-float { left: -10px; padding: 1rem; }
+    .img-main {
+        width: 300px;
+        height: 450px;
+    }
+
+    .img-secondary-top {
+        width: 280px;
+        height: 200px;
+    }
+
+    .img-secondary-bottom {
+        width: 260px;
+        height: 200px;
+    }
+
+    .experience-badge-float {
+        left: -10px;
+        padding: 1rem;
+    }
 }
 
 @media (max-width: 991px) {
@@ -1730,11 +1962,34 @@ body {
         margin-left: auto;
         margin-right: auto;
     }
-    .img-main { left: 50%; transform: translateX(-50%); top: 0; }
-    .img-secondary-top { top: 220px; left: 60%; right: auto; }
-    .img-secondary-bottom { bottom: 0; left: 0%; right: auto; }
-    .experience-badge-float { left: 0; top: 10%; }
-    .stats-card-float { right: 0; bottom: 5%; }
+
+    .img-main {
+        left: 50%;
+        transform: translateX(-50%);
+        top: 0;
+    }
+
+    .img-secondary-top {
+        top: 220px;
+        left: 60%;
+        right: auto;
+    }
+
+    .img-secondary-bottom {
+        bottom: 0;
+        left: 0%;
+        right: auto;
+    }
+
+    .experience-badge-float {
+        left: 0;
+        top: 10%;
+    }
+
+    .stats-card-float {
+        right: 0;
+        bottom: 5%;
+    }
 }
 
 /* --- CUSTOM PROGRESS BAR --- */
@@ -1773,12 +2028,15 @@ body {
 
 /* --- COURSE LESSONS SIDEBAR (Light Theme) --- */
 .course-lessons-sidebar {
-    scrollbar-width: none; /* Firefox - hide scrollbar */
-    -ms-overflow-style: none; /* IE/Edge - hide scrollbar */
+    scrollbar-width: none;
+    /* Firefox - hide scrollbar */
+    -ms-overflow-style: none;
+    /* IE/Edge - hide scrollbar */
 }
 
 .course-lessons-sidebar::-webkit-scrollbar {
-    display: none; /* Chrome/Safari - hide scrollbar */
+    display: none;
+    /* Chrome/Safari - hide scrollbar */
 }
 
 .course-lessons-sidebar .lesson-item {
@@ -1884,7 +2142,8 @@ body {
     text-align: center;
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     border: 1px solid rgba(0, 0, 0, 0.02);
-    width: calc(20% - 20px); /* 5 cards in a row */
+    width: calc(20% - 20px);
+    /* 5 cards in a row */
     min-width: 200px;
     display: flex;
     flex-direction: column;
@@ -1923,11 +2182,30 @@ body {
 }
 
 /* Icon Variations */
-.icon-zoom { background-color: #eef2ff; color: #2d8cff; }
-.icon-expert { background-color: #f0fdf4; color: #22c55e; }
-.icon-methods { background-color: #fff7ed; color: #f97316; }
-.icon-support { background-color: #fdf2f8; color: #ec4899; }
-.icon-help { background-color: #eff6ff; color: #3b82f6; }
+.icon-zoom {
+    background-color: #eef2ff;
+    color: #2d8cff;
+}
+
+.icon-expert {
+    background-color: #f0fdf4;
+    color: #22c55e;
+}
+
+.icon-methods {
+    background-color: #fff7ed;
+    color: #f97316;
+}
+
+.icon-support {
+    background-color: #fdf2f8;
+    color: #ec4899;
+}
+
+.icon-help {
+    background-color: #eff6ff;
+    color: #3b82f6;
+}
 
 @media (max-width: 1200px) {
     .academic-card {
@@ -1940,6 +2218,7 @@ body {
         width: 100%;
         max-width: 350px;
     }
+
     .academic-section {
         padding: 60px 0;
     }
@@ -1981,8 +2260,15 @@ body {
 }
 
 @keyframes floatAnimation {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
 }
 
 /* Specific Badge Positions */
@@ -2017,9 +2303,20 @@ body {
     flex-shrink: 0;
 }
 
-.icon-blue { background: #eff6ff; color: #3b82f6; }
-.icon-orange { background: #fff7ed; color: #f97316; }
-.icon-green { background: #f0fdf4; color: #22c55e; }
+.icon-blue {
+    background: #eff6ff;
+    color: #3b82f6;
+}
+
+.icon-orange {
+    background: #fff7ed;
+    color: #f97316;
+}
+
+.icon-green {
+    background: #f0fdf4;
+    color: #22c55e;
+}
 
 .badge-info h6 {
     margin: 0;
@@ -2039,8 +2336,12 @@ body {
     .feature-showcase-wrapper {
         margin-top: 50px;
     }
-    .badge-certificate { left: 0; }
-    .badge-support { right: 0; }
+
+    .badge-certificate {
+        left: 0;
+    }
+
+    .badge-support {
+        right: 0;
+    }
 }
-
-

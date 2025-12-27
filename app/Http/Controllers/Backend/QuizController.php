@@ -233,7 +233,7 @@ class QuizController extends Controller
         $quiz = Quiz::with('lecture.course')->findOrFail($id);
 
         // Security check for instructors
-        if (auth()->user()->hasRole('Instructores') && $quiz->lecture->course->instructor_id != auth()->user()->instructor->id) {
+        if (auth()->user()->hasRole('Instructor') && $quiz->lecture->course->instructor_id != auth()->user()->instructor->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 

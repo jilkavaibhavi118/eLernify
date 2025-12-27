@@ -216,7 +216,7 @@ class MaterialController extends Controller
         $material = Material::with('lecture.course')->findOrFail($id);
         
         // Security check for instructors
-        if (auth()->user()->hasRole('Instructores') && $material->lecture->course->instructor_id != auth()->user()->instructor->id) {
+        if (auth()->user()->hasRole('Instructor') && $material->lecture->course->instructor_id != auth()->user()->instructor->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 

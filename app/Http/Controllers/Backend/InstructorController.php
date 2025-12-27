@@ -56,7 +56,7 @@ class InstructorController extends Controller
 
     public function create()
     {
-        $users = User::role('Instructores')->get();
+        $users = User::role('Instructor')->get();
         return view('backend.instructors.create', compact('users'));
     }
 
@@ -94,7 +94,7 @@ class InstructorController extends Controller
     public function edit($id)
     {
         $instructor = Instructor::findOrFail($id);
-        $users = User::role('Instructores')->get();
+        $users = User::role('Instructor')->get();
         return view('backend.instructors.edit', compact('instructor', 'users'));
     }
 

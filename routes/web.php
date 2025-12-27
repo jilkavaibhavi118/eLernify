@@ -45,6 +45,9 @@ Route::get('/', function () {
     $learningMaterials = \App\Models\Material::latest()->take(6)->get();
     $practiceQuizzes = \App\Models\Quiz::latest()->take(6)->get();
 
+    // Get Instructors
+    $instructors = \App\Models\Instructor::with('user')->where('status', 'active')->take(4)->get();
+
     return view('landing', compact(
         'categories',
         'categoryCourses',
@@ -52,7 +55,8 @@ Route::get('/', function () {
         'popularCourses',
         'featuredLectures',
         'learningMaterials',
-        'practiceQuizzes'
+        'practiceQuizzes',
+        'instructors'
     ));
 })->name('landing');
 
@@ -134,10 +138,14 @@ Route::middleware(['auth', 'check.user.status'])->prefix('my')->name('user.')->g
 
 
 
+// ✅ Instructor Dashboard
+Route::middleware(['auth'])->get('/instructor/dashboard', [App\Http\Controllers\Backend\DashboardController::class, 'index'])->name('instructor.dashboard');
+
 // ✅ Admin Routes
 Route::middleware(['auth'])->prefix('admin')->name('backend.')->group(function () {
 
     Route::get('/dashboard', [App\Http\Controllers\Backend\DashboardController::class, 'index'])->name('dashboard');
+
 
     Route::resource('roles', RoleController::class);
     Route::get('roles/{role}/permissions', [RoleController::class, 'permissions'])->name('roles.permissions');

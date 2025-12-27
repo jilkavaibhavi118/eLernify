@@ -18,7 +18,7 @@
                             {{-- Linked User --}}
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>Link to User (with 'Instructores' role) <span
+                                    <label>Link to User (with 'Instructor' role) <span
                                             class="text-danger">*</span></label>
                                     <select name="user_id" class="form-control">
                                         <option value="">Select User</option>

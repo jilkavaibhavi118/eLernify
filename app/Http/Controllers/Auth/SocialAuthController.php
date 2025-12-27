@@ -52,6 +52,8 @@ class SocialAuthController extends Controller
         // Check user role/redirect
         if ($user->hasRole('Admin')) {
             return redirect()->route('backend.dashboard');
+        } elseif ($user->hasRole('Instructor')) {
+            return redirect()->route('instructor.dashboard');
         }
 
         return redirect()->route('user.dashboard');

@@ -16,7 +16,7 @@ class DashboardController extends Controller
         $user = auth()->user();
 
         // Check if user is an Instructor and NOT an Admin (Admins see everything)
-        if ($user->hasRole('Instructores') && !$user->hasRole('Admin')) {
+        if ($user->hasRole('Instructor') && !$user->hasRole('Admin')) {
             $instructorId = $user->instructor ? $user->instructor->id : 0;
 
             // Instructor specific stats
@@ -51,7 +51,7 @@ class DashboardController extends Controller
         } else {
             // Admin Global Stats
             $totalUsers = User::role('student')->count();
-            $totalInstructors = User::role('Instructores')->count(); // Use correct role name
+            $totalInstructors = User::role('Instructor')->count(); // Use correct role name
             $totalCourses = Course::count();
             $totalLectures = Lecture::count();
             

@@ -102,7 +102,7 @@
                 </li>
             @endhasrole
 
-            @hasanyrole('Admin|Instructores')
+            @hasanyrole('Admin|Instructor')
                 <li class="nav-title">Course Management</li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('backend.categories.index') }}">

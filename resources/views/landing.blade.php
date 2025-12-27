@@ -19,37 +19,67 @@
 <body>
     @include('partials.navbar')
 
-    <section class="hero-gradient py-5">
-        <div class="container py-lg-5">
-            <div class="row align-items-center gy-5">
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
 
-                <div class="col-lg-6 col-12">
-                    <h1 class="display-4 fw-bold text-dark mb-4 lh-sm">
-                        Find The Best Course <br>
-                        <span class="text-primary" id="typing-text"></span><span class="typing-cursor"></span>
+                <div class="col-lg-6">
+                    <span class="sub-heading">Be a successful student from online</span>
+                    <h1 class="main-heading">
+                        Find Your Next <br> level <span class="highlight-text">Online Course</span>
                     </h1>
-
-                    <p class="lead text-secondary mb-5 pe-lg-5">
-                        Join millions of learners on the world's leading e-learning platform.
-                        Access expert-led courses in AI, development, design, and business strategies.
+                    <p class="description">
+                        Elearnify offers professional training classes and special features to help you improve your skills
+                        and develop your career path.
                     </p>
-
-                    <div class="d-flex gap-3 flex-wrap">
-                        <a href="#" class="btn btn-primary-custom btn-lg rounded-pill px-5 fw-semibold shadow-sm">
-                            Get Started
-                        </a>
-                        <a href="{{ route('courses') }}"
-                            class="btn btn-outline-dark btn-lg rounded-pill px-5 fw-semibold">
-                            View Courses
-                        </a>
+                    <div class="d-flex flex-wrap gap-2 justify-content-lg-start justify-content-center">
+                        @guest
+                            <a href="{{ route('register') }}" class="btn btn-custom-green">Get Started</a>
+                        @else
+                            <a href="{{ route('user.dashboard') }}" class="btn btn-custom-green">Go to Dashboard</a>
+                        @endguest
+                        <!-- <button class="btn btn-custom-outline"> <i class="fa fa-play-circle me-2"></i> Watch
+                            Video</button> -->
                     </div>
-
                 </div>
 
-                <div class="col-lg-6 col-12 ps-lg-5">
+                <div class="col-lg-6 text-center position-relative">
                     <div class="image-wrapper">
-                        <img src="{{ asset('frontend/img/Software integration-bro.png') }}" class="img-fluid rounded-5"
-                            alt="Student learning online">
+
+
+                        <img src="{{ asset('assets/img/beautiful-woman-staying-connected-with-internet.jpg') }}" alt="Student learning"
+                            class="hero-img img-fluid" style="max-width: 450px; height: 550px;">
+
+                        <div class="floating-card card-students">
+                            <div class="icon-box">
+                                <i class="fa fa-calendar-alt"></i>
+                            </div>
+                            <div class="text-start">
+                                <h5 class="m-0 fw-bold">65+</h5>
+                                <small class="text-muted" style="font-size: 0.8rem;">Courses</small>
+                            </div>
+                        </div>
+
+                        <!-- <div class="floating-card card-trophy">
+                            <i class="fa fa-trophy trophy-icon"></i>
+                        </div> -->
+
+                        <div class="floating-card card-trophy" style="flex-direction: column; gap: 5px;">
+                            <i class="fa-solid fa-file-contract" style="color: #4f46e5; font-size: 1.5rem;"></i>
+                            <span style="font-size: 0.7rem; font-weight: bold; color: #333;">Certified</span>
+                        </div>
+
+                        <div class="floating-card card-graph">
+                            <div class="d-flex align-items-center mb-1">
+                                <div class="bg-danger rounded-circle me-2"
+                                    style="width: 20px; height: 20px; display:flex; justify-content:center; align-items:center;">
+                                    <i class="fa fa-heart text-white" style="font-size: 10px;"></i>
+                                </div>
+                                <small class="fw-bold">Live Classes Available</small>
+                            </div>
+                            <div class="graph-line"></div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -250,87 +280,54 @@
             </div>
 
             <div class="row g-4">
+                @forelse($instructors as $index => $instructor)
+                    <div class="col-lg-3 col-md-6 col-12">
+                        <div class="mentor-card text-center p-4 border rounded-3 bg-white h-100" data-aos="fade-up"
+                            data-aos-delay="{{ $index * 100 }}">
+                            <div class="img-wrapper mb-3 mx-auto position-relative">
+                                @if ($instructor->image)
+                                    <img src="{{ asset('storage/' . $instructor->image) }}"
+                                        class="rounded-circle img-fluid shadow-sm" alt="{{ $instructor->name }}">
+                                @elseif($instructor->user && $instructor->user->profile_photo)
+                                    <img src="{{ asset('storage/' . $instructor->user->profile_photo) }}"
+                                        class="rounded-circle img-fluid shadow-sm" alt="{{ $instructor->name }}">
+                                @else
+                                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80"
+                                        class="rounded-circle img-fluid shadow-sm" alt="{{ $instructor->name }}">
+                                @endif
+                                <span class="badge bg-primary position-absolute bottom-0 start-50 translate-middle-x">
+                                    {{ $instructor->designation ?? 'Instructor' }}
+                                </span>
+                            </div>
+                            <h5 class="fw-bold text-dark mb-1">{{ $instructor->name }}</h5>
+                            <p class="text-muted small mb-3">{{ $instructor->specialty ?? 'Expert' }}</p>
 
-                <div class="col-lg-3 col-md-6 col-12">
-                    <div class="mentor-card text-center p-4 border rounded-3 bg-white h-100">
-                        <div class="img-wrapper mb-3 mx-auto position-relative">
-                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80"
-                                class="rounded-circle img-fluid shadow-sm" alt="Mentor 1">
-                            <span class="badge bg-primary position-absolute bottom-0 start-50 translate-middle-x">
-                                CEO & Founder
-                            </span>
-                        </div>
-                        <h5 class="fw-bold text-dark mb-1">James Anderson</h5>
-                        <p class="text-muted small mb-3">Business Strategy Expert</p>
-
-                        <div class="d-flex justify-content-center gap-3">
-                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                            <a href="#" class="social-link"><i class="fas fa-globe"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-md-6 col-12">
-                    <div class="mentor-card text-center p-4 border rounded-3 bg-white h-100">
-                        <div class="img-wrapper mb-3 mx-auto position-relative">
-                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80"
-                                class="rounded-circle img-fluid shadow-sm" alt="Mentor 2">
-                            <span class="badge bg-primary position-absolute bottom-0 start-50 translate-middle-x">
-                                Senior Dev
-                            </span>
-                        </div>
-                        <h5 class="fw-bold text-dark mb-1">Sarah Jenkins</h5>
-                        <p class="text-muted small mb-3">Full Stack Developer</p>
-
-                        <div class="d-flex justify-content-center gap-3">
-                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                            <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-md-6 col-12">
-                    <div class="mentor-card text-center p-4 border rounded-3 bg-white h-100">
-                        <div class="img-wrapper mb-3 mx-auto position-relative">
-                            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80"
-                                class="rounded-circle img-fluid shadow-sm" alt="Mentor 3">
-                            <span class="badge bg-primary position-absolute bottom-0 start-50 translate-middle-x">
-                                Marketing Pro
-                            </span>
-                        </div>
-                        <h5 class="fw-bold text-dark mb-1">Michael Chen</h5>
-                        <p class="text-muted small mb-3">Digital Marketing Lead</p>
-
-                        <div class="d-flex justify-content-center gap-3">
-                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                            <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                            <div class="d-flex justify-content-center gap-3">
+                                @if ($instructor->linkedin_url)
+                                    <a href="{{ $instructor->linkedin_url }}" target="_blank" class="social-link"><i
+                                            class="fab fa-linkedin-in"></i></a>
+                                @endif
+                                @if ($instructor->twitter_url)
+                                    <a href="{{ $instructor->twitter_url }}" target="_blank" class="social-link"><i
+                                            class="fab fa-twitter"></i></a>
+                                @endif
+                                @if ($instructor->github_url)
+                                    <a href="{{ $instructor->github_url }}" target="_blank" class="social-link"><i
+                                            class="fab fa-github"></i></a>
+                                @endif
+                                @if ($instructor->instagram_url)
+                                    <a href="{{ $instructor->instagram_url }}" target="_blank" class="social-link"><i
+                                            class="fab fa-instagram"></i></a>
+                                @endif
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-lg-3 col-md-6 col-12">
-                    <div class="mentor-card text-center p-4 border rounded-3 bg-white h-100">
-                        <div class="img-wrapper mb-3 mx-auto position-relative">
-                            <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80"
-                                class="rounded-circle img-fluid shadow-sm" alt="Mentor 4">
-                            <span class="badge bg-primary position-absolute bottom-0 start-50 translate-middle-x">
-                                UI/UX Lead
-                            </span>
-                        </div>
-                        <h5 class="fw-bold text-dark mb-1">Emily Roberts</h5>
-                        <p class="text-muted small mb-3">Product Designer</p>
-
-                        <div class="d-flex justify-content-center gap-3">
-                            <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                            <a href="#" class="social-link"><i class="fab fa-dribbble"></i></a>
-                            <a href="#" class="social-link"><i class="fas fa-globe"></i></a>
-                        </div>
+                @empty
+                    <div class="col-12 text-center text-muted py-5">
+                        <i class="fas fa-chalkboard-teacher fa-3x mb-3 opacity-50"></i>
+                        <p>Our expert mentors will be joining soon!</p>
                     </div>
-                </div>
-
+                @endforelse
             </div>
         </div>
     </section>

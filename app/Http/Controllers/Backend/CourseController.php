@@ -80,7 +80,7 @@ class CourseController extends Controller
         }
 
         // Automatically set instructor_id if the user is an instructor
-        if (auth()->user()->hasRole('Instructores')) {
+        if (auth()->user()->hasRole('Instructor')) {
             $data['instructor_id'] = auth()->user()->instructor ? auth()->user()->instructor->id : null;
         }
 
@@ -97,7 +97,7 @@ class CourseController extends Controller
         $course = Course::with('category')->findOrFail($id);
 
         // Security check for instructors
-        if (auth()->user()->hasRole('Instructores') && $course->instructor_id != auth()->user()->instructor->id) {
+        if (auth()->user()->hasRole('Instructor') && $course->instructor_id != auth()->user()->instructor->id) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -109,7 +109,7 @@ class CourseController extends Controller
         $course = Course::findOrFail($id);
 
         // Security check for instructors
-        if (auth()->user()->hasRole('Instructores') && $course->instructor_id != auth()->user()->instructor->id) {
+        if (auth()->user()->hasRole('Instructor') && $course->instructor_id != auth()->user()->instructor->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -139,7 +139,7 @@ class CourseController extends Controller
         $course = Course::findOrFail($id);
 
         // Security check for instructors
-        if (auth()->user()->hasRole('Instructores') && $course->instructor_id != auth()->user()->instructor->id) {
+        if (auth()->user()->hasRole('Instructor') && $course->instructor_id != auth()->user()->instructor->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 

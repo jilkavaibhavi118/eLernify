@@ -33,7 +33,7 @@ class CategoryController extends Controller
                 ->addColumn('action', function($row){
                     $btn = '<div class="d-flex gap-2">';
 
-                    if (auth()->user()->hasRole('Admin')) {
+                    if (auth()->user()->hasAnyRole(['Admin', 'Instructor'])) {
                         $editUrl = route('backend.categories.edit', $row->id);
                         $deleteUrl = route('backend.categories.destroy', $row->id);
 
@@ -66,7 +66,7 @@ class CategoryController extends Controller
 
     public function store(StoreCategoryRequest $request)
     {
-        if (!auth()->user()->hasRole('Admin')) {
+        if (!auth()->user()->hasAnyRole(['Admin', 'Instructor'])) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -86,7 +86,7 @@ class CategoryController extends Controller
 
     public function edit($id)
     {
-        if (!auth()->user()->hasRole('Admin')) {
+        if (!auth()->user()->hasAnyRole(['Admin', 'Instructor'])) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -96,7 +96,7 @@ class CategoryController extends Controller
 
     public function update(StoreCategoryRequest $request, $id)
     {
-        if (!auth()->user()->hasRole('Admin')) {
+        if (!auth()->user()->hasAnyRole(['Admin', 'Instructor'])) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -124,7 +124,7 @@ class CategoryController extends Controller
 
     public function destroy($id)
     {
-        if (!auth()->user()->hasRole('Admin')) {
+        if (!auth()->user()->hasAnyRole(['Admin', 'Instructor'])) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 

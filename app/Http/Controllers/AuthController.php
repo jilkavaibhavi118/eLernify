@@ -26,8 +26,10 @@ class AuthController extends Controller
 
             // Check if user has admin or instructor role, redirect accordingly
             $user = Auth::user();
-            if ($user->hasRole('Admin') || $user->hasRole('Instructores')) {
+            if ($user->hasRole('Admin')) {
                 return redirect()->intended('admin/dashboard');
+            } elseif ($user->hasRole('Instructor')) {
+                return redirect()->route('instructor.dashboard');
             }
 
             // Regular users go to user dashboard
