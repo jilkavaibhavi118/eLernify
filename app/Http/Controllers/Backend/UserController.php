@@ -168,4 +168,36 @@ class UserController extends Controller implements HasMiddleware
         ]);
     }
 
+    public function search(Request $request)
+    {
+        $search = $request->get('q', '');
+        $page = $request->get('page', 1);
+        $perPage = 10;
+
+        $query = User::role('Instructor')
+            ->where('status', 'active')
+            ->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+
+        $total = $query->count();
+        $users = $query->skip(($page - 1) * $perPage)
+            ->take($perPage)
+            ->get(['id', 'name', 'email']);
+
+        $results = $users->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'text' => $user->name . ' (' . $user->email . ')'
+            ];
+        });
+
+        return response()->json([
+            'results' => $results,
+            'pagination' => [
+                'more' => ($page * $perPage) < $total
+            ]
+        ]);
+    }
 }

@@ -92,6 +92,7 @@ Route::get('/about', function () {
 })->name('about');
 
 Route::get('/courses', [FrontendCourseController::class, 'index'])->name('courses');
+Route::get('/courses/search-suggestions', [FrontendCourseController::class, 'searchSuggestions'])->name('courses.search.suggestions');
 
 Route::get('/contact', function () {
     return view('contact');
@@ -157,6 +158,7 @@ Route::middleware(['auth'])->prefix('admin')->name('backend.')->group(function (
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
 
+    Route::get('users/search', [UserController::class, 'search'])->name('users.search');
     Route::resource('users', UserController::class);
     Route::post('users/{user}/toggle-status',[UserController::class, 'toggleStatus'])->name('backend.users.toggle-status');
 

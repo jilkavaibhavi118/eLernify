@@ -164,14 +164,111 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="input-group mb-3">
-                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-                    <input type="text" class="form-control border-start-0"
-                        placeholder="What do you want to learn today?">
-                    <button class="btn btn-primary" type="button">Search</button>
-                </div>
+                <form action="{{ route('courses') }}" method="GET" id="navSearchForm">
+                    <div class="input-group mb-3 position-relative">
+                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                        <input type="text" name="search" id="navSearchInput" class="form-control border-start-0"
+                            placeholder="What do you want to learn today?" autocomplete="off">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div>
+                    <div id="search-results" class="list-group position-absolute w-100 shadow-sm d-none" style="z-index: 1050; max-height: 300px; overflow-y: auto;">
+                        <!-- Results will appear here -->
+                    </div>
+                </form>
                 <small class="text-muted">Popular: <em>Python, Graphic Design, Marketing</em></small>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    #search-results {
+        top: 100%;
+        left: 0;
+        border-radius: 0 0 10px 10px;
+        background: white;
+        border: 1px solid #dee2e6;
+    }
+    .search-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 15px;
+        transition: background 0.2s;
+        text-decoration: none;
+        color: #333;
+    }
+    .search-item:hover {
+        background: #f8f9fa;
+        color: var(--bs-primary);
+    }
+    .search-item img {
+        width: 40px;
+        height: 40px;
+        border-radius: 4px;
+        object-fit: cover;
+    }
+    .search-item .title {
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('navSearchInput');
+    const resultsContainer = document.getElementById('search-results');
+    const searchForm = document.getElementById('navSearchForm');
+
+    let debounceTimer;
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        const query = this.value.trim();
+
+        if (query.length < 2) {
+            resultsContainer.classList.add('d-none');
+            resultsContainer.innerHTML = '';
+            return;
+        }
+
+        debounceTimer = setTimeout(() => {
+            fetch(`{{ route('courses.search.suggestions') }}?query=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    resultsContainer.innerHTML = '';
+                    if (data.length > 0) {
+                        data.forEach(item => {
+                            const resultItem = document.createElement('a');
+                            resultItem.href = item.link;
+                            resultItem.className = 'list-group-item list-group-item-action border-0 search-item';
+                            resultItem.innerHTML = `
+                                <img src="${item.image}" alt="${item.title}">
+                                <div class="title">${item.title}</div>
+                            `;
+                            resultsContainer.appendChild(resultItem);
+                        });
+                        resultsContainer.classList.remove('d-none');
+                    } else {
+                        resultsContainer.innerHTML = '<div class="list-group-item border-0 text-muted small">No courses found</div>';
+                        resultsContainer.classList.remove('d-none');
+                    }
+                })
+                .catch(error => console.error('Error fetching suggestions:', error));
+        }, 300);
+    });
+
+    // Close results when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
+            resultsContainer.classList.add('d-none');
+        }
+    });
+
+    // Optional: focus input when modal opens
+    const searchModal = document.getElementById('searchModal');
+    searchModal.addEventListener('shown.bs.modal', function () {
+        searchInput.focus();
+    });
+});
+</script>

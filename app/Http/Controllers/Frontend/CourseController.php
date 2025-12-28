@@ -40,6 +40,31 @@ class CourseController extends Controller
 
         return view('courses', compact('courses', 'search', 'categoryId', 'categories'));
     }
+
+    public function searchSuggestions(Request $request)
+    {
+        $query = $request->input('query');
+        if (!$query) {
+            return response()->json([]);
+        }
+
+        $courses = Course::where('status', 'active')
+            ->where('title', 'like', '%' . $query . '%')
+            ->select('id', 'title', 'image')
+            ->take(5)
+            ->get()
+            ->map(function ($course) {
+                return [
+                    'id' => $course->id,
+                    'title' => $course->title,
+                    'link' => route('course.detail', $course->id),
+                    'image' => $course->image ? asset('storage/' . $course->image) : 'https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=100&q=80'
+                ];
+            });
+
+        return response()->json($courses);
+    }
+
     public function show($id)
     {
         $course = Course::with(['instructor', 'category', 'lectures', 'quizzes'])

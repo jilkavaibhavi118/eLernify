@@ -56,8 +56,7 @@ class InstructorController extends Controller
 
     public function create()
     {
-        $users = User::role('Instructor')->get();
-        return view('backend.instructors.create', compact('users'));
+        return view('backend.instructors.create');
     }
 
     public function store(Request $request)
@@ -93,9 +92,8 @@ class InstructorController extends Controller
 
     public function edit($id)
     {
-        $instructor = Instructor::findOrFail($id);
-        $users = User::role('Instructor')->get();
-        return view('backend.instructors.edit', compact('instructor', 'users'));
+        $instructor = Instructor::with('user')->findOrFail($id);
+        return view('backend.instructors.edit', compact('instructor'));
     }
 
     public function update(Request $request, $id)

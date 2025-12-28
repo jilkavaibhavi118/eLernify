@@ -17,19 +17,8 @@
 
                             {{-- Linked User --}}
                             <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>Link to User (with 'Instructor' role) <span
-                                            class="text-danger">*</span></label>
-                                    <select name="user_id" class="form-control">
-                                        <option value="">Select User</option>
-                                        @foreach ($users as $user)
-                                            <option value="{{ $user->id }}"
-                                                {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                                {{ $user->name }} ({{ $user->email }})
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                <x-select2_ajax name="user_id" label="Link to User (Instructor Role)" :selected="old('user_id')" :required="true"
+                                    placeholder="Search by name or email" :url="route('backend.users.search')" />
                             </div>
 
                             {{-- Name --}}

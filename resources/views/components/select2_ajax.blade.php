@@ -1,17 +1,20 @@
 @props([
     'name' => 'lecture_id',
+    'label' => null,
     'selected' => null,
     'selectedText' => '',
-    'placeholder' => 'Select Lecture',
+    'placeholder' => 'Select Item',
     'required' => false,
     'url' => null,
 ])
 
 <div class="form-group">
     <label for="{{ $name }}">
-        @if(str_contains($name, 'category'))
+        @if ($label)
+            {{ $label }}
+        @elseif (str_contains($name, 'category'))
             Category
-        @elseif(str_contains($name, 'lecture'))
+        @elseif (str_contains($name, 'lecture'))
             Lecture
         @else
             {{ ucfirst(str_replace('_', ' ', $name)) }}

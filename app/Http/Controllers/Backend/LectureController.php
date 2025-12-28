@@ -171,7 +171,15 @@ class LectureController extends Controller
         $page = $request->get('page', 1);
         $perPage = 10;
 
-        $query = Lecture::query();
+        $query = Lecture::with('course')->where('status', 'active');
+
+        // Security check for instructors
+        if (!auth()->user()->hasRole('Admin')) {
+            $instructorId = auth()->user()->instructor ? auth()->user()->instructor->id : 0;
+            $query->whereHas('course', function($q) use ($instructorId) {
+                $q->where('instructor_id', $instructorId);
+            });
+        }
 
         if ($term) {
             $query->where('title', 'LIKE', "%{$term}%")
