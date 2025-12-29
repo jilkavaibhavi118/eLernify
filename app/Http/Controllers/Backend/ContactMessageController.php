@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\ContactMessage;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class ContactMessageController extends Controller
 {
@@ -17,35 +18,30 @@ class ContactMessageController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = ContactMessage::latest()->get();
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('status', function ($row) {
-                    return $row->status == 'replied'
-                        ? '<span class="badge bg-success">Replied</span>'
-                        : '<span class="badge bg-warning text-dark">Pending</span>';
-                })
-                ->addColumn('action', function($row){
-                    $showUrl   = route('backend.contact_messages.show', $row->id);
-                    $deleteUrl = route('backend.contact_messages.destroy', $row->id);
-
-                    $btn  = '<div class="d-flex gap-2">';
-
-                    // Show/Reply Button
-                    $btn .= '<a href="' . $showUrl . '" class="btn btn-info btn-sm d-flex align-items-center gap-1 text-white" title="View & Reply">';
-                    $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-comment-square"></use></svg>';
-                    $btn .= '<span>View & Reply</span></a>';
-
-                    // Delete Button
-                    $btn .= '<a href="javascript:void(0)" data-url="'.$deleteUrl.'" class="btn btn-danger btn-sm d-flex align-items-center gap-1 delete-btn" title="Delete">';
-                    $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-trash"></use></svg>';
-                    $btn .= '<span>Delete</span></a>';
-
-                    $btn .= '</div>';
-                    return $btn;
-                })
-                ->rawColumns(['status', 'action'])
-                ->make(true);
+            try {
+                $query = ContactMessage::query()->latest();
+                return DataTables::of($query)
+                    ->addIndexColumn()
+                    ->addColumn('status', function ($row) {
+                        return $row->status == 'replied'
+                            ? '<span class="badge bg-success">Replied</span>'
+                            : '<span class="badge bg-warning text-dark">Pending</span>';
+                    })
+                    ->addColumn('action', function($row){
+                        return view('layouts.includes.list-actions', [
+                            'module' => 'contact_messages',
+                            'routePrefix' => 'backend.contact_messages',
+                            'data' => $row
+                        ])->render();
+                    })
+                    ->rawColumns(['status', 'action'])
+                    ->make(true);
+            } catch (\Exception $e) {
+                Log::error('ContactMessageController error: ' . $e->getMessage());
+                return response()->json([
+                    'error' => 'Server Error: ' . $e->getMessage()
+                ], 500);
+            }
         }
         return view('backend.contact_messages.index');
     }

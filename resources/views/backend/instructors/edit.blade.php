@@ -18,8 +18,11 @@
 
                             {{-- Linked User --}}
                             <div class="col-md-12">
-                                <x-select2_ajax name="user_id" label="Link to User (Instructor Role)" :selected="old('user_id', $instructor->user_id)" :selectedText="$instructor->user->name . ' (' . $instructor->user->email . ')'"
-                                    :required="true" placeholder="Search by name or email" :url="route('backend.users.search')" />
+                                <x-select2_ajax name="user_id" label="Link to User (Instructor Role)" :selected="old('user_id', $instructor->user_id)"
+                                    :selectedText="$instructor->user
+                                        ? $instructor->user->name . ' (' . $instructor->user->email . ')'
+                                        : 'User Not Found'" :required="true" placeholder="Search by name or email"
+                                    :url="route('backend.users.search')" />
                             </div>
 
                             {{-- Name --}}

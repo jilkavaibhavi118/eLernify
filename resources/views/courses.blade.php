@@ -120,10 +120,7 @@
                 @endforelse
             </div>
 
-            <!-- Pagination -->
-            <div class="d-flex justify-content-center mt-5">
-                {{ $courses->appends(request()->query())->links() }}
-            </div>
+
         </div>
     </section>
 

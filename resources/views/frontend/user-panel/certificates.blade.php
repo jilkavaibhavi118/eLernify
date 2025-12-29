@@ -148,33 +148,33 @@
         .btn-primary,
         .btn-primary:active,
         .btn-primary:focus {
-            background-color: #0a2283 !important;
-            border-color: #0a2283 !important;
+            background-color: #1266c2 !important;
+            border-color: #1266c2 !important;
             color: #fff !important;
         }
 
         .btn-primary:hover {
-            background-color: #081b6a !important;
-            border-color: #081b6a !important;
+            background-color: #0d4a8e !important;
+            border-color: #0d4a8e !important;
             color: #fff !important;
         }
 
         .text-primary {
-            color: #0a2283 !important;
+            color: #1266c2 !important;
         }
 
         .bg-primary {
-            background-color: #0a2283 !important;
+            background-color: #1266c2 !important;
         }
 
         .progress-bar {
-            background-color: #0a2283 !important;
+            background-color: #1266c2 !important;
         }
 
         .dashboard-menu .nav-link:hover,
         .dashboard-menu .nav-link.active {
-            color: #0a2283 !important;
-            border-left-color: #0a2283 !important;
+            color: #1266c2 !important;
+            border-left-color: #1266c2 !important;
         }
     </style>
 @endpush
@@ -272,7 +272,7 @@
                                 Complete a course to earn your first certificate!<br>
                                 Certificates are awarded when you finish all lectures and quizzes in a course.
                             </p>
-                            <a href="{{ route('courses') }}" class="btn btn-primary btn-lg">
+                            <a href="{{ route('courses') }}" class="btn btn-primary px-4 py-2">
                                 <i class="bi bi-book me-2"></i>Browse Courses
                             </a>
                         </div>

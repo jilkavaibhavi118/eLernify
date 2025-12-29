@@ -12,7 +12,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
-            --primary-blue: #0a2283;
+            --primary-blue: #1266c2;
             --soft-blue: #eef2ff;
             --text-dark: #1e293b;
             --text-gray: #64748b;

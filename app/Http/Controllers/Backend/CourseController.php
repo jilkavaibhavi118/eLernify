@@ -42,23 +42,11 @@ class CourseController extends Controller
                     return '<span class="text-muted">No Image</span>';
                 })
                 ->addColumn('action', function($row){
-                    $editUrl = route('backend.courses.edit', $row->id);
-                    $deleteUrl = route('backend.courses.destroy', $row->id);
-
-                    $btn = '<div class="d-flex gap-2">';
-
-                    // Edit Button
-                    $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm d-flex align-items-center gap-1" title="Edit">';
-                    $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-pencil"></use></svg>';
-                    $btn .= '<span>Edit</span></a>';
-
-                    // Delete Button
-                    $btn .= '<a href="javascript:void(0)" data-url="'.$deleteUrl.'" class="btn btn-danger btn-sm d-flex align-items-center gap-1 delete-btn" title="Delete">';
-                    $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-trash"></use></svg>';
-                    $btn .= '<span>Delete</span></a>';
-
-                    $btn .= '</div>';
-                    return $btn;
+                    return view('layouts.includes.list-actions', [
+                        'module' => 'courses',
+                        'routePrefix' => 'backend.courses',
+                        'data' => $row
+                    ])->render();
                 })
                 ->rawColumns(['category', 'status', 'image', 'action'])
                 ->make(true);
@@ -80,7 +68,7 @@ class CourseController extends Controller
         }
 
         // Automatically set instructor_id if the user is an instructor
-        if (auth()->user()->hasRole('Instructor')) {
+        if (auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores')) {
             $data['instructor_id'] = auth()->user()->instructor ? auth()->user()->instructor->id : null;
         }
 
@@ -97,7 +85,7 @@ class CourseController extends Controller
         $course = Course::with('category')->findOrFail($id);
 
         // Security check for instructors
-        if (auth()->user()->hasRole('Instructor') && $course->instructor_id != auth()->user()->instructor->id) {
+        if ((auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores')) && $course->instructor_id != auth()->user()->instructor->id) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -109,7 +97,7 @@ class CourseController extends Controller
         $course = Course::findOrFail($id);
 
         // Security check for instructors
-        if (auth()->user()->hasRole('Instructor') && $course->instructor_id != auth()->user()->instructor->id) {
+        if ((auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores')) && $course->instructor_id != auth()->user()->instructor->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -139,7 +127,7 @@ class CourseController extends Controller
         $course = Course::findOrFail($id);
 
         // Security check for instructors
-        if (auth()->user()->hasRole('Instructor') && $course->instructor_id != auth()->user()->instructor->id) {
+        if ((auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores')) && $course->instructor_id != auth()->user()->instructor->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 

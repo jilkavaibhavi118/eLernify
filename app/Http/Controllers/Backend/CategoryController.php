@@ -31,27 +31,11 @@ class CategoryController extends Controller
                     return '<span class="badge bg-info">'.$row->courses_count.'</span>';
                 })
                 ->addColumn('action', function($row){
-                    $btn = '<div class="d-flex gap-2">';
-
-                    if (auth()->user()->hasAnyRole(['Admin', 'Instructor'])) {
-                        $editUrl = route('backend.categories.edit', $row->id);
-                        $deleteUrl = route('backend.categories.destroy', $row->id);
-
-                        // Edit Button
-                        $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm d-flex align-items-center gap-1" title="Edit">';
-                        $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-pencil"></use></svg>';
-                        $btn .= '<span>Edit</span></a>';
-
-                        // Delete Button
-                        $btn .= '<a href="javascript:void(0)" data-url="'.$deleteUrl.'" class="btn btn-danger btn-sm d-flex align-items-center gap-1 delete-btn" title="Delete">';
-                        $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-trash"></use></svg>';
-                        $btn .= '<span>Delete</span></a>';
-                    } else {
-                        $btn .= '<span class="text-muted">No Actions</span>';
-                    }
-
-                    $btn .= '</div>';
-                    return $btn;
+                    return view('layouts.includes.list-actions', [
+                        'module' => 'categories',
+                        'routePrefix' => 'backend.categories',
+                        'data' => $row
+                    ])->render();
                 })
                 ->rawColumns(['status', 'image', 'courses_count', 'action'])
                 ->make(true);

@@ -45,36 +45,28 @@ class UserController extends Controller implements HasMiddleware
                         : '<span class="badge bg-danger">Inactive</span>';
                 })
                 ->addColumn('action', function($row){
-                    $editUrl   = route('backend.users.edit', $row->id);
-                    $deleteUrl = route('backend.users.destroy', $row->id);
                     $ordersUrl = route('backend.orders.index', ['user_id' => $row->id]);
+                    
+                    // Custom buttons for User
+                    $extra = '
+                        <a href="' . $ordersUrl . '" class="btn btn-info btn-sm text-white d-flex align-items-center gap-1" title="Orders">
+                            <svg class="icon text-white" width="16" height="16" style="fill: currentColor; vertical-align: middle;">
+                                <use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-cart"></use>
+                            </svg>
+                            <span>Orders</span>
+                        </a>
+                        <button type="button" 
+                                class="btn btn-sm '.($row->status == 'active' ? 'btn-danger' : 'btn-success').' toggle-status" 
+                                data-id="'.$row->id.'">
+                            '.($row->status == 'active' ? 'Disable' : 'Enable').'
+                        </button>';
 
-                    $btn  = '<div class="d-flex gap-2">';
-
-                    // Edit Button
-                    $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm d-flex align-items-center gap-1" title="Edit">';
-                    $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-pencil"></use></svg>';
-                    $btn .= '<span>Edit</span></a>';
-
-                    // Orders Button
-                    $btn .= '<a href="' . $ordersUrl . '" class="btn btn-info btn-sm d-flex align-items-center gap-1 text-white" title="Orders">';
-                    $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-cart"></use></svg>';
-                    $btn .= '<span>Orders</span></a>';
-
-                    // Enable / Disable Status Button
-                    $btn .= '<button type="button" '
-                        .'class="btn btn-sm '.($row->status == 'active' ? 'btn-danger' : 'btn-success').' toggle-status" '
-                        .'data-id="'.$row->id.'">'
-                        .($row->status == 'active' ? 'Disable' : 'Enable')
-                        .'</button>';
-
-                    // Delete Button
-                    $btn .= '<a href="javascript:void(0)" data-url="'.$deleteUrl.'" class="btn btn-danger btn-sm d-flex align-items-center gap-1 delete-btn" title="Delete">';
-                    $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-trash"></use></svg>';
-                    $btn .= '<span>Delete</span></a>';
-
-                    $btn .= '</div>';
-                    return $btn;
+                    return view('layouts.includes.list-actions', [
+                        'module' => 'user',
+                        'routePrefix' => 'backend.users',
+                        'data' => $row,
+                        'extra' => $extra
+                    ])->render();
                 })
                 ->rawColumns(['roles', 'action', 'status'])
                 ->make(true);
@@ -174,7 +166,9 @@ class UserController extends Controller implements HasMiddleware
         $page = $request->get('page', 1);
         $perPage = 10;
 
-        $query = User::role('Instructor')
+        $query = User::whereHas('roles', function($q) {
+                $q->whereIn('name', ['Instructor', 'Instructores']);
+            })
             ->where('status', 'active')
             ->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")

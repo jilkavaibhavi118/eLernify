@@ -45,29 +45,26 @@ class CommentController extends Controller
                 })
                 ->addColumn('action', function($row){
                     $viewUrl = route('user.lecture.view', ['lectureId' => $row->lecture_id]);
-                    $deleteUrl = route('backend.comments.destroy', $row->id);
-
-                    $btn = '<div class="d-flex gap-2">';
-
+                    
+                    $extra = '';
                     // Reply Button (Triggers Modal)
                     if (!$row->parent_id) {
-                        $btn .= '<a href="javascript:void(0)" class="btn btn-primary btn-sm d-flex align-items-center gap-1 reply-btn" data-id="'.$row->id.'" data-content="'.$row->content.'" title="Reply">';
-                        $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-reply"></use></svg>';
-                        $btn .= '<span>Reply</span></a>';
+                        $extra .= '<a href="javascript:void(0)" class="btn btn-primary btn-sm d-flex align-items-center gap-1 reply-btn" data-id="'.$row->id.'" data-content="'.e($row->content).'" title="Reply">
+                            <svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-reply"></use></svg>
+                            <span>Reply</span></a>';
                     }
 
                     // View Button
-                    $btn .= '<a href="' . $viewUrl . '" target="_blank" class="btn btn-info btn-sm d-flex align-items-center gap-1" title="View in Lecture">';
-                    $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-external-link"></use></svg>';
-                    $btn .= '<span>View</span></a>';
+                    $extra .= '<a href="' . $viewUrl . '" target="_blank" class="btn btn-info btn-sm d-flex align-items-center gap-1" title="View in Lecture">
+                        <svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-external-link"></use></svg>
+                        <span>View</span></a>';
 
-                    // Delete Button
-                    $btn .= '<a href="javascript:void(0)" data-url="'.$deleteUrl.'" class="btn btn-danger btn-sm d-flex align-items-center gap-1 delete-btn" title="Delete">';
-                    $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-trash"></use></svg>';
-                    $btn .= '<span>Delete</span></a>';
-
-                    $btn .= '</div>';
-                    return $btn;
+                    return view('layouts.includes.list-actions', [
+                        'module' => 'comments',
+                        'routePrefix' => 'backend.comments',
+                        'data' => $row,
+                        'extra' => $extra
+                    ])->render();
                 })
                 ->rawColumns(['type', 'action'])
                 ->make(true);

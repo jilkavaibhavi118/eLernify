@@ -11,7 +11,7 @@
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-4">
-                        @if(session('success'))
+                        @if (session('success'))
                             <div class="alert alert-success">
                                 {{ session('success') }}
                             </div>
@@ -20,11 +20,16 @@
                             <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Subject</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Subject
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -42,9 +47,15 @@
                 var table = $('#contact-table').DataTable({
                     processing: true,
                     serverSide: true,
-                    ajax: "{{ route('backend.contact_messages.index') }}",
-                    columns: [
-                        {
+                    ajax: {
+                        url: "{{ route('backend.contact_messages.index') }}",
+                        error: function(xhr, error, thrown) {
+                            console.error('DataTables Error:', error);
+                            console.error('Response:', xhr.responseText);
+                            alert('Error loading table data. Please check console for details.');
+                        }
+                    },
+                    columns: [{
                             data: 'DT_RowIndex',
                             name: 'DT_RowIndex',
                             orderable: false,

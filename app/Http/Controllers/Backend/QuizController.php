@@ -7,6 +7,7 @@ use App\Models\Quiz;
 use App\Models\Lecture;
 use App\Models\Question;
 use App\Models\QuestionOption;
+use App\Models\QuizAttempt;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
@@ -45,14 +46,11 @@ class QuizController extends Controller
                     return $row->questions()->count();
                 })
                 ->addColumn('action', function($row){
-                    $editUrl = route('backend.quizzes.edit', $row->id);
-                    $deleteUrl = route('backend.quizzes.destroy', $row->id);
-                    
-                    $btn = '<div class="d-flex gap-2">';
-                    $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm">Edit</a>';
-                    $btn .= '<a href="javascript:void(0)" data-url="'.$deleteUrl.'" class="btn btn-danger btn-sm delete-btn">Delete</a>';
-                    $btn .= '</div>';
-                    return $btn;
+                    return view('layouts.includes.list-actions', [
+                        'module' => 'quizzes',
+                        'routePrefix' => 'backend.quizzes',
+                        'data' => $row
+                    ])->render();
                 })
                 ->rawColumns(['pricing', 'action'])
                 ->make(true);
@@ -92,13 +90,14 @@ class QuizController extends Controller
         ]);
 
         $lecture = Lecture::findOrFail($request->lecture_id);
-        if (!auth()->user()->hasRole('Admin') && $lecture->course->instructor_id != auth()->user()->instructor->id) {
+        if ((auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores')) && $lecture->course->instructor_id != auth()->user()->instructor->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
         DB::beginTransaction();
         try {
             $quiz = Quiz::create([
+                'course_id' => $lecture->course_id,
                 'title' => $request->title,
                 'short_description' => $request->short_description,
                 'duration' => $request->duration,
@@ -142,7 +141,7 @@ class QuizController extends Controller
     {
         $quiz = Quiz::with(['lecture.course', 'questions.options'])->findOrFail($id);
 
-        if (!auth()->user()->hasRole('Admin') && $quiz->lecture->course->instructor_id != auth()->user()->instructor->id) {
+        if ((auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores')) && $quiz->lecture->course->instructor_id != auth()->user()->instructor->id) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -162,7 +161,7 @@ class QuizController extends Controller
     {
         $quiz = Quiz::with('lecture.course')->findOrFail($id);
 
-        if (!auth()->user()->hasRole('Admin') && $quiz->lecture->course->instructor_id != auth()->user()->instructor->id) {
+        if ((auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores')) && $quiz->lecture->course->instructor_id != auth()->user()->instructor->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -185,6 +184,7 @@ class QuizController extends Controller
         DB::beginTransaction();
         try {
             $quiz->update([
+                'course_id' => $quiz->lecture->course_id,
                 'title' => $request->title,
                 'short_description' => $request->short_description,
                 'duration' => $request->duration,
@@ -233,7 +233,7 @@ class QuizController extends Controller
         $quiz = Quiz::with('lecture.course')->findOrFail($id);
 
         // Security check for instructors
-        if (auth()->user()->hasRole('Instructor') && $quiz->lecture->course->instructor_id != auth()->user()->instructor->id) {
+        if ((auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores')) && $quiz->lecture->course->instructor_id != auth()->user()->instructor->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -243,5 +243,61 @@ class QuizController extends Controller
             'success' => true,
             'message' => 'Quiz deleted successfully'
         ]);
+    }
+
+    public function results(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = QuizAttempt::with(['user', 'quiz.lecture.course', 'quiz.course'])->latest();
+
+            // Filter by instructor if not admin
+            if (!auth()->user()->hasRole('Admin')) {
+                $instructorId = auth()->user()->instructor ? auth()->user()->instructor->id : 0;
+                $query->where(function($q) use ($instructorId) {
+                    $q->whereHas('quiz.course', function($sq) use ($instructorId) {
+                        $sq->where('instructor_id', $instructorId);
+                    })->orWhereHas('quiz.lecture.course', function($sq) use ($instructorId) {
+                        $sq->where('instructor_id', $instructorId);
+                    });
+                });
+            }
+
+            return DataTables::of($query)
+                ->addIndexColumn()
+                ->addColumn('user_name', function($row){
+                    return $row->user->name;
+                })
+                ->addColumn('user_email', function($row){
+                    return $row->user->email;
+                })
+                ->addColumn('quiz_title', function($row){
+                    return $row->quiz->title;
+                })
+                ->addColumn('course_title', function($row){
+                    if ($row->quiz->course) {
+                        return $row->quiz->course->title;
+                    }
+                    if ($row->quiz->lecture && $row->quiz->lecture->course) {
+                        return $row->quiz->lecture->course->title;
+                    }
+                    return 'N/A';
+                })
+                ->addColumn('score_display', function($row){
+                    if ($row->total_questions > 0) {
+                        $percentage = ($row->score / $row->total_questions) * 100;
+                        $colorClass = $percentage >= 80 ? 'text-success' : ($percentage >= 50 ? 'text-warning' : 'text-danger');
+                        return '<div class="fw-bold '.$colorClass.'">' . $row->score . ' / ' . $row->total_questions . '</div>' . 
+                               '<div class="text-muted" style="font-size: 0.75rem;">' . round($percentage, 1) . '%</div>';
+                    }
+                    return '0 / 0';
+                })
+                ->addColumn('date', function($row){
+                    return $row->completed_at ? $row->completed_at->format('M d, Y') . '<br><small class="text-muted">' . $row->completed_at->format('h:i A') . '</small>' : 
+                                               $row->created_at->format('M d, Y') . '<br><small class="text-muted">' . $row->created_at->format('h:i A') . '</small>';
+                })
+                ->rawColumns(['score_display', 'date'])
+                ->make(true);
+        }
+        return view('backend.quizzes.results');
     }
 }

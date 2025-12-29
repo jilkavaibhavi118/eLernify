@@ -69,8 +69,11 @@ class PaymentController extends Controller implements HasMiddleware
                         return $row->payment_method ?? '-';
                     })
                     ->addColumn('action', function ($row) {
-                        return '<a href="'.route('backend.payments.show', $row->id).'"
-                                class="btn btn-sm btn-info">View</a>';
+                        return view('layouts.includes.list-actions', [
+                            'module' => 'purchases',
+                            'routePrefix' => 'backend.payments',
+                            'data' => $row
+                        ])->render();
                     })
                     ->rawColumns(['status', 'action'])
                     ->make(true);

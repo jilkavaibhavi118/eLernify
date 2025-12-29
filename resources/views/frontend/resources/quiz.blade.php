@@ -2,6 +2,35 @@
 
 @section('title', $quiz->title . ' | eLEARNIFY')
 
+@push('styles')
+    <style>
+        .form-check {
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .form-check:hover {
+            border-color: #1266c2 !important;
+            background: rgba(18, 102, 194, 0.05);
+        }
+
+        .form-check:has(.form-check-input:checked) {
+            border-color: #1266c2 !important;
+            background: rgba(18, 102, 194, 0.05);
+        }
+
+        .form-check-input:checked {
+            background-color: #1266c2 !important;
+            border-color: #1266c2 !important;
+        }
+
+        .form-check-input:focus {
+            border-color: #1266c2 !important;
+            box-shadow: 0 0 0 0.25rem rgba(18, 102, 194, 0.1) !important;
+        }
+    </style>
+@endpush
+
 @section('content')
     <div class="container-xxl py-5">
         <div class="container">
@@ -61,7 +90,7 @@
 
                             @if ($quiz->questions->count() > 0)
                                 <div class="text-center mt-5">
-                                    <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill shadow">
+                                    <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill shadow">
                                         Submit My Answers <i class="fa fa-paper-plane ms-2"></i>
                                     </button>
                                 </div>

@@ -9,8 +9,8 @@
         :root {
             --player-bg: #f9fafb;
             --sidebar-width: 380px;
-            --primary-color: #0a2283;
-            --primary-light: rgba(10, 34, 131, 0.1);
+            --primary-color: #1266c2;
+            --primary-light: rgba(18, 102, 194, 0.1);
             --text-dark: #1f2937;
             --text-muted: #6b7280;
             --border-color: #e5e7eb;
@@ -199,6 +199,22 @@
             background: var(--primary-light);
         }
 
+        .form-check:has(.form-check-input:checked) {
+            border-color: var(--primary-color);
+            background: var(--primary-light);
+            box-shadow: 0 4px 12px rgba(18, 102, 194, 0.08);
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+        }
+
+        .form-check-input:focus {
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 0 0 0.25rem var(--primary-light) !important;
+        }
+
         .form-check-input:checked+.form-check-label {
             color: var(--primary-color);
             font-weight: 600;
@@ -284,8 +300,8 @@
         }
 
         .btn-primary:hover {
-            background-color: #081b6a !important;
-            border-color: #081b6a !important;
+            background-color: #0d4a8e !important;
+            border-color: #0d4a8e !important;
             color: #fff !important;
         }
 
@@ -381,7 +397,7 @@
                     @if ($quiz->questions->count() > 0)
                         <div class="text-center mt-5">
                             <button type="submit"
-                                class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow-sm border-0">
+                                class="btn btn-primary px-4 py-2 rounded-pill fw-bold shadow-sm border-0">
                                 Submit My Answers <i class="fa fa-paper-plane ms-2"></i>
                             </button>
                         </div>

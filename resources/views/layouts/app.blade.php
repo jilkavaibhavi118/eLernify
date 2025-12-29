@@ -74,7 +74,8 @@
         </div>
         <ul class="sidebar-nav" data-coreui="navigation" data-simplebar="">
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('backend.dashboard') }}">
+                <a class="nav-link"
+                    href="{{ auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores') ? route('instructor.dashboard') : route('backend.dashboard') }}">
                     <svg class="nav-icon">
                         <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-speedometer"></use>
                     </svg> Dashboard
@@ -102,7 +103,7 @@
                 </li>
             @endhasrole
 
-            @hasanyrole('Admin|Instructor')
+            @hasanyrole('Admin|Instructor|Instructores')
                 <li class="nav-title">Course Management</li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('backend.categories.index') }}">
@@ -142,6 +143,14 @@
                             <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-puzzle"></use>
                         </svg>
                         Quizzes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('backend.quizzes.results') }}">
+                        <svg class="nav-icon">
+                            <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-notes"></use>
+                        </svg>
+                        Quiz Results
                     </a>
                 </li>
                 <li class="nav-item">

@@ -84,14 +84,14 @@ class CourseController extends Controller
             ->where('category_id', $course->category_id)
             ->where('id', '!=', $id)
             ->where('status', 'active')
-            ->take(5)
+            ->take(10)
             ->get();
 
         if ($relatedCourses->isEmpty()) {
             $relatedCourses = Course::with(['instructor', 'category'])
                 ->where('id', '!=', $id)
                 ->where('status', 'active')
-                ->take(5)
+                ->take(10)
                 ->get();
         }
 

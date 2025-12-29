@@ -33,19 +33,11 @@ class InstructorController extends Controller
                     return '<span class="text-muted">No Image</span>';
                 })
                 ->addColumn('action', function ($row) {
-                    $editUrl   = route('backend.instructors.edit', $row->id);
-                    $deleteUrl = route('backend.instructors.destroy', $row->id);
-
-                    $btn  = '<div class="d-flex gap-2">';
-                    $btn .= '<a href="'.$editUrl.'" class="btn btn-warning btn-sm d-flex gap-1">';
-                    $btn .= '<svg class="icon icon-sm"><use xlink:href="'.asset('vendors/@coreui/icons/svg/free.svg').'#cil-pencil"></use></svg>Edit</a>';
-
-                    $btn .= '<a href="javascript:void(0)" data-url="'.$deleteUrl.'"
-                                class="btn btn-danger btn-sm d-flex gap-1 delete-btn">';
-                    $btn .= '<svg class="icon icon-sm"><use xlink:href="'.asset('vendors/@coreui/icons/svg/free.svg').'#cil-trash"></use></svg>Delete</a>';
-
-                    $btn .= '</div>';
-                    return $btn;
+                    return view('layouts.includes.list-actions', [
+                        'module' => 'instructors',
+                        'routePrefix' => 'backend.instructors',
+                        'data' => $row
+                    ])->render();
                 })
                 ->rawColumns(['status','image','action'])
                 ->make(true);

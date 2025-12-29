@@ -9,12 +9,6 @@
                 <p class="text-light opacity-75 small mb-4">
                     Empowering learners worldwide with accessible, high-quality education. Join the revolution today.
                 </p>
-                <div class="d-flex gap-3">
-                    <a href="#" class="footer-social-icon"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="footer-social-icon"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="footer-social-icon"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" class="footer-social-icon"><i class="fab fa-instagram"></i></a>
-                </div>
             </div>
 
             <div class="col-lg-2 col-md-6">
@@ -25,21 +19,6 @@
                     <li><a href="{{ route('instructors') }}">Instructors</a></li>
                     <li><a href="#">Enterprise</a></li>
                     <li><a href="#">Pricing</a></li>
-                </ul>
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-                <h6 class="fw-bold mb-3 text-white">Contact Us</h6>
-                <ul class="list-unstyled footer-contact">
-                    <li class="mb-2 opacity-75 small">
-                        <i class="fas fa-envelope me-2 text-primary"></i> support@elearnify.com
-                    </li>
-                    <li class="mb-2 opacity-75 small">
-                        <i class="fas fa-phone me-2 text-primary"></i> +1 (555) 123-4567
-                    </li>
-                    <li class="opacity-75 small">
-                        <i class="fas fa-map-marker-alt me-2 text-primary"></i> 123 Education St, Tech City
-                    </li>
                 </ul>
             </div>
 

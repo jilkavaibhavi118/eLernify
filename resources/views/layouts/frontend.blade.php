@@ -40,27 +40,27 @@
         .btn-primary,
         .btn-primary:active,
         .btn-primary:focus {
-            background-color: #0a2283 !important;
-            border-color: #0a2283 !important;
+            background-color: #1266c2 !important;
+            border-color: #1266c2 !important;
             color: #fff !important;
         }
 
         .btn-primary:hover {
-            background-color: #081b6a !important;
-            border-color: #081b6a !important;
+            background-color: #0d4a8e !important;
+            border-color: #0d4a8e !important;
             color: #fff !important;
         }
 
         .text-primary {
-            color: #0a2283 !important;
+            color: #1266c2 !important;
         }
 
         .bg-primary {
-            background-color: #0a2283 !important;
+            background-color: #1266c2 !important;
         }
 
         .progress-bar {
-            background-color: #0a2283 !important;
+            background-color: #1266c2 !important;
         }
     </style>
 
@@ -84,7 +84,7 @@
     @include('partials.footer')
 
     <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    <a href="#" class="btn btn-primary btn-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

@@ -221,7 +221,8 @@
                                         class="mini-card-img" alt="{{ $related->title }}">
                                 @endif
                                 <div class="mini-card-title">{{ $related->title }}</div>
-                                <div class="mini-card-instructor">With {{ $related->instructor->name ?? 'Expert' }}</div>
+                                <div class="mini-card-instructor">With {{ $related->instructor->name ?? 'Expert' }}
+                                </div>
                                 <div class="mini-card-meta">
                                     <div class="meta-row"><i class="bi bi-list-ul"></i>
                                         {{ $related->lectures_count ?? $related->lectures->count() }} Episodes</div>
@@ -242,49 +243,73 @@
 
     @include('partials.footer')
 
-    <!-- Scripts -->
+
+    <!-- Scripts --\>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <!-- Initialize Swiper IMMEDIATELY after library loads -->
+    <script>
+        (function() {
+            var swiperInitialized = false;
+
+            function initCourseSwiper() {
+                if (swiperInitialized) return;
+
+                var el = document.querySelector('.moreCoursesSwiper');
+                if (!el) {
+                    setTimeout(initCourseSwiper, 50);
+                    return;
+                }
+
+                swiperInitialized = true;
+                new Swiper(".moreCoursesSwiper", {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                    loop: true,
+                    autoplay: {
+                        delay: 2500,
+                        disableOnInteraction: false
+                    },
+                    speed: 600,
+                    pagination: {
+                        el: ".swiper-pagination",
+                        clickable: true
+                    },
+                    breakpoints: {
+                        480: {
+                            slidesPerView: 2,
+                            spaceBetween: 15
+                        },
+                        768: {
+                            slidesPerView: 3,
+                            spaceBetween: 20
+                        },
+                        1024: {
+                            slidesPerView: 4,
+                            spaceBetween: 25
+                        },
+                        1200: {
+                            slidesPerView: 4,
+                            spaceBetween: 30
+                        },
+                    },
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initCourseSwiper);
+            } else {
+                initCourseSwiper();
+            }
+        })();
+    </script>
     <script src="{{ asset('frontend/js/main.js') }}"></script>
     <script src="{{ asset('frontend/js/components.js') }}"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var swiper = new Swiper(".moreCoursesSwiper", {
-                slidesPerView: 1,
-                spaceBetween: 20,
-                loop: true,
-                autoplay: {
-                    delay: 2500,
-                    disableOnInteraction: false,
-                },
-                pagination: {
-                    el: ".swiper-pagination",
-                    clickable: true,
-                },
-                breakpoints: {
-                    640: {
-                        slidesPerView: 2,
-                        spaceBetween: 20,
-                    },
-                    768: {
-                        slidesPerView: 3,
-                        spaceBetween: 30,
-                    },
-                    1024: {
-                        slidesPerView: 3,
-                        spaceBetween: 30,
-                    },
-                    1200: {
-                        slidesPerView: 4,
-                        spaceBetween: 30,
-                    },
-                },
-            });
-        });
-    </script>
+
 </body>
 
 </html>

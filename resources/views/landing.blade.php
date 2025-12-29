@@ -29,14 +29,15 @@
                         Find Your Next <br> level <span class="highlight-text">Online Course</span>
                     </h1>
                     <p class="description">
-                        Elearnify offers professional training classes and special features to help you improve your skills
+                        Elearnify offers professional training classes and special features to help you improve your
+                        skills
                         and develop your career path.
                     </p>
                     <div class="d-flex flex-wrap gap-2 justify-content-lg-start justify-content-center">
                         @guest
                             <a href="{{ route('register') }}" class="btn btn-custom-green">Get Started</a>
                         @else
-                            <a href="{{ route('user.dashboard') }}" class="btn btn-custom-green">Go to Dashboard</a>
+                            <a href="{{ route('user.dashboard') }}" class="btn btn-custom-green">Get Started</a>
                         @endguest
                         <!-- <button class="btn btn-custom-outline"> <i class="fa fa-play-circle me-2"></i> Watch
                             Video</button> -->
@@ -47,8 +48,8 @@
                     <div class="image-wrapper">
 
 
-                        <img src="{{ asset('assets/img/beautiful-woman-staying-connected-with-internet.jpg') }}" alt="Student learning"
-                            class="hero-img img-fluid" style="max-width: 450px; height: 550px;">
+                        <img src="{{ asset('assets/img/beautiful-woman-staying-connected-with-internet.jpg') }}"
+                            alt="Student learning" class="hero-img img-fluid" style="max-width: 450px; height: 550px;">
 
                         <div class="floating-card card-students">
                             <div class="icon-box">
@@ -316,8 +317,8 @@
                                             class="fab fa-github"></i></a>
                                 @endif
                                 @if ($instructor->instagram_url)
-                                    <a href="{{ $instructor->instagram_url }}" target="_blank" class="social-link"><i
-                                            class="fab fa-instagram"></i></a>
+                                    <a href="{{ $instructor->instagram_url }}" target="_blank"
+                                        class="social-link"><i class="fab fa-instagram"></i></a>
                                 @endif
                             </div>
                         </div>

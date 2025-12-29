@@ -48,23 +48,11 @@ class LectureController extends Controller
                     return '₹ ' . number_format($row->price, 2);
                 })
                 ->addColumn('action', function($row){
-                    $editUrl = route('backend.lectures.edit', $row->id);
-                    $deleteUrl = route('backend.lectures.destroy', $row->id);
-
-                    $btn = '<div class="d-flex gap-2">';
-
-                    // Edit Button
-                    $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm d-flex align-items-center gap-1" title="Edit">';
-                    $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-pencil"></use></svg>';
-                    $btn .= '<span>Edit</span></a>';
-
-                    // Delete Button
-                    $btn .= '<a href="javascript:void(0)" data-url="'.$deleteUrl.'" class="btn btn-danger btn-sm d-flex align-items-center gap-1 delete-btn" title="Delete">';
-                    $btn .= '<svg class="icon icon-sm"><use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-trash"></use></svg>';
-                    $btn .= '<span>Delete</span></a>';
-
-                    $btn .= '</div>';
-                    return $btn;
+                    return view('layouts.includes.list-actions', [
+                        'module' => 'lectures',
+                        'routePrefix' => 'backend.lectures',
+                        'data' => $row
+                    ])->render();
                 })
                 ->rawColumns(['status', 'live_class', 'price', 'action'])
                 ->make(true);
@@ -92,19 +80,29 @@ class LectureController extends Controller
         $course = Course::findOrFail($request->course_id);
         
         // Security check for instructors
-        if (auth()->user()->hasRole('Instructor') && $course->instructor_id != auth()->user()->instructor->id) {
+        if ((auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores')) && $course->instructor_id != auth()->user()->instructor->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
         $lecture = Lecture::create($request->validated());
+        
+        // Load course relationship for notification
+        $lecture->load('course');
 
         if ($lecture->live_class_available) {
-            $students = \App\Models\User::whereHas('enrollments', function($q) use ($lecture) {
-                $q->where('course_id', $lecture->course_id)->whereIn('status', ['active', 'completed']);
-            })->get();
+            try {
+                $students = \App\Models\User::whereHas('enrollments', function($q) use ($lecture) {
+                    $q->where('course_id', $lecture->course_id)->whereIn('status', ['active', 'completed']);
+                })->get();
 
-            if ($students->count() > 0) {
-                Notification::send($students, new LiveClassNotification($lecture));
+                if ($students->count() > 0) {
+                    \Illuminate\Support\Facades\Notification::send($students, new \App\Notifications\LiveClassNotification($lecture));
+                    \Illuminate\Support\Facades\Log::info('Live class notification sent to ' . $students->count() . ' students for lecture: ' . $lecture->title);
+                } else {
+                    \Illuminate\Support\Facades\Log::info('No enrolled students found for course: ' . $lecture->course->title);
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Failed to send live class notification: ' . $e->getMessage());
             }
         }
 
@@ -119,7 +117,7 @@ class LectureController extends Controller
         $lecture = Lecture::findOrFail($id);
 
         // Security check for instructors
-        if (auth()->user()->hasRole('Instructor')) {
+        if (auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores')) {
             if ($lecture->course->instructor_id != auth()->user()->instructor->id) {
                 abort(403, 'Unauthorized action.');
             }
@@ -141,7 +139,7 @@ class LectureController extends Controller
         $lecture = Lecture::findOrFail($id);
 
         // Security check for instructors
-        if (auth()->user()->hasRole('Instructor')) {
+        if (auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores')) {
             if ($lecture->course->instructor_id != auth()->user()->instructor->id) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
@@ -211,7 +209,7 @@ class LectureController extends Controller
         $lecture = Lecture::findOrFail($id);
 
         // Security check for instructors
-        if (auth()->user()->hasRole('Instructor') && $lecture->course->instructor_id != auth()->user()->instructor->id) {
+        if ((auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores')) && $lecture->course->instructor_id != auth()->user()->instructor->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 

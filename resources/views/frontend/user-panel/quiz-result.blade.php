@@ -8,8 +8,8 @@
         :root {
             --player-bg: #f9fafb;
             --sidebar-width: 380px;
-            --primary-color: #0a2283;
-            --primary-light: rgba(10, 34, 131, 0.1);
+            --primary-color: #1266c2;
+            --primary-light: rgba(18, 102, 194, 0.1);
             --text-dark: #1f2937;
             --text-muted: #6b7280;
             --border-color: #e5e7eb;
@@ -194,26 +194,26 @@
 
         /* Aggressive Branding Overrides */
         .btn-primary {
-            background-color: #0a2283 !important;
-            border-color: #0a2283 !important;
+            background-color: #1266c2 !important;
+            border-color: #1266c2 !important;
             color: #ffffff !important;
         }
 
         .btn-primary:hover {
-            background-color: #081b6a !important;
-            border-color: #081b6a !important;
+            background-color: #0d4a8e !important;
+            border-color: #0d4a8e !important;
         }
 
         .text-primary {
-            color: #0a2283 !important;
+            color: #1266c2 !important;
         }
 
         .bg-primary {
-            background-color: #0a2283 !important;
+            background-color: #1266c2 !important;
         }
 
         .progress-bar {
-            background-color: #0a2283 !important;
+            background-color: #1266c2 !important;
         }
     </style>
 @endpush
@@ -297,7 +297,8 @@
                             @endforeach
 
                             @if ($question->explanation)
-                                <div class="mt-3 p-3 bg-light rounded-3 border-start border-primary border-4 small">
+                                <div class="mt-3 p-3 rounded-3 border-start border-primary border-4 small"
+                                    style="background-color: var(--primary-light);">
                                     <strong><i class="fa fa-lightbulb text-primary me-2"></i>Explanation:</strong>
                                     <p class="mb-0 mt-1 text-muted">{{ $question->explanation }}</p>
                                 </div>
@@ -306,15 +307,19 @@
                     </div>
                 @endforeach
 
-                <div class="text-center mt-5">
+                <div class="text-center mt-5 d-flex justify-content-center gap-3">
+                    <a href="{{ route('user.quiz.view', $quiz->id) }}"
+                        class="btn btn-primary px-4 py-2 rounded-pill fw-bold shadow-sm border-0">
+                        <i class="fa fa-redo me-2"></i>Re-attempt Quiz
+                    </a>
                     @if ($enrollment)
                         <a href="{{ route('user.course.view', $enrollment->id) }}"
-                            class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow-sm border-0">
+                            class="btn btn-outline-primary px-4 py-2 rounded-pill fw-bold shadow-sm">
                             <i class="fa fa-graduation-cap me-2"></i>Return to Dashboard
                         </a>
                     @else
                         <a href="{{ route('user.dashboard') }}"
-                            class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow-sm border-0">
+                            class="btn btn-outline-primary px-4 py-2 rounded-pill fw-bold shadow-sm">
                             <i class="fa fa-home me-2"></i>Back to My Courses
                         </a>
                     @endif

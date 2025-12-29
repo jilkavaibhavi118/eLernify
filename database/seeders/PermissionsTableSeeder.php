@@ -34,6 +34,8 @@ class PermissionsTableSeeder extends Seeder
             'settings.view', 'settings.create', 'settings.edit', 'settings.delete',
             'permissions.view', 'permissions.create', 'permissions.edit', 'permissions.delete',
             'notifications.view', 'notifications.create', 'notifications.edit', 'notifications.delete',
+            'contact_messages.view', 'contact_messages.delete',
+            'comments.view', 'comments.delete',
         ];
 
         // Create permissions

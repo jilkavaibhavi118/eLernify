@@ -191,36 +191,36 @@
         .btn-primary,
         .btn-primary:active,
         .btn-primary:focus {
-            background-color: #0a2283 !important;
-            border-color: #0a2283 !important;
+            background-color: #1266c2 !important;
+            border-color: #1266c2 !important;
             color: #fff !important;
             box-shadow: 0 4px 10px rgba(10, 34, 131, 0.3) !important;
         }
 
         .btn-primary:hover {
-            background-color: #081b6a !important;
-            border-color: #081b6a !important;
+            background-color: #0d4a8e !important;
+            border-color: #0d4a8e !important;
             color: #fff !important;
             box-shadow: 0 6px 15px rgba(10, 34, 131, 0.4) !important;
             transform: translateY(-2px);
         }
 
         .text-primary {
-            color: #0a2283 !important;
+            color: #1266c2 !important;
         }
 
         .bg-primary {
-            background-color: #0a2283 !important;
+            background-color: #1266c2 !important;
         }
 
         .progress-bar {
-            background-color: #0a2283 !important;
+            background-color: #1266c2 !important;
         }
 
         .dashboard-menu .nav-link:hover,
         .dashboard-menu .nav-link.active {
-            color: #0a2283 !important;
-            border-left-color: #0a2283 !important;
+            color: #1266c2 !important;
+            border-left-color: #1266c2 !important;
         }
     </style>
 @endpush
@@ -360,7 +360,7 @@
                         <div class="row mb-4">
                             <div class="col-12">
                                 <div class="dashboard-card border-0 shadow-sm"
-                                    style="border-left: 5px solid #0a2283 !important;">
+                                    style="border-left: 5px solid #1266c2 !important;">
                                     <div class="d-flex justify-content-between align-items-center mb-4">
                                         <h5 class="mb-0 d-flex align-items-center">
                                             <span class="live-dot-pulse me-2"></span>

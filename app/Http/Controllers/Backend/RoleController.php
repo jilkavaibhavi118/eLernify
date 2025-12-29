@@ -30,19 +30,10 @@ class RoleController extends Controller implements HasMiddleware
             return DataTables::of($roles)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                        return view('layouts.includes.list-actions', [
+                    return view('layouts.includes.list-actions', [
                         'module' => 'role',
                         'routePrefix' => 'backend.roles',
                         'data' => $row,
-                        'extra' =>   [
-                            [
-                                'label' => 'Permissions',
-                                'route' => 'backend.roles.permissions',
-                                'permission' => 'role.edit',
-                                'icon' => 'cil-lock-locked',
-                                'class' => 'btn-primary'
-                            ]
-                            ]
                     ])->render();
                 })
 

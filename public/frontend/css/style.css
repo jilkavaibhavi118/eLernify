@@ -3,7 +3,7 @@
 
 /* --- 1. COLOR PALETTE: TRUST & TECH --- */
 :root {
-    --primary-blue: #0a2283;
+    --primary-blue: #1266c2;
     --soft-blue: #eef2ff;
     --text-dark: #0b0b0b;
     --text-gray: #09090abf;
@@ -12,7 +12,7 @@
 
     /* Primary: Deeper Blue (Buttons, Active States, Icons) */
     --bs-primary: var(--primary-blue);
-    --bs-primary-rgb: 10, 34, 131;
+    --bs-primary-rgb: 18, 102, 194;
 
     /* Secondary: Deep Navy (Headings, Dark Text) */
     --bs-heading-color: var(--text-dark);
@@ -23,6 +23,25 @@
 
     /* Accents */
     --bs-warning: #F59E0B;
+}
+
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: none;
+    z-index: 99;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+    padding: 0;
+}
+
+.back-to-top.show {
+    display: block;
 }
 
 body {
@@ -86,8 +105,8 @@ body {
 
 .nav-link {
     font-weight: 500;
-    color: #64748B !important;
-    /* Cool Gray */
+    color: #0b0b0b !important;
+    /* Black text */
     margin-right: 15px;
     transition: color 0.3s;
 }

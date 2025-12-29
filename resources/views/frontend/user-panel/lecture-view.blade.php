@@ -7,8 +7,8 @@
         :root {
             --player-bg: #f9fafb;
             --sidebar-width: 380px;
-            --primary-color: #0a2283;
-            --primary-light: rgba(10, 34, 131, 0.1);
+            --primary-color: #1266c2;
+            --primary-light: rgba(18, 102, 194, 0.1);
             --text-dark: #1f2937;
             --text-muted: #6b7280;
             --border-color: #e5e7eb;
@@ -234,8 +234,8 @@
         }
 
         .btn-primary:hover {
-            background-color: #081b6a !important;
-            border-color: #081b6a !important;
+            background-color: #0d4a8e !important;
+            border-color: #0d4a8e !important;
             color: #fff !important;
         }
 
@@ -467,8 +467,8 @@
                             </div>
                             <div class="col-md-5 text-md-end">
                                 <a href="{{ $lecture->zoom_meeting_link }}" target="_blank"
-                                    class="btn btn-light btn-lg px-5 rounded-pill fw-bold"
-                                    style="color: #0a2283; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                                    class="btn btn-light px-4 py-2 rounded-pill fw-bold"
+                                    style="color: #1266c2; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
                                     <i class="bi bi-zoom me-2"></i> Join Meeting
                                 </a>
                             </div>

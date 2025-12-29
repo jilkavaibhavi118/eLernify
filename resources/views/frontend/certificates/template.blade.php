@@ -7,211 +7,251 @@
     <style>
         @page {
             margin: 0;
-            size: a4 landscape;
+            size: 297mm 210mm;
         }
 
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact;
+        }
+
+        html,
         body {
-            font-family: 'Helvetica', 'Arial', sans-serif;
-            color: #333;
             margin: 0;
             padding: 0;
-            background-color: #f0f4f8;
+            width: 297mm;
+            height: 210mm;
+            font-family: 'Times-Roman', serif;
+            color: #1a365d;
+            background-color: #fff;
         }
 
-        .cert-container {
-            width: 100%;
-            height: 100%;
-            padding: 40px;
-            box-sizing: border-box;
+        .cert-wrapper {
+            width: 297mm;
+            height: 210mm;
+            position: relative;
             background: #fff;
-            position: relative;
-            border: 20px solid #0a2283;
-            /* Premium Blue Border */
+            overflow: hidden;
+            border: 2mm solid #e2e8f0;
         }
 
-        .cert-inner {
-            border: 2px solid #e2e8f0;
-            height: 100%;
-            padding: 60px;
+        /* Decorative Corners */
+        .corner {
+            position: absolute;
+            width: 80mm;
+            height: 80mm;
+            z-index: 1;
+        }
+
+        .top-left {
+            top: -20mm;
+            left: -20mm;
+            background: linear-gradient(135deg, #0a2283 50%, #1e40af 50%);
+            transform: rotate(-45deg);
+        }
+
+        .top-left-accent {
+            position: absolute;
+            top: 25mm;
+            left: 5mm;
+            width: 100mm;
+            height: 2mm;
+            background: #fbbf24;
+            /* Gold */
+            transform: rotate(-45deg);
+            z-index: 2;
+        }
+
+        .bottom-right {
+            bottom: -20mm;
+            right: -20mm;
+            background: linear-gradient(135deg, #1e40af 50%, #0a2283 50%);
+            transform: rotate(-45deg);
+        }
+
+        .bottom-right-accent {
+            position: absolute;
+            bottom: 25mm;
+            right: 5mm;
+            width: 100mm;
+            height: 2mm;
+            background: #fbbf24;
+            transform: rotate(-45deg);
+            z-index: 2;
+        }
+
+        /* Main Content */
+        .content {
+            position: relative;
+            z-index: 10;
+            padding: 20mm 40mm;
             text-align: center;
-            position: relative;
-            box-sizing: border-box;
-        }
-
-        .cert-header {
-            margin-bottom: 40px;
-        }
-
-        .logo-text {
-            font-size: 32px;
-            font-weight: bold;
-            color: #0a2283;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
         }
 
         .cert-title {
-            font-size: 56px;
-            color: #1e293b;
-            font-weight: 900;
-            margin-bottom: 10px;
+            font-size: 56pt;
+            font-weight: bold;
+            color: #0c4a6e;
             text-transform: uppercase;
+            margin-bottom: 2mm;
+            letter-spacing: 5pt;
         }
 
         .cert-subtitle {
-            font-size: 20px;
-            color: #64748b;
-            margin-bottom: 50px;
+            font-size: 24pt;
+            font-style: italic;
+            color: #1e3a8a;
+            letter-spacing: 2pt;
+            margin-bottom: 15mm;
+            border-bottom: 1px solid #1e3a8a;
+            display: inline-block;
+            padding-bottom: 5mm;
+        }
+
+        .presentation-text {
+            font-size: 18pt;
+            color: #334155;
+            margin-bottom: 10mm;
         }
 
         .student-name {
-            font-size: 48px;
-            color: #0a2283;
-            font-weight: bold;
-            text-decoration: underline;
-            margin-bottom: 30px;
+            font-family: 'ZapfChancery', cursive;
+            font-size: 72pt;
+            color: #1e40af;
+            margin: 5mm 0 10mm;
+            line-height: 1;
         }
 
-        .course-details {
-            font-size: 22px;
-            color: #334155;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: 0 auto 60px;
-        }
-
-        .cert-footer {
-            position: absolute;
-            bottom: 60px;
-            left: 60px;
-            right: 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
-
-        .signature-block {
-            text-align: center;
-            width: 200px;
-            border-top: 1px solid #cbd5e1;
-            padding-top: 10px;
-        }
-
-        .signature-name {
-            font-weight: bold;
-            color: #1e293b;
-            font-size: 16px;
-        }
-
-        .signature-title {
-            color: #64748b;
-            font-size: 14px;
-        }
-
-        .cert-id {
-            position: absolute;
-            bottom: 20px;
-            right: 40px;
-            font-size: 12px;
-            color: #94a3b8;
-        }
-
-        .cert-date {
-            font-size: 18px;
+        .description {
+            font-size: 16pt;
             color: #475569;
-            margin-top: 20px;
+            line-height: 1.6;
+            margin-bottom: 20mm;
+            max-width: 220mm;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        /* Achievement Badge */
-        .badge-container {
+        .description strong {
+            color: #0c4a6e;
+        }
+
+        /* Footer / Signature */
+        .footer {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            bottom: 25mm;
+            left: 40mm;
+            right: 40mm;
         }
 
-        .achievement-badge {
-            width: 120px;
-            height: 120px;
-            background: #0a2283;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
+        .signature-area {
+            width: 80mm;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .signature-line {
+            margin-top: 5mm;
+            padding-top: 3mm;
+        }
+
+        .signer-name {
+            font-size: 16pt;
             font-weight: bold;
+            color: #0c4a6e;
+            text-transform: uppercase;
+        }
+
+        .signer-title {
+            font-size: 12pt;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        /* Badge/Ribbon */
+        .badge-wrapper {
+            position: absolute;
+            top: 40mm;
+            right: 35mm;
+            z-index: 20;
+        }
+
+        .ribbon {
+            width: 35mm;
+            position: relative;
+            background: #0a2283;
+            color: #fff;
+            text-align: center;
+            padding: 12mm 0;
+            border-radius: 50%;
+            border: 2mm solid #fbbf24;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: 5px double #fff;
+            display: block;
+        }
+
+        .badge-inner {
+            font-size: 9pt;
+            font-weight: bold;
+            line-height: 1.2;
+            margin-top: 2mm;
         }
     </style>
 </head>
 
 <body>
-    <div class="cert-container">
-        <div class="cert-inner">
-            <div class="badge-container">
-                <div class="achievement-badge">
-                    <span>SEAL OF</span><br>
-                    <span>EXCELLENCE</span>
+    <div class="cert-wrapper">
+        <!-- Decorative Shapes -->
+        <div class="corner top-left"></div>
+        <div class="top-left-accent"></div>
+
+        <div class="corner bottom-right"></div>
+        <div class="bottom-right-accent"></div>
+
+        <div class="badge-wrapper">
+            <div class="ribbon">
+                <div class="badge-inner">
+                    ELERNIFY<br>OFFICIAL<br>ACADEMY
                 </div>
             </div>
+        </div>
 
-            <div class="cert-header">
-                <div class="logo-text">eLEARNIFY</div>
-                <div class="cert-title">Certificate</div>
-                <div class="cert-subtitle">of Course Completion</div>
-            </div>
+        <div class="content">
+            <div class="cert-title">Certificate</div>
+            <div class="cert-subtitle">OF COMPLETION</div>
 
-            <div class="student-text" style="font-size: 24px; color: #64748b; margin-bottom: 20px;">
-                This is to certify that
-            </div>
+            <div class="presentation-text">This certificate is presented to</div>
 
             <div class="student-name">
-                {{ strtoupper($enrollment->user->name) }}
+                {{ $enrollment->user->name }}
             </div>
 
-            <div class="course-details">
-                has successfully completed the professional course on
-                <strong>“{{ $enrollment->course->title }}”</strong> demonstrating exceptional understanding and
-                dedication throughout the curriculum.
+            <div class="description">
+                in recognition of their successful completion of the course
+                <strong>“{{ $enrollment->course->title }}”</strong>.
+                Your commitment, enthusiasm, and dedication have been an integral part of your success,
+                and we are pleased to recognize your achievement.
             </div>
 
-            <div class="cert-date">
-                Awarded on:
-                <strong>{{ $enrollment->completed_at ? $enrollment->completed_at->format('F d, Y') : now()->format('F d, Y') }}</strong>
-            </div>
+            <div class="footer">
+                <div class="signature-area">
+                    <div class="signature-line">
+                        <div class="signer-name">
+                            {{ $enrollment->course->instructor ? $enrollment->course->instructor->name : 'E-Learnify Academy' }}
+                        </div>
+                        <div class="signer-title">
+                            {{ $enrollment->course->instructor ? 'Lead Instructor' : 'Academic Director' }}</div>
+                    </div>
+                </div>
 
-            <div class="cert-footer" style="margin-top: 100px;">
-                <table style="width: 100%;">
-                    <tr>
-                        <td style="text-align: left; width: 33%;">
-                            <div class="signature-block">
-                                <div class="signature-name">
-                                    {{ $enrollment->course->instructor ? $enrollment->course->instructor->name : 'Course Instructor' }}
-                                </div>
-                                <div class="signature-title">Lead Instructor</div>
-                            </div>
-                        </td>
-                        <td style="text-align: center; width: 34%;">
-                            <!-- Central Decoration or QR if needed -->
-                        </td>
-                        <td style="text-align: right; width: 33%;">
-                            <div class="signature-block" style="margin-left: auto;">
-                                <div class="signature-name">eLEARNIFY Academy</div>
-                                <div class="signature-title">Official Recognition</div>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="cert-id">
-                Certificate ID: eLN-{{ strtoupper(substr(md5($enrollment->id), 0, 10)) }}
+                <div style="margin-top: 5mm; font-size: 10pt; color: #94a3b8;">
+                    Awarded on:
+                    {{ $enrollment->completed_at ? $enrollment->completed_at->format('F d, Y') : now()->format('F d, Y') }}<br>
+                    ID: eLN-{{ strtoupper(substr(md5($enrollment->id), 0, 10)) }}
+                </div>
             </div>
         </div>
     </div>
+</body>
 </body>
 
 </html>

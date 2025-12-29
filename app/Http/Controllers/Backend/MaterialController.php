@@ -61,14 +61,11 @@ class MaterialController extends Controller
                     return $html ?: 'N/A';
                 })
                 ->addColumn('action', function($row){
-                    $editUrl = route('backend.materials.edit', $row->id);
-                    $deleteUrl = route('backend.materials.destroy', $row->id);
-                    
-                    $btn = '<div class="d-flex gap-2">';
-                    $btn .= '<a href="' . $editUrl . '" class="btn btn-warning btn-sm">Edit</a>';
-                    $btn .= '<a href="javascript:void(0)" data-url="'.$deleteUrl.'" class="btn btn-danger btn-sm delete-btn">Delete</a>';
-                    $btn .= '</div>';
-                    return $btn;
+                    return view('layouts.includes.list-actions', [
+                        'module' => 'materials',
+                        'routePrefix' => 'backend.materials',
+                        'data' => $row
+                    ])->render();
                 })
                 ->rawColumns(['pricing', 'file', 'action'])
                 ->addIndexColumn()
@@ -105,7 +102,7 @@ class MaterialController extends Controller
         ]);
 
         $lecture = Lecture::findOrFail($request->lecture_id);
-        if (!auth()->user()->hasRole('Admin') && $lecture->course->instructor_id != auth()->user()->instructor->id) {
+        if ((auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores')) && $lecture->course->instructor_id != auth()->user()->instructor->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -141,7 +138,7 @@ class MaterialController extends Controller
     {
         $material = Material::with('lecture.course')->findOrFail($id);
 
-        if (!auth()->user()->hasRole('Admin') && $material->lecture->course->instructor_id != auth()->user()->instructor->id) {
+        if ((auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores')) && $material->lecture->course->instructor_id != auth()->user()->instructor->id) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -161,7 +158,7 @@ class MaterialController extends Controller
     {
         $material = Material::with('lecture.course')->findOrFail($id);
 
-        if (!auth()->user()->hasRole('Admin') && $material->lecture->course->instructor_id != auth()->user()->instructor->id) {
+        if ((auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores')) && $material->lecture->course->instructor_id != auth()->user()->instructor->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -216,7 +213,7 @@ class MaterialController extends Controller
         $material = Material::with('lecture.course')->findOrFail($id);
         
         // Security check for instructors
-        if (auth()->user()->hasRole('Instructor') && $material->lecture->course->instructor_id != auth()->user()->instructor->id) {
+        if ((auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores')) && $material->lecture->course->instructor_id != auth()->user()->instructor->id) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 

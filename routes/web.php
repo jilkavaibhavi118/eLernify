@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Backend\UserController;
@@ -17,10 +18,30 @@ use App\Http\Controllers\Backend\PaymentController;
 use App\Http\Controllers\Backend\ContactMessageController;
 use App\Http\Controllers\Frontend\CourseController as FrontendCourseController;
 use App\Http\Controllers\Frontend\UserPanelController;
+use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\Frontend\PurchaseController;
+use App\Http\Controllers\Frontend\ResourceController;
+use App\Http\Controllers\Frontend\ContactController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\Backend\DashboardController;
+use App\Models\Category;
+use App\Models\Course;
+use App\Models\Lecture;
+use App\Models\Material;
+use App\Models\Quiz;
+use App\Models\Instructor;
 
-// ✅ Landing Page
+
+Route::get('/debug-db', function() {
+    return response()->json([
+        'database' => DB::connection()->getDatabaseName(),
+        'tables' => DB::select('SHOW TABLES'),
+    ]);
+});
+
 Route::get('/', function () {
-    $categories = \App\Models\Category::where('status', 'active')
+    $categories = Category::where('status', 'active')
         ->withCount(['courses' => function ($query) {
             $query->where('status', 'active');
         }])
@@ -28,26 +49,26 @@ Route::get('/', function () {
         ->take(8)
         ->get();
 
-    $categoryCourses = \App\Models\Course::where('status', 'active')
+    $categoryCourses = Course::where('status', 'active')
         ->latest()
         ->take(4)
         ->get();
-    $totalCourses = \App\Models\Course::where('status', 'active')->count();
+    $totalCourses = Course::where('status', 'active')->count();
 
     // Get courses for the courses section (grouped by category or just latest)
-    $popularCourses = \App\Models\Course::where('status', 'active')
+    $popularCourses = Course::where('status', 'active')
         ->with('category')
         ->latest()
         ->take(6)
         ->get();
 
     // Get Lectures, Materials, Quizzes for landing segments
-    $featuredLectures = \App\Models\Lecture::where('status', 'active')->latest()->take(6)->get();
-    $learningMaterials = \App\Models\Material::latest()->take(6)->get();
-    $practiceQuizzes = \App\Models\Quiz::latest()->take(6)->get();
+    $featuredLectures = Lecture::where('status', 'active')->latest()->take(6)->get();
+    $learningMaterials = Material::latest()->take(6)->get();
+    $practiceQuizzes = Quiz::latest()->take(6)->get();
 
     // Get Instructors
-    $instructors = \App\Models\Instructor::with('user')->where('status', 'active')->take(4)->get();
+    $instructors = Instructor::with('user')->where('status', 'active')->take(4)->get();
 
     return view('landing', compact(
         'categories',
@@ -69,22 +90,22 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.po
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // ✅ Google Auth Routes
-Route::get('auth/google', [App\Http\Controllers\Auth\SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
-Route::get('auth/google/callback', [App\Http\Controllers\Auth\SocialAuthController::class, 'handleGoogleCallback']);
+Route::get('auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
 
 
 // ✅ Purchase Flow
-Route::post('/purchase/initiate', [App\Http\Controllers\Frontend\PurchaseController::class, 'initiate'])->name('purchase.initiate');
-Route::post('/purchase/verify', [App\Http\Controllers\Frontend\PurchaseController::class, 'verify'])->name('purchase.verify');
+Route::post('/purchase/initiate', [PurchaseController::class, 'initiate'])->name('purchase.initiate');
+Route::post('/purchase/verify', [PurchaseController::class, 'verify'])->name('purchase.verify');
 
 // ✅ Resource Viewing with Access Check
-Route::get('/lecture/{id}/view', [App\Http\Controllers\Frontend\ResourceController::class, 'viewLecture'])->name('lecture.view')->middleware(['auth', 'access.check:lecture']);
-Route::get('/material/{id}/view', [App\Http\Controllers\Frontend\ResourceController::class, 'viewMaterial'])->name('material.view')->middleware(['auth', 'access.check:material']);
-Route::get('/quiz/{id}/view', [App\Http\Controllers\Frontend\ResourceController::class, 'viewQuiz'])->name('quiz.view')->middleware(['auth', 'access.check:quiz']);
+Route::get('/lecture/{id}/view', [ResourceController::class, 'viewLecture'])->name('lecture.view')->middleware(['auth', 'access.check:lecture']);
+Route::get('/material/{id}/view', [ResourceController::class, 'viewMaterial'])->name('material.view')->middleware(['auth', 'access.check:material']);
+Route::get('/quiz/{id}/view', [ResourceController::class, 'viewQuiz'])->name('quiz.view')->middleware(['auth', 'access.check:quiz']);
 
-Route::get('/view-lectures', [App\Http\Controllers\Frontend\ResourceController::class, 'indexLectures'])->name('lectures.index');
-Route::get('/view-materials', [App\Http\Controllers\Frontend\ResourceController::class, 'indexMaterials'])->name('materials.index');
-Route::get('/view-quizzes', [App\Http\Controllers\Frontend\ResourceController::class, 'indexQuizzes'])->name('quizzes.index');
+Route::get('/view-lectures', [ResourceController::class, 'indexLectures'])->name('lectures.index');
+Route::get('/view-materials', [ResourceController::class, 'indexMaterials'])->name('materials.index');
+Route::get('/view-quizzes', [ResourceController::class, 'indexQuizzes'])->name('quizzes.index');
 
 // ✅ Frontend Pages
 Route::get('/about', function () {
@@ -98,7 +119,7 @@ Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
 
-Route::post('/contact', [App\Http\Controllers\Frontend\ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 Route::get('/instructors', function () {
     $instructors = \App\Models\Instructor::where('status', 'active')->get();
@@ -133,22 +154,22 @@ Route::middleware(['auth', 'check.user.status'])->prefix('my')->name('user.')->g
     Route::post('/profile/education', [UserPanelController::class, 'addEducation'])->name('profile.education.add');
     Route::delete('/profile/education/{id}', [UserPanelController::class, 'deleteEducation'])->name('profile.education.delete');
     Route::get('/purchases', [UserPanelController::class, 'purchases'])->name('purchases');
-    Route::post('/comment/store', [App\Http\Controllers\CommentController::class, 'store'])->name('comments.store');
-    Route::post('/comment/{id}/react', [App\Http\Controllers\CommentController::class, 'react'])->name('comments.react');
-    Route::get('/notifications/mark-as-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
-    Route::get('/notifications/{id}/mark-as-read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.markRead');
-    Route::delete('/comment/{id}/destroy', [App\Http\Controllers\CommentController::class, 'destroy'])->name('comments.user.destroy');
+    Route::post('/comment/store', [CommentController::class, 'store'])->name('comments.store');
+    Route::post('/comment/{id}/react', [CommentController::class, 'react'])->name('comments.react');
+    Route::get('/notifications/mark-as-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
+    Route::get('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markRead');
+    Route::delete('/comment/{id}/destroy', [CommentController::class, 'destroy'])->name('comments.user.destroy');
 });
 
 
 
 // ✅ Instructor Dashboard
-Route::middleware(['auth'])->get('/instructor/dashboard', [App\Http\Controllers\Backend\DashboardController::class, 'index'])->name('instructor.dashboard');
+Route::middleware(['auth'])->get('/instructor/dashboard', [DashboardController::class, 'index'])->name('instructor.dashboard');
 
 // ✅ Admin Routes
 Route::middleware(['auth'])->prefix('admin')->name('backend.')->group(function () {
 
-    Route::get('/dashboard', [App\Http\Controllers\Backend\DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 
     Route::resource('roles', RoleController::class);
@@ -168,6 +189,7 @@ Route::middleware(['auth'])->prefix('admin')->name('backend.')->group(function (
 
     Route::resource('materials', MaterialController::class);
     Route::resource('quizzes', QuizController::class);
+    Route::get('quiz-results', [QuizController::class, 'results'])->name('quizzes.results');
 
     Route::get('categories/search', [CategoryController::class, 'search'])->name('categories.search');
     Route::resource('categories', CategoryController::class);

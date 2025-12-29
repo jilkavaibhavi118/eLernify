@@ -89,8 +89,24 @@ class OrderController extends Controller implements HasMiddleware
                         return $row->created_at ? $row->created_at->format('d M Y') : '-';
                     })
                     ->addColumn('action', function ($row) {
-                        return '<a href="'.route('backend.orders.show', $row->id).'"
-                                class="btn btn-sm btn-info">View</a>';
+                        $extra = '';
+                        if ($row->status === 'completed') {
+                            $extra = '<button type="button" 
+                                        class="btn btn-warning btn-sm d-flex align-items-center gap-1 refund-btn" 
+                                        data-id="' . $row->id . '" title="Refund">
+                                        <svg class="icon icon-sm" width="16" height="16" style="fill: currentColor; vertical-align: middle;">
+                                            <use xlink:href="' . asset('vendors/@coreui/icons/svg/free.svg') . '#cil-reload"></use>
+                                        </svg>
+                                        <span>Refund</span>
+                                    </button>';
+                        }
+
+                        return view('layouts.includes.list-actions', [
+                            'module' => 'purchases',
+                            'routePrefix' => 'backend.orders',
+                            'data' => $row,
+                            'extra' => $extra
+                        ])->render();
                     })
                     ->rawColumns(['status', 'action'])
                     ->make(true);

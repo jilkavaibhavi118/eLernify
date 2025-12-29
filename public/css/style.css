@@ -14411,4 +14411,12 @@ textarea.form-control-lg {
   --cui-footer-bg: var(--cui-body-bg);
 }
 
+abbr[title] {
+  -webkit-text-decoration: underline dotted;
+  text-decoration: underline dotted;
+  cursor: help;
+  -webkit-text-decoration-skip-ink: none;
+  text-decoration-skip-ink: none;
+}
+
 /*# sourceMappingURL=style.css.map */
