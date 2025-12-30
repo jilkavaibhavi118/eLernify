@@ -150,4 +150,29 @@
             }
         });
     }
+
+    // Session Flash Messages
+    $(document).ready(function() {
+        @if (session('success'))
+            showSuccessToast("{{ session('success') }}");
+        @endif
+
+        @if (session('error'))
+            showErrorToast("{{ session('error') }}");
+        @endif
+
+        @if (session('info'))
+            Toast.fire({
+                icon: 'info',
+                title: "{{ session('info') }}"
+            });
+        @endif
+
+        @if (session('warning'))
+            Toast.fire({
+                icon: 'warning',
+                title: "{{ session('warning') }}"
+            });
+        @endif
+    });
 </script>

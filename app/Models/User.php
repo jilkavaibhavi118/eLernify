@@ -95,4 +95,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function completions()
+    {
+        return $this->hasMany(UserCompletion::class);
+    }
 }

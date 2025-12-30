@@ -7,7 +7,7 @@
         </div>
 
         <div class="card-body">
-            <form method="POST" action="{{ route('backend.roles.permissions.update', $role->id) }}">
+            <form method="POST" action="{{ route('backend.roles.permissions.update', $role->id) }}" id="crudForm">
                 @csrf
 
                 <div class="row">
@@ -25,7 +25,7 @@
                     @endforeach
                 </div>
 
-                <button class="btn btn-success mt-3">Update Permissions</button>
+                <button type="submit" class="btn btn-success mt-3" id="crudFormSave">Update Permissions</button>
             </form>
         </div>
     </div>

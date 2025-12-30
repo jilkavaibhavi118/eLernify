@@ -51,7 +51,7 @@ class DashboardController extends Controller
         } else {
             // Admin Global Stats
             $totalUsers = User::role('student')->count();
-            $totalInstructors = User::role(['Instructor', 'Instructores'])->count(); // Use correct role name
+            $totalInstructors = User::role(['Instructores', 'Instructores'])->count(); // Use correct role name
             $totalCourses = Course::count();
             $totalLectures = Lecture::count();
             

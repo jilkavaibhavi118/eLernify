@@ -65,6 +65,12 @@ class RoleController extends Controller implements HasMiddleware
         ]);
     }
 
+    public function show(Role $role)
+    {
+        $role->load('permissions');
+        return view('backend.roles.show', compact('role'));
+    }
+
     public function edit(Role $role)
     {
         $permissions = Permission::all();
@@ -116,9 +122,10 @@ class RoleController extends Controller implements HasMiddleware
     {
         $role->syncPermissions($request->permissions ?? []);
 
-        return redirect()
-            ->route('backend.roles.index')
-            ->with('success', 'Permissions updated successfully');
+        return response()->json([
+            'success' => 'Permissions updated successfully',
+            'url' => route('backend.roles.index')
+        ]);
     }
 
 }

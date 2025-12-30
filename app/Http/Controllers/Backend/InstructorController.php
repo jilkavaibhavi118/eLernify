@@ -82,6 +82,12 @@ class InstructorController extends Controller
         ]);
     }
 
+    public function show($id)
+    {
+        $instructor = Instructor::with(['user', 'courses'])->findOrFail($id);
+        return view('backend.instructors.show', compact('instructor'));
+    }
+
     public function edit($id)
     {
         $instructor = Instructor::with('user')->findOrFail($id);

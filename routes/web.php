@@ -24,63 +24,10 @@ use App\Http\Controllers\Frontend\ResourceController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\Frontend\LandingController;
 use App\Http\Controllers\Backend\DashboardController;
-use App\Models\Category;
-use App\Models\Course;
-use App\Models\Lecture;
-use App\Models\Material;
-use App\Models\Quiz;
-use App\Models\Instructor;
 
-
-Route::get('/debug-db', function() {
-    return response()->json([
-        'database' => DB::connection()->getDatabaseName(),
-        'tables' => DB::select('SHOW TABLES'),
-    ]);
-});
-
-Route::get('/', function () {
-    $categories = Category::where('status', 'active')
-        ->withCount(['courses' => function ($query) {
-            $query->where('status', 'active');
-        }])
-        ->having('courses_count', '>', 0)
-        ->take(8)
-        ->get();
-
-    $categoryCourses = Course::where('status', 'active')
-        ->latest()
-        ->take(4)
-        ->get();
-    $totalCourses = Course::where('status', 'active')->count();
-
-    // Get courses for the courses section (grouped by category or just latest)
-    $popularCourses = Course::where('status', 'active')
-        ->with('category')
-        ->latest()
-        ->take(6)
-        ->get();
-
-    // Get Lectures, Materials, Quizzes for landing segments
-    $featuredLectures = Lecture::where('status', 'active')->latest()->take(6)->get();
-    $learningMaterials = Material::latest()->take(6)->get();
-    $practiceQuizzes = Quiz::latest()->take(6)->get();
-
-    // Get Instructors
-    $instructors = Instructor::with('user')->where('status', 'active')->take(4)->get();
-
-    return view('landing', compact(
-        'categories',
-        'categoryCourses',
-        'totalCourses',
-        'popularCourses',
-        'featuredLectures',
-        'learningMaterials',
-        'practiceQuizzes',
-        'instructors'
-    ));
-})->name('landing');
+Route::get('/', [LandingController::class, 'index'])->name('landing');
 
 // ✅ Auth Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -113,6 +60,7 @@ Route::get('/about', function () {
 })->name('about');
 
 Route::get('/courses', [FrontendCourseController::class, 'index'])->name('courses');
+Route::get('/categories', [LandingController::class, 'allCategories'])->name('categories.all');
 Route::get('/courses/search-suggestions', [FrontendCourseController::class, 'searchSuggestions'])->name('courses.search.suggestions');
 
 Route::get('/contact', function () {

@@ -52,6 +52,38 @@
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     @stack('styles')
+    <style>
+        .notification-item-wrapper:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .admin-notification-item:active {
+            color: inherit !important;
+            background-color: rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .admin-notification-badge {
+            border: 2px solid #fff;
+        }
+
+        /* Custom scrollbar for the notification dropdown */
+        .notification-list-admin::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .notification-list-admin::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .notification-list-admin::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
+
+        .notification-list-admin::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+    </style>
 </head>
 
 <body>
@@ -214,25 +246,102 @@
                     </svg>
                 </button>
                 <ul class="header-nav d-none d-lg-flex">
-                    <li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Users</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Settings</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                            href="{{ auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores') ? route('instructor.dashboard') : route('backend.dashboard') }}">
+                            Dashboard
+                        </a>
+                    </li>
+                    @hasrole('Admin')
+                        <li class="nav-item"><a class="nav-link" href="{{ route('backend.users.index') }}">Users</a>
+                        </li>
+                    @endhasrole
+                    <li class="nav-item"><a class="nav-link" href="{{ route('backend.profile.edit') }}">Settings</a>
+                    </li>
                 </ul>
-                <ul class="header-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">
+                <ul class="header-nav ms-auto px-3">
+                    <li class="nav-item dropdown notifications-dropdown">
+                        <a class="nav-link position-relative d-flex align-items-center" href="#"
+                            data-coreui-toggle="dropdown" aria-expanded="false" id="adminNotificationDropdown">
                             <svg class="icon icon-lg">
                                 <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-bell"></use>
-                            </svg></a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">
-                            <svg class="icon icon-lg">
-                                <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-list-rich">
-                                </use>
-                            </svg></a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">
-                            <svg class="icon icon-lg">
-                                <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-envelope-open">
-                                </use>
-                            </svg></a></li>
+                            </svg>
+                            @if (Auth::user()->unreadNotifications->count() > 0)
+                                <span
+                                    class="position-absolute top-1 start-100 translate-middle badge rounded-pill bg-danger admin-notification-badge"
+                                    style="font-size: 0.6rem; padding: 0.25em 0.4em;">
+                                    {{ Auth::user()->unreadNotifications->count() }}
+                                </span>
+                            @endif
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-0"
+                            aria-labelledby="adminNotificationDropdown"
+                            style="width: 320px; max-height: 450px; overflow-y: auto; border-radius: 12px !important;">
+                            <div
+                                class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light rounded-top">
+                                <h6 class="mb-0 fw-bold">Notifications</h6>
+                                @if (Auth::user()->unreadNotifications->count() > 0)
+                                    <a href="javascript:void(0)" id="markAllReadAdmin"
+                                        class="small text-primary text-decoration-none fw-semibold">Mark all as
+                                        read</a>
+                                @endif
+                            </div>
+                            <div class="notification-list-admin">
+                                @forelse(Auth::user()->notifications->take(10) as $notification)
+                                    <div
+                                        class="notification-item-wrapper border-bottom {{ $notification->read_at ? '' : 'bg-light' }}">
+                                        <a class="dropdown-item p-3 d-flex align-items-start gap-3 admin-notification-item"
+                                            href="{{ $notification->data['link'] ?? '#' }}"
+                                            data-id="{{ $notification->id }}"
+                                            style="white-space: normal; transition: background 0.2s;">
+                                            <div class="bg-primary rounded-circle p-2 d-flex align-items-center justify-content-center text-white"
+                                                style="width: 40px; height: 40px; min-width: 40px;">
+                                                <svg class="icon" style="width: 20px; height: 20px;">
+                                                    <use
+                                                        xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-cart">
+                                                    </use>
+                                                </svg>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                    <span
+                                                        class="small fw-bold text-dark">{{ $notification->data['title'] }}</span>
+                                                    @if (!$notification->read_at)
+                                                        <span class="badge rounded-circle bg-primary p-1"
+                                                            style="width: 8px; height: 8px;"></span>
+                                                    @endif
+                                                </div>
+                                                <p class="mb-1 small text-muted lh-sm">
+                                                    {{ $notification->data['message'] }}
+                                                </p>
+                                                <small class="text-muted" style="font-size: 0.65rem;">
+                                                    <svg class="icon icon-sm me-1">
+                                                        <use
+                                                            xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-clock">
+                                                        </use>
+                                                    </svg>
+                                                    {{ $notification->created_at->diffForHumans() }}
+                                                </small>
+                                            </div>
+                                        </a>
+                                    </div>
+                                @empty
+                                    <div class="p-4 text-center">
+                                        <svg class="icon icon-3xl text-muted opacity-50 mb-3 d-block mx-auto">
+                                            <use
+                                                xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-bell-excl">
+                                            </use>
+                                        </svg>
+                                        <span class="text-muted small">No notifications yet</span>
+                                    </div>
+                                @endforelse
+                            </div>
+                            <div class="text-center p-2 border-top bg-light rounded-bottom">
+                                <a href="#" class="small text-muted text-decoration-none fw-semibold">View all
+                                    notifications</a>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
                 <ul class="header-nav">
                     <li class="nav-item py-1">
@@ -280,8 +389,10 @@
                     <li class="nav-item py-1">
                         <div class="vr h-100 mx-2 text-body text-opacity-75"></div>
                     </li>
-                    <li class="nav-item dropdown"><a class="nav-link py-0 pe-0" data-coreui-toggle="dropdown"
-                            href="#" role="button" aria-haspopup="true" aria-expanded="false">
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link py-0 pe-0" data-coreui-toggle="dropdown" href="#" role="button"
+                            aria-haspopup="true" aria-expanded="false">
                             <div class="avatar avatar-md"><img class="avatar-img"
                                     src="{{ auth()->user()->profile_photo ? asset('storage/' . auth()->user()->profile_photo) : asset('assets/img/avatars/8.jpg') }}"
                                     alt="{{ auth()->user()->name }}"></div>
@@ -289,61 +400,29 @@
                         <div class="dropdown-menu dropdown-menu-end pt-0">
                             <div
                                 class="dropdown-header bg-body-tertiary text-body-secondary fw-semibold rounded-top mb-2">
-                                Account</div><a class="dropdown-item" href="#">
-                                <svg class="icon me-2">
-                                    <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-bell">
-                                    </use>
-                                </svg> Updates<span class="badge badge-sm bg-info ms-2">42</span></a><a
-                                class="dropdown-item" href="#">
-                                <svg class="icon me-2">
-                                    <use
-                                        xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-envelope-open">
-                                    </use>
-                                </svg> Messages<span class="badge badge-sm bg-success ms-2">42</span></a><a
-                                class="dropdown-item" href="#">
-                                <svg class="icon me-2">
-                                    <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-task">
-                                    </use>
-                                </svg> Tasks<span class="badge badge-sm bg-danger ms-2">42</span></a><a
-                                class="dropdown-item" href="#">
-                                <svg class="icon me-2">
-                                    <use
-                                        xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-comment-square">
-                                    </use>
-                                </svg> Comments<span class="badge badge-sm bg-warning ms-2">42</span></a>
-                            <div class="dropdown-header bg-body-tertiary text-body-secondary fw-semibold my-2">
-                                <div class="fw-semibold">Settings</div>
+                                Account ({{ auth()->user()->name }})
                             </div>
                             <a class="dropdown-item" href="{{ route('backend.profile.edit') }}">
                                 <svg class="icon me-2">
                                     <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-user">
                                     </use>
-                                </svg> Profile</a><a class="dropdown-item" href="#">
+                                </svg> Profile</a>
+                            <a class="dropdown-item" href="{{ route('backend.profile.edit') }}">
                                 <svg class="icon me-2">
                                     <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-settings">
                                     </use>
-                                </svg> Settings</a><a class="dropdown-item" href="#">
-                                <svg class="icon me-2">
-                                    <use
-                                        xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-credit-card">
-                                    </use>
-                                </svg> Payments<span class="badge badge-sm bg-secondary ms-2">42</span></a><a
-                                class="dropdown-item" href="#">
-                                <svg class="icon me-2">
-                                    <use xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-file">
-                                    </use>
-                                </svg> Projects<span class="badge badge-sm bg-primary ms-2">42</span></a>
-                            <div class="dropdown-divider"></div><a class="dropdown-item" href="#">
-                                <svg class="icon me-2">
-                                    <use
-                                        xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-lock-locked">
-                                    </use>
-                                </svg> Lock Account</a><a class="dropdown-item" href="#">
+                                </svg> Settings</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <svg class="icon me-2">
                                     <use
                                         xlink:href="{{ asset('vendors/@coreui/icons/svg/free.svg') }}#cil-account-logout">
                                     </use>
                                 </svg> Logout</a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
                         </div>
                     </li>
                 </ul>
@@ -351,7 +430,7 @@
             <div class="container-fluid px-4">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb my-0">
-                        <li class="breadcrumb-item"><a href="#">Home</a>
+                        <li class="breadcrumb-item"><a href="{{ route('landing') }}">Home</a>
                         </li>
                         <li class="breadcrumb-item active"><span>Dashboard</span>
                         </li>
@@ -365,11 +444,8 @@
             </div>
         </div>
         <footer class="footer px-4">
-            <div><a href="https://coreui.io">CoreUI </a><a
-                    href="https://coreui.io/product/free-bootstrap-admin-template/">Bootstrap Admin Template</a> ©
-                2025 creativeLabs.</div>
-            <div class="ms-auto">Powered by&nbsp;<a href="https://coreui.io/bootstrap/docs/">CoreUI UI
-                    Components</a></div>
+            <div><a href="{{ route('landing') }}">eLearnify </a> © {{ date('Y') }} Learning Platform.</div>
+            <div class="ms-auto">Powered by&nbsp;<a href="#">eLearnify Team</a></div>
         </footer>
     </div>
     <!-- CoreUI and necessary plugins-->
@@ -395,6 +471,35 @@
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Mark single admin notification as read
+            $(document).on('click', '.admin-notification-item', function(e) {
+                const id = $(this).data('id');
+                const url = `{{ url('my/notifications') }}/${id}/mark-as-read`;
+                $.get(url); // Background request
+            });
+
+            // Mark all admin notifications as read
+            $('#markAllReadAdmin').on('click', function(e) {
+                e.preventDefault();
+                const $this = $(this);
+                const url = "{{ route('user.notifications.markAllRead') }}";
+
+                $.get(url, function(response) {
+                    if (response.success) {
+                        $('.admin-notification-item').closest('.notification-item-wrapper')
+                            .removeClass('bg-light');
+                        $('.admin-notification-item').find('.badge.rounded-circle.bg-primary')
+                            .fadeOut();
+                        $('.admin-notification-badge').fadeOut();
+                        $this.fadeOut();
+                    }
+                });
+            });
+        });
+    </script>
 
     @include('layouts.crud_ajax')
     @stack('scripts')

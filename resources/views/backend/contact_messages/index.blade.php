@@ -11,11 +11,6 @@
                 </div>
                 <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-4">
-                        @if (session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
-                        @endif
                         <table class="table align-items-center mb-0" id="contact-table">
                             <thead>
                                 <tr>

@@ -137,6 +137,12 @@ class QuizController extends Controller
         }
     }
 
+    public function show($id)
+    {
+        $quiz = Quiz::with(['lecture.course', 'questions.options'])->findOrFail($id);
+        return view('backend.quizzes.show', compact('quiz'));
+    }
+
     public function edit($id)
     {
         $quiz = Quiz::with(['lecture.course', 'questions.options'])->findOrFail($id);

@@ -134,6 +134,12 @@ class MaterialController extends Controller
         ]);
     }
 
+    public function show($id)
+    {
+        $material = Material::with('lecture.course')->findOrFail($id);
+        return view('backend.materials.show', compact('material'));
+    }
+
     public function edit($id)
     {
         $material = Material::with('lecture.course')->findOrFail($id);

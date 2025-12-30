@@ -112,6 +112,12 @@ class LectureController extends Controller
         ]);
     }
 
+    public function show($id)
+    {
+        $lecture = Lecture::with(['course', 'materials', 'quizzes'])->findOrFail($id);
+        return view('backend.lectures.show', compact('lecture'));
+    }
+
     public function edit($id)
     {
         $lecture = Lecture::findOrFail($id);

@@ -7,11 +7,11 @@
 @endpush
 
 @section('content')
-    <div class="container-xxl py-5">
+    <div class="container-xxl py-5 page-margin-top">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-6">
-                    <div class="bg-light rounded p-5 shadow-sm border">
+                <div class="col-lg-5 col-md-8">
+                    <div class="bg-white p-4 p-md-5 premium-card border-0 mx-2">
                         <h3 class="text-primary mb-4 text-center">Complete Your Payment</h3>
 
                         <div class="item-info mb-4 border-bottom pb-3">
@@ -35,19 +35,6 @@
                             <i class="fa fa-lock me-2"></i>Secure Payment: Pay
                             ₹{{ number_format($price ?? $item->price, 2) }}
                         </button>
-
-                        <div class="mt-3">
-                            <form action="{{ route('purchase.verify') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="simulate" value="1">
-                                <input type="hidden" name="razorpay_order_id" value="{{ $razorpayOrder['id'] }}">
-                                <input type="hidden" name="razorpay_payment_id" value="sim_{{ time() }}">
-                                <input type="hidden" name="razorpay_signature" value="simulated">
-                                <button type="submit" class="btn btn-outline-success w-100 btn-sm rounded-pill">
-                                    <i class="fa fa-bug me-2"></i>Test Mode: Simulate Success (Bypass Razorpay)
-                                </button>
-                            </form>
-                        </div>
 
                         <div class="text-center mt-4">
                             <img src="https://razorpay.com/assets/razorpay-glyph.svg" width="20" class="me-2"
@@ -119,11 +106,6 @@
         };
 
         var rzp = new Razorpay(options);
-
-        // Auto-open on load
-        window.onload = function() {
-            rzp.open();
-        };
 
         document.getElementById('rzp-button').onclick = function(e) {
             rzp.open();

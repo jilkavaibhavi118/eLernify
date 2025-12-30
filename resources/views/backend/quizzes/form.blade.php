@@ -100,7 +100,8 @@
 </div>
 
 <div class="mt-4">
-    <button type="submit" class="btn btn-primary">{{ $quiz ? 'Update Quiz' : 'Create Quiz' }}</button>
+    <button type="submit" class="btn btn-primary"
+        id="crudFormSave">{{ $quiz ? 'Update Quiz' : 'Create Quiz' }}</button>
     <a href="{{ route('backend.quizzes.index') }}" class="btn btn-secondary">Back</a>
 </div>
 
@@ -196,34 +197,15 @@
                 });
             }
 
-            // Form submission
-            $('#quizForm').submit(function(e) {
-                e.preventDefault();
-
+            // Question validation before submission
+            $('#crudFormSave').on('click', function(e) {
                 if ($('.question-block').length === 0) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
                     Swal.fire('Error', 'Please add at least one question', 'error');
-                    return;
+                    $(this).prop('disabled', false);
+                    return false;
                 }
-
-                let formData = new FormData(this);
-
-                $.ajax({
-                    url: $(this).attr('action'),
-                    method: $(this).attr('method') || 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        Swal.fire('Success', response.success, 'success').then(() => {
-                            window.location.href = response.url;
-                        });
-                    },
-                    error: function(xhr) {
-                        let errors = xhr.responseJSON?.errors || {};
-                        let errorMsg = Object.values(errors).flat().join('<br>');
-                        Swal.fire('Error', errorMsg || 'Something went wrong', 'error');
-                    }
-                });
             });
         });
     </script>

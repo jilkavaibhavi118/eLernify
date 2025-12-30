@@ -18,7 +18,17 @@ class ContactController extends Controller
             'message' => 'required|string',
         ]);
 
-        ContactMessage::create($request->all());
+        $message = ContactMessage::create($request->all());
+
+        // Notify Admins
+        try {
+            $admins = \App\Models\User::role('Admin')->get();
+            foreach ($admins as $admin) {
+                $admin->notify(new \App\Notifications\NewContactMessageNotification($message));
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Admin Contact Notification Error: ' . $e->getMessage());
+        }
 
         return redirect()->back()->with('success', 'Your message has been sent successfully!');
     }

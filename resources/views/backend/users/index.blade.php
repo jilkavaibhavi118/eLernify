@@ -44,8 +44,7 @@
                     processing: true,
                     serverSide: true,
                     ajax: "{{ route('backend.users.index') }}",
-                    columns: [
-                        {
+                    columns: [{
                             data: 'DT_RowIndex',
                             name: 'DT_RowIndex',
                             orderable: false,
@@ -81,20 +80,31 @@
             $(document).on('click', '.toggle-status', function() {
                 let userId = $(this).data('id');
 
-                if (!confirm('Are you sure you want to change this user\'s status?')) return;
-
-                $.ajax({
-                    url: "{{ url('admin/users') }}/" + userId + "/toggle-status",
-                    type: 'POST',
-                    data: {
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function() {
-                        $('#table').DataTable().ajax.reload(null, false); // reload without resetting page
-                    },
-                    error: function(xhr) {
-                        alert('Something went wrong while updating status.');
-                        console.error(xhr.responseText);
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to change this user's status?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#aaa',
+                    confirmButtonText: 'Yes, change it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ url('admin/users') }}/" + userId + "/toggle-status",
+                            type: 'POST',
+                            data: {
+                                _token: "{{ csrf_token() }}"
+                            },
+                            success: function(response) {
+                                showSuccessToast('Status updated successfully');
+                                $('#table').DataTable().ajax.reload(null, false);
+                            },
+                            error: function(xhr) {
+                                showErrorToast('Something went wrong while updating status.');
+                                console.error(xhr.responseText);
+                            }
+                        });
                     }
                 });
             });

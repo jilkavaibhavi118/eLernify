@@ -10,6 +10,8 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 
+use App\Mail\ContactReplyMail;
+
 class ContactMessageController extends Controller
 {
     /**
@@ -70,10 +72,13 @@ class ContactMessageController extends Controller
             'status' => 'replied',
         ]);
 
-        // In a real app, you'd send an email here
-        // Mail::to($message->email)->send(new ContactReplyMail($message));
+        try {
+            Mail::to($message->email)->send(new ContactReplyMail($message));
+        } catch (\Exception $e) {
+            Log::error('Failed to send contact reply email: ' . $e->getMessage());
+        }
 
-        return redirect()->route('backend.contact_messages.index')->with('success', 'Reply saved successfully and marked as replied.');
+        return redirect()->route('backend.contact_messages.index')->with('success', 'Reply saved and sent to user email successfully.');
     }
 
     /**

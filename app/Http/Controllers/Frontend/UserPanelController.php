@@ -10,6 +10,8 @@ use App\Models\QuizAttempt;
 use App\Models\QuizAttemptAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class UserPanelController extends Controller
 {
@@ -148,6 +150,20 @@ class UserPanelController extends Controller
             $activeMaterial = $lecture->materials->filter(fn($m) => !empty($m->video_path) || !empty($m->content_url))->first();
         }
 
+        // Mark as completed if enrollment exists
+        if ($enrollment && $activeMaterial) {
+            \App\Models\UserCompletion::updateOrCreate(
+                [
+                    'user_id' => Auth::id(),
+                    'course_id' => $enrollment->course_id,
+                    'material_id' => $activeMaterial->id,
+                ],
+                [
+                    'completed_at' => now(),
+                ]
+            );
+        }
+
         // Navigation Logic (Next/Previous)
         $next_url = null;
         $prev_url = null;
@@ -212,7 +228,24 @@ class UserPanelController extends Controller
             }
         }
 
-        return view('frontend.user-panel.lecture-view', compact('lecture', 'activeMaterial', 'enrollment', 'next_url', 'prev_url', 'next_title', 'prev_title'));
+        // Fetch completed items for UI
+        $completedMaterialIds = \App\Models\UserCompletion::where('user_id', Auth::id())
+            ->where('course_id', $lecture->course_id)
+            ->whereNotNull('material_id')
+            ->pluck('material_id')
+            ->toArray();
+            
+        $completedQuizIds = \App\Models\UserCompletion::where('user_id', Auth::id())
+            ->where('course_id', $lecture->course_id)
+            ->whereNotNull('quiz_id')
+            ->pluck('quiz_id')
+            ->toArray();
+
+        return view('frontend.user-panel.lecture-view', compact(
+            'lecture', 'activeMaterial', 'enrollment', 'course', 
+            'next_url', 'prev_url', 'next_title', 'prev_title',
+            'completedMaterialIds', 'completedQuizIds'
+        ));
     }
 
     public function quizView($quizId)
@@ -297,7 +330,23 @@ class UserPanelController extends Controller
         $prev_title = $prev_title ?? null;
         $next_title = $next_title ?? null;
 
-        return view('frontend.user-panel.quiz-view', compact('quiz', 'enrollment', 'next_url', 'prev_url', 'next_title', 'prev_title'));
+        // Fetch completed items for UI
+        $completedMaterialIds = \App\Models\UserCompletion::where('user_id', Auth::id())
+            ->where('course_id', $courseId)
+            ->whereNotNull('material_id')
+            ->pluck('material_id')
+            ->toArray();
+            
+        $completedQuizIds = \App\Models\UserCompletion::where('user_id', Auth::id())
+            ->where('course_id', $courseId)
+            ->whereNotNull('quiz_id')
+            ->pluck('quiz_id')
+            ->toArray();
+
+        return view('frontend.user-panel.quiz-view', compact(
+            'quiz', 'enrollment', 'next_url', 'prev_url', 'next_title', 'prev_title',
+            'completedMaterialIds', 'completedQuizIds'
+        ));
     }
 
     public function quizSubmit(Request $request, $quizId)
@@ -308,7 +357,7 @@ class UserPanelController extends Controller
         $courseId = $quiz->course_id ?? ($quiz->lecture ? $quiz->lecture->course_id : null);
 
         // Verify access (either free, enrolled, or purchased)
-        $hasAccess = $quiz->is_free || auth()->user()->hasPurchased('quiz', $quizId);
+        $hasAccess = $quiz->is_free || Auth::user()->hasPurchased('quiz', $quizId);
         
         if (!$hasAccess && $courseId) {
              $hasAccess = Enrollment::where('user_id', Auth::id())
@@ -365,6 +414,18 @@ class UserPanelController extends Controller
         $percentage = $totalQuestions > 0 ? ($score / $totalQuestions) * 100 : 0;
         
         // Update Enrollment Progress if needed (optional logic could go here)
+        if ($enrollment) {
+            \App\Models\UserCompletion::updateOrCreate(
+                [
+                    'user_id' => Auth::id(),
+                    'course_id' => $enrollment->course_id,
+                    'quiz_id' => $quiz->id,
+                ],
+                [
+                    'completed_at' => now(),
+                ]
+            );
+        }
 
         return redirect()->route('user.quiz.result', $attempt->id);
     }
@@ -380,7 +441,7 @@ class UserPanelController extends Controller
         $courseId = $quiz->course_id ?? ($quiz->lecture ? $quiz->lecture->course_id : null);
         
         // Verify access (either free, enrolled, or purchased)
-        $hasAccess = $quiz->is_free || auth()->user()->hasPurchased('quiz', $quiz->id);
+        $hasAccess = $quiz->is_free || Auth::user()->hasPurchased('quiz', $quiz->id);
         
         if (!$hasAccess && $courseId) {
              $hasAccess = Enrollment::where('user_id', Auth::id())
@@ -399,7 +460,20 @@ class UserPanelController extends Controller
                 ->first();
         }
 
-        return view('frontend.user-panel.quiz-result', compact('attempt', 'quiz', 'enrollment'));
+        // Fetch completed items for UI
+        $completedMaterialIds = \App\Models\UserCompletion::where('user_id', Auth::id())
+            ->where('course_id', $courseId)
+            ->whereNotNull('material_id')
+            ->pluck('material_id')
+            ->toArray();
+            
+        $completedQuizIds = \App\Models\UserCompletion::where('user_id', Auth::id())
+            ->where('course_id', $courseId)
+            ->whereNotNull('quiz_id')
+            ->pluck('quiz_id')
+            ->toArray();
+
+        return view('frontend.user-panel.quiz-result', compact('attempt', 'quiz', 'enrollment', 'completedMaterialIds', 'completedQuizIds'));
     }
 
     public function profile()
@@ -426,8 +500,8 @@ class UserPanelController extends Controller
 
         if ($request->hasFile('profile_photo')) {
             // Delete old photo if exists
-            if ($user->profile_photo && \Storage::disk('public')->exists($user->profile_photo)) {
-                \Storage::disk('public')->delete($user->profile_photo);
+            if ($user->profile_photo && Storage::disk('public')->exists($user->profile_photo)) {
+                Storage::disk('public')->delete($user->profile_photo);
             }
             $path = $request->file('profile_photo')->store('profile_photos', 'public');
             $data['profile_photo'] = $path;
@@ -500,7 +574,7 @@ class UserPanelController extends Controller
             ->firstOrFail();
 
         // Generate PDF certificate
-        $pdf = \PDF::loadView('frontend.certificates.template', compact('enrollment'))
+        $pdf = Pdf::loadView('frontend.certificates.template', compact('enrollment'))
             ->setPaper('a4', 'landscape'); // Landscape/Rectangle format
 
         return $pdf->download('certificate-' . str_replace(' ', '-', $enrollment->course->title) . '.pdf');

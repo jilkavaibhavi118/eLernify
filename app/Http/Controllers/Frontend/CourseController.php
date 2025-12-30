@@ -149,49 +149,6 @@ class CourseController extends Controller
 
     public function verifyPayment(Request $request)
     {
-        // ✅ BYPASS FOR TESTING: Specify 'simulate' parameter to force success
-        if ($request->has('simulate')) {
-            $courseId = $request->input('course_id');
-            // Create payment record for simulation
-            $payment = Payment::create([
-                'user_id' => Auth::id(),
-                'course_id' => $courseId,
-                'razorpay_order_id' => 'sim_' . time(),
-                'razorpay_payment_id' => 'sim_' . time(),
-                'amount' => 0, // Mock amount
-                'currency' => 'INR',
-                'status' => 'completed',
-                'payment_method' => 'simulated',
-                'paid_at' => now()
-            ]);
-
-            // Create enrollment
-            Enrollment::create([
-                'user_id' => Auth::id(),
-                'course_id' => $courseId,
-                'status' => 'active',
-                'progress' => 0,
-                'enrolled_at' => now()
-            ]);
-
-            // Create Order for Simulation
-            $course = Course::findOrFail($courseId);
-            $order = \App\Models\Order::create([
-                'user_id' => Auth::id(),
-                'total_amount' => $course->price,
-                'status' => 'completed'
-            ]);
-
-            \App\Models\OrderItem::create([
-                'order_id' => $order->id,
-                'course_id' => $course->id,
-                'price' => $course->price
-            ]);
-
-            return redirect()->route('user.dashboard')
-                ->with('success', 'Payment successful (Simulated)! You are now enrolled.');
-        }
-
         $request->validate([
             'razorpay_order_id' => 'required',
             'razorpay_payment_id' => 'required',
@@ -242,6 +199,19 @@ class CourseController extends Controller
                 'course_id' => $payment->course_id,
                 'price' => $payment->amount
             ]);
+
+            // Notify Admin
+            try {
+                $admins = \App\Models\User::role('Admin')->get();
+                $course = Course::find($payment->course_id);
+                $user = \App\Models\User::find($payment->user_id);
+                
+                foreach ($admins as $admin) {
+                    $admin->notify(new \App\Notifications\NewSaleNotification($order, $course, $user, 'course'));
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Admin Notification Error (CourseController): ' . $e->getMessage());
+            }
 
             return redirect()->route('user.dashboard')
                 ->with('success', 'Payment successful! You are now enrolled in the course.');

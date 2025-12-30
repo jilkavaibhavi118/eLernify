@@ -152,7 +152,7 @@
                 </div>
 
                 <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                    <a href="{{ route('courses') }}" class="btn btn-primary px-4 py-2 rounded-2 fw-medium">
+                    <a href="{{ route('categories.all') }}" class="btn btn-primary px-4 py-2 rounded-2 fw-medium">
                         ALL CATEGORY
                         <i class="fas fa-arrow-right ms-2"></i>
                     </a>
@@ -262,8 +262,16 @@
                         <p>No courses available yet.</p>
                     </div>
                 @endforelse
-
             </div>
+
+            <div class="text-center mt-5" data-aos="fade-up" data-aos-duration="1000">
+                <a href="{{ route('courses') }}"
+                    class="btn btn-primary px-5 py-3 rounded-pill fw-bold shadow-sm hover-lift">
+                    EXPLORE ALL COURSES
+                    <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+
         </div>
     </section>
 

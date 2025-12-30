@@ -2,227 +2,6 @@
 
 @section('title', 'My Profile | eLEARNIFY')
 
-@push('styles')
-    <style>
-        .dashboard-container {
-            background-color: #f5f7f9;
-            min-height: 100vh;
-            padding-top: 140px;
-            padding-bottom: 50px;
-        }
-
-        /* Sidebar Styling (Consistent with Dashboard) */
-        .dashboard-sidebar {
-            background: #fff;
-            border-radius: 10px;
-            padding: 20px 0;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        }
-
-        .dashboard-menu .nav-link {
-            padding: 12px 20px;
-            color: #555;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            transition: all 0.3s;
-            border-left: 4px solid transparent;
-        }
-
-        .dashboard-menu .nav-link:hover,
-        .dashboard-menu .nav-link.active {
-            color: var(--primary);
-            background-color: #f8f9fa;
-            border-left-color: var(--primary);
-        }
-
-        .dashboard-menu .nav-link i {
-            width: 24px;
-            margin-right: 10px;
-            text-align: center;
-        }
-
-        .app-download-card {
-            background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px;
-            text-align: center;
-        }
-
-        /* Profile Main Content */
-        .profile-card {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            padding: 30px;
-            position: relative;
-        }
-
-        .profile-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .profile-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #333;
-            display: flex;
-            align-items: center;
-        }
-
-        .profile-title i {
-            margin-right: 10px;
-        }
-
-        /* Profile Image Section */
-        .profile-image-container {
-            text-align: center;
-            width: 200px;
-            margin-bottom: 30px;
-        }
-
-        .profile-avatar-xl {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid #fff;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-            background-color: #00235B;
-            /* Dark Blue from screenshot */
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 64px;
-            font-weight: bold;
-            position: relative;
-        }
-
-        .profile-image-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-
-        .camera-icon-btn {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: #fff;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-            color: #333;
-            border: 1px solid #ddd;
-        }
-
-        /* Form Styling */
-        .section-label {
-            color: #004aad;
-            /* Blue heading from screenshot */
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            margin-top: 10px;
-        }
-
-        .form-label {
-            font-weight: 500;
-            color: #555;
-            margin-bottom: 8px;
-        }
-
-        .form-control,
-        .form-select {
-            padding: 10px 15px;
-            border-radius: 5px;
-            border: 1px solid #dee2e6;
-            background-color: #fff;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-            /* Fallback blue/primary shadow */
-            /* If --primary is defined as a hex, we might need a specific rgba here,
-                           but usually standard bootstrap uses a specific variable.
-                           Let's try to match the "website related color" which likely links to --primary. */
-            outline: none;
-        }
-
-        .form-control:disabled,
-        .form-control[readonly] {
-            background-color: #e9ecef;
-            opacity: 1;
-        }
-
-        .input-group-text {
-            background: transparent;
-            border-left: none;
-        }
-
-        /* Lock icon inside input */
-        .input-icon-wrapper {
-            position: relative;
-        }
-
-        .input-icon {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
-            pointer-events: none;
-        }
-
-        /* Aggressive Branding Overrides */
-        .btn-primary,
-        .btn-primary:active,
-        .btn-primary:focus {
-            background-color: #0a2283 !important;
-            border-color: #0a2283 !important;
-            color: #fff !important;
-        }
-
-        .btn-primary:hover {
-            background-color: #081b6a !important;
-            border-color: #081b6a !important;
-            color: #fff !important;
-        }
-
-        .text-primary,
-        .section-label {
-            color: #0a2283 !important;
-        }
-
-        .bg-primary {
-            background-color: #0a2283 !important;
-        }
-
-        .progress-bar {
-            background-color: #0a2283 !important;
-        }
-
-        .dashboard-menu .nav-link:hover,
-        .dashboard-menu .nav-link.active {
-            color: #0a2283 !important;
-            border-left-color: #0a2283 !important;
-        }
-    </style>
-@endpush
-
 @section('content')
     <div class="dashboard-container">
         <div class="container">
@@ -250,7 +29,6 @@
                                 <div class="profile-title">
                                     <i class="bi bi-person"></i> Profile
                                 </div>
-                                <button type="submit" class="btn btn-light border text-muted px-4">Save Changes</button>
                             </div>
 
                             <div class="row">
@@ -399,6 +177,15 @@
                                         </div>
                                     </div>
 
+                                </div>
+                            </div>
+
+                            <!-- Form Footer: Centered Save Button -->
+                            <div class="row mt-5">
+                                <div class="col-12 text-center">
+                                    <button type="submit" class="btn btn-primary px-5 py-2 fw-bold shadow-sm">
+                                        Save Changes
+                                    </button>
                                 </div>
                             </div>
                         </div>

@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="{{ asset('frontend/css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="bg-light">
@@ -43,25 +45,20 @@
         <div class="container pb-5">
             <div class="row g-5">
                 <!-- Contact Form -->
-                <div class="col-lg-8 mx-auto" data-aos="fade-up" data-aos-delay="0">
-                    <div class="bg-white p-4 p-md-5 rounded-3 shadow-sm border h-100">
+                <div class="col-lg-6 mx-auto" data-aos="fade-up" data-aos-delay="0">
+                    <div class="bg-white p-4 p-md-5 premium-card h-100">
                         <h3 class="fw-bold mb-2">Get in Touch</h3>
                         <p class="text-muted mb-4">Have questions or feedback? We'd love to hear from you.</p>
-
-                        @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                {{ session('success') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        @endif
 
                         <form action="{{ route('contact.store') }}" method="POST">
                             @csrf
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label for="name" class="form-label fw-medium text-dark small">Your Name</label>
-                                    <input type="text" class="form-control bg-light border-0 py-3 px-3 @error('name') is-invalid @enderror"
-                                        id="name" name="name" placeholder="John Doe" value="{{ old('name') }}" required>
+                                    <input type="text"
+                                        class="form-control bg-light border-0 py-3 px-3 @error('name') is-invalid @enderror"
+                                        id="name" name="name" placeholder="John Doe"
+                                        value="{{ old('name') }}">
                                     @error('name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -69,25 +66,28 @@
                                 <div class="col-md-6">
                                     <label for="email" class="form-label fw-medium text-dark small">Email
                                         Address</label>
-                                    <input type="email" class="form-control bg-light border-0 py-3 px-3 @error('email') is-invalid @enderror"
-                                        id="email" name="email" placeholder="name@example.com" value="{{ old('email') }}" required>
+                                    <input type="email"
+                                        class="form-control bg-light border-0 py-3 px-3 @error('email') is-invalid @enderror"
+                                        id="email" name="email" placeholder="name@example.com"
+                                        value="{{ old('email') }}">
                                     @error('email')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="col-12">
                                     <label for="subject" class="form-label fw-medium text-dark small">Subject</label>
-                                    <input type="text" class="form-control bg-light border-0 py-3 px-3 @error('subject') is-invalid @enderror"
-                                        id="subject" name="subject" placeholder="How can we help?" value="{{ old('subject') }}" required>
+                                    <input type="text"
+                                        class="form-control bg-light border-0 py-3 px-3 @error('subject') is-invalid @enderror"
+                                        id="subject" name="subject" placeholder="How can we help?"
+                                        value="{{ old('subject') }}">
                                     @error('subject')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div class="col-12">
                                     <label for="message" class="form-label fw-medium text-dark small">Message</label>
-                                    <textarea class="form-control bg-light border-0 py-3 px-3 @error('message') is-invalid @enderror" 
-                                        id="message" name="message" rows="5"
-                                        placeholder="Write your message here..." required>{{ old('message') }}</textarea>
+                                    <textarea class="form-control bg-light border-0 py-3 px-3 @error('message') is-invalid @enderror" id="message"
+                                        name="message" rows="5" placeholder="Write your message here...">{{ old('message') }}</textarea>
                                     @error('message')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -113,6 +113,20 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="{{ asset('frontend/js/main.js') }}"></script>
     <script src="{{ asset('frontend/js/components.js') }}"></script>
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                title: 'Success!',
+                text: "{{ session('success') }}",
+                icon: 'success',
+                confirmButtonText: 'Great',
+                confirmButtonColor: '#1266c2',
+                timer: 3000,
+                timerProgressBar: true
+            });
+        </script>
+    @endif
 </body>
 
 </html>

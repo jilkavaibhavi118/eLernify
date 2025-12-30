@@ -31,6 +31,7 @@
 
     <!-- Template Stylesheet -->
     <link href="{{ asset('frontend/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('frontend/css/user-panel.css') }}" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>

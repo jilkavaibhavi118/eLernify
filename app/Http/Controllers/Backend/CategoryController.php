@@ -68,6 +68,12 @@ class CategoryController extends Controller
         ]);
     }
 
+    public function show($id)
+    {
+        $category = Category::withCount('courses')->findOrFail($id);
+        return view('backend.categories.show', compact('category'));
+    }
+
     public function edit($id)
     {
         if (!auth()->user()->hasAnyRole(['Admin', 'Instructor'])) {

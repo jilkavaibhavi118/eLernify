@@ -215,6 +215,36 @@
         .progress-bar {
             background-color: #1266c2 !important;
         }
+
+        /* WhatsApp-style Double Checkmarks */
+        .completion-check {
+            font-size: 0.75rem;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .check-icon {
+            position: relative;
+            display: inline-block;
+            width: 14px;
+            height: 10px;
+            color: #bdc3c7;
+            /* Muted gray (default) */
+        }
+
+        .check-icon.completed {
+            color: #34b7f1;
+            /* WhatsApp blue */
+        }
+
+        .check-icon i {
+            position: absolute;
+        }
+
+        .check-icon i:last-child {
+            left: 4px;
+        }
     </style>
 @endpush
 
@@ -368,6 +398,13 @@
                                             <div class="material-title">
                                                 {{ sprintf('%02d', $materialCounter++) }} - {{ $m->title }}
                                             </div>
+                                            <div class="completion-check">
+                                                <span
+                                                    class="check-icon {{ in_array($m->id, $completedMaterialIds ?? []) ? 'completed' : '' }}">
+                                                    <i class="fas fa-check"></i>
+                                                    <i class="fas fa-check"></i>
+                                                </span>
+                                            </div>
                                         </a>
                                     @endif
                                 @endforeach
@@ -380,6 +417,13 @@
                                         </div>
                                         <div class="material-title">
                                             Quiz: {{ $q->title }}
+                                        </div>
+                                        <div class="completion-check">
+                                            <span
+                                                class="check-icon {{ in_array($q->id, $completedQuizIds ?? []) ? 'completed' : '' }}">
+                                                <i class="fas fa-check"></i>
+                                                <i class="fas fa-check"></i>
+                                            </span>
                                         </div>
                                     </a>
                                 @endforeach

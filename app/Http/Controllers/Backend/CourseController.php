@@ -80,6 +80,18 @@ class CourseController extends Controller
         ]);
     }
 
+    public function show($id)
+    {
+        $course = Course::with(['category', 'instructor.user'])->findOrFail($id);
+
+        // Security check for instructors
+        if ((auth()->user()->hasRole('Instructor') || auth()->user()->hasRole('Instructores')) && $course->instructor_id != auth()->user()->instructor->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return view('backend.courses.show', compact('course'));
+    }
+
     public function edit($id)
     {
         $course = Course::with('category')->findOrFail($id);

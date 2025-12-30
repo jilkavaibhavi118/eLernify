@@ -337,6 +337,36 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* WhatsApp-style Double Checkmarks */
+        .completion-check {
+            font-size: 0.75rem;
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .check-icon {
+            position: relative;
+            display: inline-block;
+            width: 14px;
+            height: 10px;
+            color: #bdc3c7;
+            /* Muted gray (default) */
+        }
+
+        .check-icon.completed {
+            color: #34b7f1;
+            /* WhatsApp blue */
+        }
+
+        .check-icon i {
+            position: absolute;
+        }
+
+        .check-icon i:last-child {
+            left: 4px;
+        }
     </style>
 @endpush
 
@@ -344,36 +374,45 @@
     <header class="player-header">
         <div class="d-flex justify-content-between align-items-center">
             <div class="player-title-section">
-                <a href="{{ route('user.course.view', $enrollment->id) }}" class="back-link">
-                    <i class="fas fa-arrow-left"></i> Back to Course
-                </a>
+                @if ($enrollment)
+                    <a href="{{ route('user.course.view', $enrollment->id) }}" class="back-link">
+                        <i class="fas fa-arrow-left"></i> Back to Course
+                    </a>
+                @else
+                    <a href="{{ route('course.detail', $course->id) }}" class="back-link">
+                        <i class="fas fa-arrow-left"></i> Back to Course Page
+                    </a>
+                @endif
                 <h1>{{ $activeMaterial->title ?? $lecture->title }}</h1>
                 <div class="lesson-stats">
                     <span><i class="fas fa-book-reader me-1"></i> Part of: {{ $lecture->title }}</span>
-                    <span><i class="fas fa-clock me-1"></i> {{ $enrollment->course->duration ?? 'Self-paced' }}</span>
+                    <span><i class="fas fa-clock me-1"></i> {{ $course->duration ?? 'Self-paced' }}</span>
                 </div>
             </div>
-            <div class="header-actions">
-                <div class="progress-info text-end">
-                    <div class="d-flex align-items-center gap-3 mb-1">
-                        @if ($prev_url)
-                            <a href="{{ $prev_url }}" class="btn btn-link btn-sm text-muted p-0" title="Previous">
-                                <i class="fas fa-chevron-left"></i>
-                            </a>
-                        @endif
-                        <div class="progress" style="height: 6px; width: 120px;">
-                            <div class="progress-bar" role="progressbar" style="width: {{ $enrollment->progress }}%"></div>
+            @if ($enrollment)
+                <div class="header-actions">
+                    <div class="progress-info text-end">
+                        <div class="d-flex align-items-center gap-3 mb-1">
+                            @if ($prev_url)
+                                <a href="{{ $prev_url }}" class="btn btn-link btn-sm text-muted p-0" title="Previous">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            @endif
+                            <div class="progress" style="height: 6px; width: 120px;">
+                                <div class="progress-bar" role="progressbar" style="width: {{ $enrollment->progress }}%">
+                                </div>
+                            </div>
+                            @if ($next_url)
+                                <a href="{{ $next_url }}" class="btn btn-link btn-sm text-muted p-0" title="Next">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            @endif
                         </div>
-                        @if ($next_url)
-                            <a href="{{ $next_url }}" class="btn btn-link btn-sm text-muted p-0" title="Next">
-                                <i class="fas fa-chevron-right"></i>
-                            </a>
-                        @endif
+                        <small class="text-muted" style="font-size: 0.75rem;">{{ round($enrollment->progress) }}%
+                            Complete</small>
                     </div>
-                    <small class="text-muted" style="font-size: 0.75rem;">{{ round($enrollment->progress) }}%
-                        Complete</small>
                 </div>
-            </div>
+            @endif
         </div>
     </header>
 
@@ -700,7 +739,7 @@
                 </div>
                 <div class="sidebar-content">
                     @php $materialCounter = 1; @endphp
-                    @foreach ($enrollment->course->lectures as $l)
+                    @foreach ($course->lectures as $l)
                         <div class="section-group">
                             <div class="section-header">
                                 <div class="d-flex justify-content-between align-items-start mb-1">
@@ -731,6 +770,13 @@
                                         <div class="material-title">
                                             {{ sprintf('%02d', $materialCounter++) }} - {{ $m->title }}
                                         </div>
+                                        <div class="completion-check">
+                                            <span
+                                                class="check-icon {{ in_array($m->id, $completedMaterialIds ?? []) ? 'completed' : '' }}">
+                                                <i class="fas fa-check"></i>
+                                                <i class="fas fa-check"></i>
+                                            </span>
+                                        </div>
                                     </a>
                                 @endif
                             @endforeach
@@ -744,6 +790,13 @@
                                         </div>
                                         <div class="material-title" style="font-size: 0.85rem;">
                                             Quiz: {{ $q->title }}
+                                        </div>
+                                        <div class="completion-check">
+                                            <span
+                                                class="check-icon {{ in_array($q->id, $completedQuizIds ?? []) ? 'completed' : '' }}">
+                                                <i class="fas fa-check"></i>
+                                                <i class="fas fa-check"></i>
+                                            </span>
                                         </div>
                                     </a>
                                 @endforeach

@@ -154,24 +154,33 @@
             // Handle Refund
             $(document).on('click', '.refund-btn', function() {
                 var id = $(this).data('id');
-                if (confirm(
-                        "Are you sure you want to refund this order? This action connects to manual refund logic currently."
-                    )) {
-                    $.ajax({
-                        url: "/admin/orders/" + id + "/refund",
-                        type: "POST",
-                        data: {
-                            _token: "{{ csrf_token() }}"
-                        },
-                        success: function(response) {
-                            alert(response.success);
-                            table.draw();
-                        },
-                        error: function(xhr) {
-                            alert('Something went wrong');
-                        }
-                    });
-                }
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to refund this order?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ffc107',
+                    cancelButtonColor: '#aaa',
+                    confirmButtonText: 'Yes, Refund it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/admin/orders/" + id + "/refund",
+                            type: "POST",
+                            data: {
+                                _token: "{{ csrf_token() }}"
+                            },
+                            success: function(response) {
+                                showSuccessToast(response.success);
+                                table.draw();
+                            },
+                            error: function(xhr) {
+                                showErrorToast('Something went wrong during refund.');
+                            }
+                        });
+                    }
+                });
             });
         });
     </script>

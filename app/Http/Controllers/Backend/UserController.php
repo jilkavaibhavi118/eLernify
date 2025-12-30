@@ -62,7 +62,7 @@ class UserController extends Controller implements HasMiddleware
                         </button>';
 
                     return view('layouts.includes.list-actions', [
-                        'module' => 'user',
+                        'module' => 'users',
                         'routePrefix' => 'backend.users',
                         'data' => $row,
                         'extra' => $extra
@@ -100,6 +100,12 @@ class UserController extends Controller implements HasMiddleware
             'success' => 'User created successfully',
             'url' => route('backend.users.index')
         ]);
+    }
+
+    public function show($id)
+    {
+        $user = User::findOrFail($id);
+        return view('backend.users.show', compact('user'));
     }
 
     public function edit($id)

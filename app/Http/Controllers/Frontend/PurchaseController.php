@@ -99,11 +99,6 @@ class PurchaseController extends Controller
 
     public function verify(Request $request)
     {
-        // Simulation for testing
-        if ($request->has('simulate')) {
-            return $this->handleSuccessfulPayment($request->input('payment_id'), 'simulated', 'simulated');
-        }
-
         $request->validate([
             'razorpay_order_id' => 'required',
             'razorpay_payment_id' => 'required',
@@ -158,6 +153,38 @@ class PurchaseController extends Controller
                 ['user_id' => $payment->user_id, 'course_id' => $payment->course_id],
                 ['status' => 'active', 'enrolled_at' => now()]
             );
+        }
+
+        // Notify Admins
+        try {
+            $admins = \App\Models\User::role('Admin')->get();
+            $user = \App\Models\User::find($payment->user_id);
+            
+            // Determine item and type
+            $item = null;
+            $type = 'item';
+            
+            if ($payment->course_id) {
+                $item = \App\Models\Course::find($payment->course_id);
+                $type = 'course';
+            } elseif ($payment->lecture_id) {
+                $item = \App\Models\Lecture::find($payment->lecture_id);
+                $type = 'lecture';
+            } elseif ($payment->material_id) {
+                $item = \App\Models\Material::find($payment->material_id);
+                $type = 'material';
+            } elseif ($payment->quiz_id) {
+                $item = \App\Models\Quiz::find($payment->quiz_id);
+                $type = 'quiz';
+            }
+
+            if ($item && $user) {
+                foreach ($admins as $admin) {
+                    $admin->notify(new \App\Notifications\NewSaleNotification($order, $item, $user, $type));
+                }
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Admin Notification Error: ' . $e->getMessage());
         }
 
         return redirect()->route('user.purchases')->with('success', 'Purchase successful! You can now access your content.');

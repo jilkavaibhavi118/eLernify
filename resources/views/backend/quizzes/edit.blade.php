@@ -8,7 +8,7 @@
                     <h6>Edit Quiz</h6>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('backend.quizzes.update', $quiz->id) }}" method="POST" id="quizForm">
+                    <form action="{{ route('backend.quizzes.update', $quiz->id) }}" method="POST" id="crudForm">
                         @csrf
                         @method('PUT')
                         @include('backend.quizzes.form', ['quiz' => $quiz])

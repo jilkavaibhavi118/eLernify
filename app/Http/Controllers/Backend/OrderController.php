@@ -14,6 +14,7 @@ use Illuminate\Routing\Controllers\Middleware;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller implements HasMiddleware
 {
@@ -47,8 +48,8 @@ class OrderController extends Controller implements HasMiddleware
                 }
 
                 // Filter by instructor if not admin
-                if (!auth()->user()->hasRole('Admin')) {
-                    $instructorId = auth()->user()->instructor ? auth()->user()->instructor->id : 0;
+                if (!Auth::user()->hasRole('Admin')) {
+                    $instructorId = Auth::user()->instructor ? Auth::user()->instructor->id : 0;
                     $orders->whereHas('items.course', function($q) use ($instructorId) {
                         $q->where('instructor_id', $instructorId);
                     });
