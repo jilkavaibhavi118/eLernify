@@ -33,7 +33,14 @@
                             <div class="row g-4">
                                 @foreach ($enrollments as $enrollment)
                                     <div class="col-md-6 col-lg-4">
-                                        <div class="card h-100 border-0 shadow-sm course-card-hover">
+                                        <div
+                                            class="card h-100 border-0 shadow-sm course-card-hover {{ $enrollment->status == 'refunded' ? 'opacity-75' : '' }}">
+                                            @if ($enrollment->status == 'refunded')
+                                                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                                                    style="background: rgba(0,0,0,0.4); z-index: 2; border-radius: 8px;">
+                                                    <span class="badge bg-danger px-3 py-2 shadow">REFUNDED</span>
+                                                </div>
+                                            @endif
                                             <img src="{{ asset('storage/' . $enrollment->course->image) }}"
                                                 class="card-img-top" alt="{{ $enrollment->course->title }}"
                                                 style="height: 160px; object-fit: cover;">
@@ -47,8 +54,13 @@
                                                     </div>
                                                 </div>
                                                 <small class="text-muted">{{ $enrollment->progress }}% Completed</small>
-                                                <a href="{{ route('user.course.view', $enrollment->id) }}"
-                                                    class="btn btn-primary btn-sm w-100 mt-3">Continue</a>
+                                                @if ($enrollment->status == 'refunded')
+                                                    <a href="{{ route('user.course.view', $enrollment->id) }}"
+                                                        class="btn btn-outline-danger btn-sm w-100 mt-3">Access Denied</a>
+                                                @else
+                                                    <a href="{{ route('user.course.view', $enrollment->id) }}"
+                                                        class="btn btn-primary btn-sm w-100 mt-3">Continue</a>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>

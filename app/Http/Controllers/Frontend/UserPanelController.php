@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Order;
+use App\Models\OrderItem;       
 
 class UserPanelController extends Controller
 {
@@ -27,8 +29,8 @@ class UserPanelController extends Controller
             'active' => $enrollments->where('status', 'active')->count(),
             'completed' => $enrollments->where('status', 'completed')->count(),
             'avg_progress' => $enrollments->avg('progress') ?? 0,
-            'total_items' => \App\Models\OrderItem::whereHas('order', function($q) {
-                $q->where('user_id', Auth::id())->where('status', 'completed');
+            'total_items' => \App\Models\OrderItem::where('status', '!=', 'refunded')->whereHas('order', function($q) {
+                $q->where('user_id', Auth::id());
             })->count()
         ];
 
@@ -106,39 +108,40 @@ class UserPanelController extends Controller
 
     public function courseView($enrollmentId)
     {
-        $enrollment = Enrollment::where('id', $enrollmentId)
+        $enrollment = Enrollment::with(['course.lectures.materials', 'course.quizzes'])
             ->where('user_id', Auth::id())
-            ->with(['course.lectures', 'course.quizzes', 'course.instructor'])
-            ->firstOrFail();
+            ->findOrFail($enrollmentId);
+
+        if ($enrollment->status == 'refunded') {
+            abort(403, 'This course are refunded you can not access this course.');
+        }
 
         return view('frontend.user-panel.course-view', compact('enrollment'));
     }
 
     public function lectureView($lectureId, $materialId = null)
     {
+        $lecture = Lecture::with(['course', 'materials'])->findOrFail($lectureId);
+        
+        // Ensure user is enrolled
+        $enrollment = Enrollment::where('user_id', Auth::id())
+            ->where('course_id', $lecture->course_id)
+            ->firstOrFail();
+
+        if ($enrollment->status == 'refunded') {
+            abort(403, 'This course are refunded you can not access this course.');
+        }
+
         // Load lecture with course and its hierarchy (lectures -> quizzes) and comments
-        $lecture = Lecture::with([
+        $lecture->load([
                 'course.instructor.user',
                 'course.lectures.materials', 
                 'course.lectures.quizzes',
-                'materials',
                 'quizzes',
                 'comments'
-            ])->findOrFail($lectureId);
+            ]);
 
-        // Verify user is enrolled or is the instructor/admin
-        $isInstructor = $lecture->course->instructor && $lecture->course->instructor->user_id == Auth::id();
-        $isAdmin = Auth::user()->hasRole('Admin');
-        
-        $enrollment = Enrollment::where('user_id', Auth::id())
-            ->where('course_id', $lecture->course_id)
-            ->first();
-
-        if (!$enrollment && !$isInstructor && !$isAdmin) {
-             abort(403, 'Unauthorized access to this lecture.');
-        }
-
-        $course = $enrollment ? $enrollment->course : $lecture->course;
+        $course = $enrollment->course;
 
         // Find the specific material if provided, otherwise default to first video material
         $activeMaterial = null;

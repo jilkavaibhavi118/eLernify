@@ -42,6 +42,11 @@ class Enrollment extends Model
         return $query->where('status', 'completed');
     }
 
+    public function OrderItem()
+    {
+        return $this->hasMany(OrderItem::class, 'course_id', 'id');
+    }
+
     // Methods
     public function markAsCompleted()
     {

@@ -149,6 +149,7 @@ Route::middleware(['auth'])->prefix('admin')->name('backend.')->group(function (
 
     Route::resource('orders', OrderController::class)->only(['index', 'show']);
     Route::post('orders/{id}/refund', [OrderController::class, 'refund'])->name('orders.refund');
+    Route::post('orders/item/{id}/refund', [OrderController::class, 'refundCourse'])->name('orders.refund_item');
 
     Route::resource('comments', BackendCommentController::class)->only(['index', 'destroy']);
     Route::post('comments/{id}/reply', [BackendCommentController::class, 'reply'])->name('comments.reply');

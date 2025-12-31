@@ -33,7 +33,19 @@ class AccessCheck
                 $item = \App\Models\Lecture::find($id);
                 if (!$item) return abort(404);
                 if ($item->is_free) return $next($request);
-                if ($user && ($user->hasPurchased('lecture', $id) || \App\Models\Enrollment::where('user_id', $user->id)->where('course_id', $item->course_id)->exists())) {
+
+                $enrollment = $user ? \App\Models\Enrollment::where('user_id', $user->id)
+                    ->where('course_id', $item->course_id)
+                    ->first() : null;
+
+                if ($enrollment) {
+                    if ($enrollment->status === 'refunded') {
+                        abort(403, 'This course is refunded, you cannot access this lecture.');
+                    }
+                    return $next($request);
+                }
+
+                if ($user && $user->hasPurchased('lecture', $id)) {
                     return $next($request);
                 }
                 break;

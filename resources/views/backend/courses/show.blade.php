@@ -87,26 +87,35 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="stats" role="tabpanel">
-                                        <div class="d-flex align-items-center mb-3 p-2 border rounded bg-light">
-                                            <img src="{{ $course->instructor->image ? asset('storage/' . $course->instructor->image) : asset('assets/img/avatars/8.jpg') }}"
-                                                class="rounded-circle me-3"
-                                                style="width: 60px; height: 60px; object-fit: cover;">
-                                            <div>
-                                                <h5 class="mb-0">{{ $course->instructor->name }}</h5>
-                                                <small
-                                                    class="text-muted">{{ $course->instructor->designation ?? 'Instructor' }}</small>
+                                        @if ($course->instructor)
+                                            <div class="d-flex align-items-center mb-3 p-2 border rounded bg-light">
+                                                <img src="{{ $course->instructor->image ? asset('storage/' . $course->instructor->image) : asset('assets/img/avatars/8.jpg') }}"
+                                                    class="rounded-circle me-3"
+                                                    style="width: 60px; height: 60px; object-fit: cover;">
+                                                <div>
+                                                    <h5 class="mb-0">{{ $course->instructor->name }}</h5>
+                                                    <small
+                                                        class="text-muted">{{ $course->instructor->designation ?? 'Instructor' }}</small>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <ul class="list-group">
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Instructor Email
-                                                <span>{{ $course->instructor->email }}</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Instructor Specialty
-                                                <span>{{ $course->instructor->specialty ?? 'General' }}</span>
-                                            </li>
-                                        </ul>
+                                            <ul class="list-group">
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Instructor Email
+                                                    <span>{{ $course->instructor->email }}</span>
+                                                </li>
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                    Instructor Specialty
+                                                    <span>{{ $course->instructor->specialty ?? 'General' }}</span>
+                                                </li>
+                                            </ul>
+                                        @else
+                                            <div class="alert alert-warning">
+                                                <i class="fas fa-exclamation-triangle me-2"></i> No instructor assigned to
+                                                this course.
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

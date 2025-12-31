@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Enrollment;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -124,12 +125,57 @@ class OrderController extends Controller implements HasMiddleware
 
     public function refund(Request $request, $id)
     {
-        $order = Order::findOrFail($id);
-        $order->status = 'refunded';
-        $order->save();
+        $order = Order::with('items')->findOrFail($id);
+        
+        DB::transaction(function () use ($order) {
+            // 1. Mark Order as Refunded
+            $order->update(['status' => 'refunded']);
 
-        return response()->json(['success' => 'Order marked as refunded successfully.']);
+            // 2. Mark all OrderItems as Refunded and disable Enrollments
+            foreach ($order->items as $item) {
+                $item->update(['status' => 'refunded']);
+
+                Enrollment::where('user_id', $order->user_id)
+                    ->where('course_id', $item->course_id)
+                    ->update([
+                        'status' => 'refunded',
+                        'progress' => 0,
+                    ]);
+            }
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Entire order and all associated access marked as refunded successfully.'
+        ]);
     }
+
+    public function refundCourse($orderItemId)
+    {
+        return DB::transaction(function () use ($orderItemId) {
+            $item = OrderItem::with('order')->findOrFail($orderItemId);
+
+            //mark course refunded
+            $item->update(['status' => 'refunded']);
+
+            //Disable enrollment
+            if ($item->order && $item->course_id) {
+                Enrollment::where('user_id', $item->order->user_id)
+                    ->where('course_id', $item->course_id)
+                    ->update([
+                        'status' => 'refunded',
+                        'progress' => 0,
+                    ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Course access removed and item marked as refunded.'
+            ]);
+        });
+    }
+
+
 
     public function show($id)
 {

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Lecture;
 use App\Models\Material;
 use App\Models\Quiz;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class ResourceController extends Controller
